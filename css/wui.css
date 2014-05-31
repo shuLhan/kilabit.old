@@ -1,0 +1,29 @@
+.container {
+	max-width	: 800px;
+}
+
+#wui_header {
+	border-bottom	: 1px solid silver;
+	margin-bottom	: 10px;
+}
+
+.title {
+	font-size		: 22px;
+	font-weight		: bold;
+}
+
+.subtitle {
+	font-family		: monospace;
+	font-size		: 12px;
+}
+
+.breadcrumb {
+	margin-bottom	: 0px;
+	border-bottom	: 1px solid silver;
+}
+
+.breadcrumb > li.active > a {
+	pointer-events	: none;
+	cursor			: default;
+	color			: #000;
+}
