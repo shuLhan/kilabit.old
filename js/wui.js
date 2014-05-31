@@ -109,6 +109,11 @@ var WUI =
 					WUI.create_submenu (m.id, m.submenu);
 				}
 			}
+
+			// set front page defined in the config.php
+			var id		= WUI.homepage.replace (/[^a-zA-Z0-9]/g, "-");
+			var hp_el	= $("#wui_menu a[href='#"+ id +"']");
+			hp_el.trigger ("click");
 		});
 	}
 };
