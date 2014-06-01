@@ -269,6 +269,16 @@ var WUIFeed =
 		}
 	}
 
+,	load : function ()
+	{
+		WUIFeed._v.sort (WUIFeed.sort);
+		WUIFeed._o = "";
+		WUIFeed.generate_output ();
+
+		$("#my_activity").empty ();
+		$("#my_activity").append ($.parseHTML (WUIFeed._o));
+	}
+
 ,	get : function (uri)
 	{
 		$.get ("/get_feed.php"
@@ -299,12 +309,7 @@ var WUIFeed =
 				return;
 			}
 
-			WUIFeed._v.sort (WUIFeed.sort);
-			WUIFeed._o = "";
-			WUIFeed.generate_output ();
-
-			$("#my_activity").empty ();
-			$("#my_activity").append ($.parseHTML (WUIFeed._o));
+			WUIFeed.load ();
 		});
 	}
 
