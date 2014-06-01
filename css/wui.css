@@ -50,10 +50,10 @@
 	margin			: 0px 6px;
 }
 
-@media (max-width: 768px) {
+@media (max-width : 768px) {
 	#wui_header_right,
 	#wui_footer_right {
-		float : left !important;
+		float		: left !important;
 	}
 }
 
@@ -61,3 +61,23 @@
 hr {
 	margin			: 0px;
 }
+
+table {
+	border-collapse	: collapse;
+}
+
+th, td {
+	padding			: 8px;
+	vertical-align	: top;
+	border-bottom	: thin silver solid;
+}
+
+th {
+	text-align		: right;
+}
+
+img {
+	margin			: 0px auto 0px;
+	text-align		: center;
+}
+
