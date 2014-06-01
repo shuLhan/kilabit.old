@@ -25,7 +25,7 @@
 #wui_footer {
 	border-top		: 1px solid silver;
 	padding-top		: 4px;
-	margin-top		: 10px;
+	margin			: 10px 0px;
 }
 
 .title {

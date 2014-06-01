@@ -32,12 +32,12 @@
 		<hr/>
 
 		<div class="row">
-			<div id="wui_menu" class="col-md-12">
+			<div id="wui_menu" class="col-sm-12">
 			</div>
 		</div>
 
 		<div class="row">
-			<div id="wui_content" class="col-md-12">
+			<div id="wui_content" class="col-sm-12">
 			</div>
 		</div>
 
