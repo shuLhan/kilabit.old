@@ -34,7 +34,20 @@ var WUI =
 
 		wc.empty ();
 
-		wc.load (link);
+		wc.load (link, function (res, stat, xhr)
+			{
+				// fix image source
+				link = link.replace (/^\.\//, "/");
+				link = link.replace (/^\/\//, "/");
+				link = link.replace ("/index.html", "");
+
+				wc.find ("img").each (function (i)
+				{
+					var src = $(this).attr ("src");
+					src = src.replace (/^\.\//, "");
+					$(this).attr ("src", link +"/"+ src);
+				});
+			});
 	}
 
 ,	on_menu_click : function (e)
@@ -445,4 +458,4 @@ var WUIFeed =
 	}
 };
 
-//# wui.js
+//# sourceURL=wui.js
