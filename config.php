@@ -1,9 +1,9 @@
 <?php
-$wui["title"]			= "WUI!";
-$wui["subtitle"]		= "It's fun";
+$wui["title"]			= "kilabit.info";
+$wui["subtitle"]		= "Simple | Small | Stable | Secure";
 $wui["contents_dir"]	= "contents";
 $wui["homepage"]		= "/home";
-$wui["contents_exclude"]= [];
+$wui["contents_exclude"]= [ "/doc" ];
 /* Order matter */
 $wui["social_icon"]		= [
 	"facebook"		=> ""
