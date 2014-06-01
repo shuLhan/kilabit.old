@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="title" content="Home"/>
+	<meta name="feed-source" content="https://github.com/shuLhan.atom"/>
+	<meta name="feed-source" content="http://www.reddit.com/user/rv77ax/liked/.rss"/>
+	<style>
+		.activity {
+			font-family			: Droid Sans Mono, monospace;
+			font-size			: 12px;
+			margin				: 1.5em;
+			padding				: 1em;
+			background			: white;
+			border				: 1px solid silver;
+			-moz-border-radius	: 5px;
+			border-radius		: 5px;
+			overflow			: hidden;
+		}
+
+		.activity * {
+			font-size		:12px;
+		}
+
+		.activity_header {
+			font-size		: 14px;
+			border-bottom	: 1px solid silver;
+			margin-bottom	: 1em;
+		}
+
+		.activity_date {
+			font-size		: 12px;
+			color			: gray;
+			float			: right;
+		}
+	</style>
+</head>
+
+<body>
+	<h1><a href="./index.html"> Home </a></h1>
+
+	<h2>Recent Activities</h2>
+	<div id="my_activity">
+	</div>
+
+	<script>
+		WUIFeed.init ([
+			"http://github.com/shuLhan.atom"
+		,	"http://www.reddit.com/user/rv77ax/liked/.rss"
+		,	"http://www.goodreads.com/review/list_rss/16887972?key%3dgPTSEwtR_sTVRjJqQ71Pq5bO--L8Jz6sOYkRU7ENP9xse9pk%26shelf%3dread"
+		,	"http://rss.imdb.com/user/ur24737018/ratings"
+		]);
+	</script>
+</body>
+</html>

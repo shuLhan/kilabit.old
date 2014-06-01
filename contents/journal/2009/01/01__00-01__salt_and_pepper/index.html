@@ -1,0 +1,95 @@
+<html>
+<head>
+<meta name='title' content='Salt and Pepper'/>
+<meta name='publish-date' content='2009.01.01 00:01:00 +0000'/>
+<meta name='author' content='ms@kilabit.org'/>
+<link rel='stylesheet' href='/wui.css' type='text/css'/>
+</head>
+
+<body>
+<h1><a href='./index.html'> Salt and Pepper </a></h1>
+
+<p>
+Wondering how many account do we have today on the internet, from Yahoo to
+Google, from MySpace to Friendster accounts. How do you manage all those
+account password ? use one-for-all password ? like th15 or p455w0rd, or
+your name ?
+</p>
+
+<p>
+Some of us maybe like to use their name, child name, or birth date, because
+it's memorize-able. That's ok, as long as you don't have any private or
+credential information while communicating or browsing.
+</p>
+
+<p>
+Some of us use what they call "OpenID". from user perspective, it easy and
+manageable but from security view, no. The problem is it use one-for-all
+password. Once your password is hacked, _all_ of your OpenID accounts is
+"open" for attacker, not to mention any others
+<a href="http://idcorner.org/2007/08/22/the-problems-with-openid">
+problem </a>.
+</p>
+
+<p>
+Or maybe you use password like this 'ax23sd239dj1390sdm9323', every time you
+want to log in to a web site you open your wallet, unfold a little white note
+and read the password. :). That is good, really good. Now, if you cannot login
+because of typo or the white note is missing, don't blame me.
+</p>
+
+~ ~ ~
+
+<p>
+On cryptography there is a concept called 'salt'. 'Salt' is added to the
+'key'/'password' so the result is much yummy, sorry what I mean is, make it
+not easy to break. But my point here is not about cryptography, but how do we
+use a 'salt' concept in daily use on internet so we can have different
+password for each account. Not even just on internet.
+</p>
+
+<p>
+In example, we have an account on www.jackpot.com with user name: johndoe.
+</p>
+
+<p>
+The trick is simple, really simple. Pick any combination of character to use
+as a salt. Don't pick any meaning word (especially English word or your
+mother language), pick a random one, like 'bhunjimko'. See, if you look at
+your keyboard now those random character have their own pattern.
+</p>
+
+<p>
+Now combine this salt with website name, and as option your user-name, result:
+</p>
+
+<pre>
+bhunjimkojackpotjohndoe
+</pre>
+
+<p>
+easy, eh ;). You can mix those three words in any pattern.
+</p>
+
+<p>
+As easy as it sound, one salt is not good enough. You should use two salt, one
+salt for character only and another salt for a number only. The most good one
+is two salt with mix of character and number. Another example that I use,
+</p>
+
+<pre>
+zxcvbnmyahoo1337
+zxcvbnmgmail1337
+mnbvcxzmyspace1337
+mnbvcxzfs1337
+</pre>
+
+<p>
+If I want to login to yahoo I just need to see to the keyboard, that's already
+provided the 'salt' for me, and I just need to remember the four number.
+Now, I just need to enter my login name... my login name... hmmm... damn it I
+forgot my login name!
+</p>
+
+</body>
+</html>

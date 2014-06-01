@@ -1,0 +1,429 @@
+<html>
+<head>
+<meta name='title' content="A Poor Man's Feed Parser and Viewer"/>
+<meta name='publish-date' content='2011.01.08 13:22:49 +0700'/>
+<meta name='author' content='ms@kilabit.org'/>
+<link rel='stylesheet' href='/wui.css' type='text/css'/>
+</head>
+
+<body>
+<h1><a href='./index.html'> A Poor Man's Feed Parser and Viewer </a></h1>
+<p>
+I just add a new section in this site called 'Home - Recent Activities', as
+part of WUI [1] project,
+which showed my recent activities on the Internet; a site I have been
+submitted (read and like) and what changes has been made to all of my
+projects.
+</p>
+
+<p>
+Before delving more into this journal, I should state the goal of this task:
+<ul>
+<li> parsing feed content (using JavaScript), </li>
+<li> sort all feed entry by date, </li>
+<li> and display it in html page. </li>
+</ul>
+</p>
+
+<p>
+Now, you may wonder why it's called "poor man's feed parser" because I
+tackled all the code in reverse order, instead of read the feed specification
+first, I download each of the feed and looks for the pattern.
+</p>
+
+<p>
+Disclaimer: To all experienced Web Developer out there, please excuse my poor
+solution. As far I as hate web development, this is the best way I can do :) .
+</p>
+
+
+<h2> Parsing Feed Content </h2>
+
+<p>
+There is two feed that I need to parsing, github public feed [2] and reddit
+submission [3].
+</p>
+
+
+<h3> Parsing Atom Feed Content </h3>
+
+<p>
+First is github public feed. The feed content is look like this,
+<pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;feed xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xml:lang="en-US"&gt;
+  &lt;id&gt;tag:github.com,2008:/shuLhan&lt;/id&gt;
+  &lt;link type="text/html" rel="alternate" href="https://github.com/shuLhan"/&gt;
+  &lt;link type="application/atom+xml" rel="self" href="https://github.com/shuLhan.atom"/&gt;
+  &lt;title&gt;shuLhan's Activity&lt;/title&gt;
+  &lt;updated&gt;2011-01-07T21:58:02-08:00&lt;/updated&gt;
+  &lt;entry&gt;
+    &lt;id&gt;tag:github.com,2008:PushEvent/1070663767&lt;/id&gt;
+    &lt;published&gt;2011-01-07T21:58:02-08:00&lt;/published&gt;
+    &lt;updated&gt;2011-01-07T21:58:02-08:00&lt;/updated&gt;
+    &lt;link type="text/html" rel="alternate" href="https://github.com/shuLhan/kilabit.org/compare/09a6024d91...284d3800b0"/&gt;
+    &lt;title&gt;shuLhan pushed to master at shuLhan/kilabit.org&lt;/title&gt;
+    &lt;author&gt;
+      &lt;name&gt;shuLhan&lt;/name&gt;
+          &lt;email&gt;ms@kilabit.org&lt;/email&gt;
+          &lt;uri&gt;https://github.com/shuLhan&lt;/uri&gt;
+    &lt;/author&gt;
+    &lt;media:thumbnail height="30" width="30" url="https://secure.gravatar.com/avatar/80e039afe2e0ecb9bbe7e78fef270ede?s=30&amp;d=https%3A%2F%2Fgithub.com%2Fimages%2Fgravatars%2Fgravatar-140.png"/&gt;
+    &lt;content type="html"&gt;
+	...
+  &lt;/entry&gt;
+  &lt;entry&gt;
+    &lt;id&gt;tag:github.com,2008:PushEvent/1069771445&lt;/id&gt;
+    &lt;published&gt;2011-01-07T10:20:19-08:00&lt;/published&gt;
+    &lt;updated&gt;2011-01-07T10:20:19-08:00&lt;/updated&gt;
+    &lt;link type="text/html" rel="alternate" href="https://github.com/shuLhan/kilabit.org/compare/9fb7c7418a...09a6024d91"/&gt;
+    &lt;title&gt;shuLhan pushed to master at shuLhan/kilabit.org&lt;/title&gt;
+    &lt;author&gt;
+      &lt;name&gt;shuLhan&lt;/name&gt;
+          &lt;email&gt;ms@kilabit.org&lt;/email&gt;
+          &lt;uri&gt;https://github.com/shuLhan&lt;/uri&gt;
+    &lt;/author&gt;
+    &lt;media:thumbnail height="30" width="30" url="https://secure.gravatar.com/avatar/80e039afe2e0ecb9bbe7e78fef270ede?s=30&amp;d=https%3A%2F%2Fgithub.com%2Fimages%2Fgravatars%2Fgravatar-140.png"/&gt;
+    &lt;content type="html"&gt;
+	...
+    &lt;/content&gt;
+  &lt;/entry&gt;
+	...
+</pre>
+(Some of feed content has been cut and replaced by "...")
+</p>
+
+<p>
+Just by quick look you can see that each feed content is enclosed by
+<tt>entry</tt> tag. I don't care the content of <tt>entry</tt> right now,
+because that will be handled in the third task.
+</p>
+
+<p>
+JavaScript function to parsing Atom feed,
+<pre>
+function feed_atom_parsing()
+{
+	var entries = _xml.getElementsByTagName('entry');
+
+	for (var i = 0; i &lt; entries.length; i++) {
+		var entry = {};
+
+		entry.type = 'atom';
+
+		for (var c = 0; c &lt; entries[i].childNodes.length; c++) {
+			var child = entries[i].childNodes[c];
+
+			if (child.nodeType != 1) {
+				continue;
+			}
+
+			switch (child.nodeName) {
+			case 'link':
+				entry[child.nodeName] = child.getAttribute('href');
+				break;
+			case 'published':
+				entry['my_date'] = new Date(child.textContent);
+				/* no break */
+			default:
+				entry[child.nodeName] = child.textContent;
+			}
+		}
+
+		_feeds[_feeds.length] = entry;
+	}
+</pre>
+</p>
+<p>
+Quick explanation,
+<ul>
+<li> <tt>_xml</tt> is XMLHttpRequest responseXML value.
+</li>
+<li> <tt>var entry = {}</tt>, this is where we will save the feed entry, as
+an object.
+</li>
+<li> <tt>child.nodeType != 1</tt>, skip child content which content is
+"#text".
+</li>
+<li> <tt>entry['my_date']</tt>, we need feed date in Date object for sorting
+the feed later.
+</li>
+<li> <tt>_feeds[_feeds.length] = entry;</tt>, save the feed entry in an
+array.
+</li>
+</ul>
+</p>
+
+
+<h3> Parsing RSS Feed Content </h3>
+
+<p>
+Second feed is reddit submission. To bad, reddit is not using Atom but RSS
+version 2.0, so we need another function to parsing it. A snippet example of RSS
+feed content,
+<pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;rss xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:media="http://search.yahoo.com/mrss/" version="2.0"&gt;
+  &lt;channel&gt;
+    &lt;title&gt;reddit: the voice of the internet -- news before it
+happens&lt;/title&gt;
+    &lt;link&gt;http://www.reddit.com/&lt;/link&gt;
+    &lt;description/&gt;
+    &lt;image&gt;
+      &lt;url&gt;http://static.reddit.com/reddit.com.header.png&lt;/url&gt;
+      &lt;title&gt;reddit: the voice of the internet -- news before it
+happens&lt;/title&gt;
+      &lt;link&gt;http://www.reddit.com/&lt;/link&gt;
+    &lt;/image&gt;
+    &lt;item&gt;
+      &lt;title&gt;Turning Info Tech into Clean Tech&lt;/title&gt;
+      &lt;link&gt;http://www.reddit.com/r/technology/comments/evv4d/turning_info_tech_into_clean_tech/&lt;/link&gt;
+      &lt;guid
+isPermaLink="true"&gt;http://www.reddit.com/r/technology/comments/evv4d/turning_info_tech_into_clean_tech/&lt;/guid&gt;
+      &lt;pubDate&gt;Mon, 03 Jan 2011 23:38:41 -0700&lt;/pubDate&gt;
+      &lt;description&gt;
+	...
+	&lt;/description&gt;
+    &lt;/item&gt;
+    &lt;item&gt;
+      &lt;title&gt;Archive Testing: Comparison On Close-to-realistic Tasks.&lt;/title&gt;
+      &lt;link&gt;http://www.reddit.com/r/linux/comments/esk1g/archive_testing_comparison_on_closetorealistic/&lt;/link&gt;
+      &lt;guid
+isPermaLink="true"&gt;http://www.reddit.com/r/linux/comments/esk1g/archive_testing_comparison_on_closetorealistic/&lt;/guid&gt;
+      &lt;pubDate&gt;Tue, 28 Dec 2010 07:36:02 -0700&lt;/pubDate&gt;
+      &lt;description&gt;
+	...
+&lt;/description&gt;
+    &lt;/item&gt;
+	...
+</pre>
+(Some of feed content has been cut and replaced by "...")
+</p>
+<p>
+And by quick look the RSS feed content is enclosed by <tt>item</tt> tag.
+</p>
+
+<p>
+A function to parsing RSS (version 2.0),
+<pre>
+function feed_rss20_parsing()
+{
+	var entries = _xml.getElementsByTagName('item');
+
+	for (var i = 0; i &lt; entries.length; i++) {
+		var entry = {};
+
+		entry.type = 'rss20';
+
+		for (var c = 0; c &lt; entries[i].childNodes.length; c++) {
+			var child = entries[i].childNodes[c];
+
+			if (child.nodeType != 1) {
+				continue;
+			}
+			if (child.nodeName == 'pubDate') {
+				entry['my_date'] = feed_rss_pubdate_to_date(child.textContent);
+			}
+
+			entry[child.nodeName] = child.textContent;
+		}
+
+		_feeds[_feeds.length] = entry;
+	}
+}
+</pre>
+</p>
+
+<p>
+The code is almost like Atom feed parser, except for additional function
+<tt>feed_rss_pubdate_to_date()</tt>, because of format of RSS date is not
+easily converted to JavaScript Date object, we need a function to convert it.
+</p>
+
+<p>
+RSS publication date (<tt>pubDate</tt>) is like this:
+
+<pre>
+Mon, 03 Jan 2011 23:38:41 -0700
+</pre>
+
+and I need to parsing it and rewrite it back just like
+Atom <tt>published</tt> date value format,
+
+<pre>
+YYYY-MM-DDTHH:MM:SS&lt;GMT-format&gt;
+</pre>
+
+So, here is the function to convert RSS pubDate to Atom date format,
+<pre>
+function feed_rss_pubdate_to_date(pubDate)
+{
+	var mm_to_m	= {
+			  Jan:'01', Feb:'02', Mar:'03', Apr:'04', May:'05'
+			, Jun:'06', Jul:'07', Aug:'08', Sep:'09', Oct:'10'
+			, Nov:'11', Dec:'12'
+			};
+	var arr_date	= pubDate.split(' ');
+	var d		= arr_date[1];
+	var mm		= arr_date[2];
+	var y		= arr_date[3];
+	var time	= arr_date[4];
+	var gmt_l	= arr_date[5].substring(0,3);
+	var gmt_r	= arr_date[5].substring(3,5);
+	var sdate	= '';
+
+	sdate = y +"-"+ mm_to_m[mm] +"-"+ d +"T"+ time
+		+ gmt_l +":"+ gmt_r;
+
+	return new Date(sdate);
+}
+</pre>
+</p>
+
+
+<h2> Sort All Feed Entry by Date </h2>
+
+<p>
+After I have got all the feed content in array (<tt>_feeds</tt>), I need to
+sort all the feeds by date (descending). This is how I do it,
+
+<pre>
+function feed_sort(a, b)
+{
+	return b.my_date - a.my_date;
+}
+
+...
+	_feeds.sort(feed_sort);
+...
+</pre>
+</p>
+
+
+<h2> Display It in HTML Page </h2>
+
+<p>
+The feed is ready and sorted and now I need create a HTML output for display
+all feed.
+</p>
+
+<pre>
+function feed_create_output()
+{
+	for (var i = 0; i &lt; _feeds.length; i++) {
+		switch(_feeds[i].type) {
+		case 'atom':
+			_act	+= "&lt;div class='activity'&gt;"
+				+ "&lt;div class='activity_header'&gt;"
+				+ "&lt;a href='"+ _feeds[i].link +"'&gt;"
+				+ _feeds[i].title
+				+ "&lt;/a&gt;"
+				+ "&lt;span class='activity_date'&gt;"
+				+ feed_convert_date(_feeds[i].my_date)
+				+ "&lt;/span&gt;"
+				+ "&lt;/div&gt;"
+				+ _feeds[i].content
+				+ "&lt;/div&gt;";
+			break;
+		case 'rss20':
+			_act	+= "&lt;div class='activity'&gt;"
+				+ "&lt;div class='activity_header'&gt;"
+				+ "&lt;a href='"+ _feeds[i].link +"'&gt;"
+				+ _feeds[i].title
+				+ "&lt;/a&gt;"
+				+ "&lt;span class='activity_date'&gt;"
+				+ feed_convert_date(_feeds[i].my_date)
+				+ "&lt;/span&gt;"
+				+ "&lt;/div&gt;"
+				+ _feeds[i].description
+				+ "&lt;/div&gt;";
+			break;
+		}
+	}
+}
+</pre>
+
+<p>
+Later, I can insert it to any element on web page,
+<pre>
+...
+	var e;
+	e = document.getElementById('my_activity');
+	e.innerHTML = _act;
+...
+</pre>
+</p>
+
+
+<h2> Deployment </h2>
+
+<p>
+Since browser does not allow JavaScript request across domain, I need to pull
+all the feed from the web server and save it in <tt>www</tt> public folder so
+it can be accessed by JavaScript.
+</p>
+<p>
+By using cron jobs I can make it automatically refresh once a hour.
+</p>
+
+<pre>
+#!/bin/bash
+
+curl -k -o ~/www/my_github_feed.atom https://github.com/shuLhan.atom
+curl -o ~/www/my_reddit_feed.rss http://www.reddit.com/user/rv77ax/submitted/.rss
+</pre>
+
+<p>
+In user browser, JavaScript just need to request only from original server
+using the pull output file.
+</p>
+
+<pre>
+function wui_get_feed(url)
+{
+	var type;
+
+	wui_get(url);
+
+	type = _xml.firstChild;
+
+	switch (type.nodeName) {
+	case 'feed':
+		feed_atom_parsing();
+		break;
+	case 'rss':
+		var version = type.getAttribute('version');
+		switch (version) {
+		case '2.0':
+			feed_rss20_parsing();
+			break;
+		}
+		break;
+	}
+}
+
+function feed_init()
+{
+	wui_get_feed("/my_github_feed.atom");
+	wui_get_feed("/my_reddit_feed.rss");
+
+	_feeds.sort(feed_sort);
+
+	feed_create_output();
+}
+</pre>
+
+<p>
+For a complete JavaScript file you can download it here [4].
+</p>
+
+<p class='footnote'>
+[1] http://kilabit.org/labs/wui/index.html. <br/>
+[2] https://github.com/shuLhan.atom <br/>
+[3] http://www.reddit.com/user/rv77ax/submitted/.rss <br/>
+[4] http://kilabit.org/wui.js <br/>
+</p>
+
+</body>
+</html>

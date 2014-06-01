@@ -1,0 +1,99 @@
+<html>
+<head>
+<meta name='title' content='Oracle 10g RAC Installation on Solaris'/>
+<meta name='author' content='ms@kilabit.org'/>
+<link rel='stylesheet' href='/wui.css' type='text/css'/>
+</head>
+
+<body>
+<h1><a href='./index.html'> Oracle 10g RAC Installation on Solaris </a></h1>
+
+<pre>
+Notes:
+	o the '#' at first line mean is the command must be _run_ by root.
+	o the '$' at first line mean is the command must be run by user, in
+          this case user 'oracle'.
+
+- create group for oracle
+
+	# groupadd oinstall
+	# groupadd dba
+	# groupadd oper
+
+- create user oracle
+
+	# mkdir /export/home/oracle
+	# chown oracle:dba /export/home/oracle
+	# useradd -g oinstall -G dba,oper -d /export/home/oracle oracle
+	# passwd oracle
+
+- make sure nobody is exist
+
+	# id nodoby
+
+- configure solaris 10 projects attributes
+
+	# projadd group.dba
+	# projmod -sK "project.max-shm-memory=(privileged,4294967295,deny)"
+	# group.dba
+	# projmod -sK "project.max-sem-ids=(privileged,100,deny)" group.dba
+	# projmod -sK "project.max-shm-ids=(privileged,100,deny)" group.dba
+	# projmod -sK "project.max-sem-nsems=(privileged,256,deny)" group.dba
+	# echo "oracle::::type=normal;project=group.dba" >> /etc/user_attr
+
+- and add this to "/etc/system",
+
+	set noexec_user_stack=1
+	set semsys:seminfo_semmni=100
+	set semsys:seminfo_semmns=1024
+	set semsys:seminfo_semmsl=256
+	set semsys:seminfo_semvmx=32767
+	set shmsys:shminfo_shmmax=4294967295
+	set shmsys:shminfo_shmmin=1
+	set shmsys:shminfo_shmmni=100
+	set shmsys:shminfo_shmseg=10
+
+- prepare asm disk/partition
+
+	note: cylinder must start at 1
+
+	# format
+	# chown oracle:dba /dev/rdsk/cxtxdxsx
+	# chmod 660 /dev/rdsk/cxtxdxsx
+
+- now login as oracle, then go to oracle installation directory and execute
+  OUI,
+
+	# mkdir -p /usr/local/bin
+	# su - oracle
+	$ sh /path/to/database/runInstaller
+
+- oracle installer will check all depedencies, make sure all of depedencies
+  is passed. While installing, oracle installer will prompt you to execute
+  two script as root. the scripts is
+
+	+ $ORACLE_BASE/oraInventory/orainstRoot.sh
+	+ $ORACLE_HOME/root.sh
+
+- oracle will create this additional directories:
+
+	+ /var/opt/oracle
+
+- upgrade ASM in OUI
+
+	$ ${ORACLE_HOME}/bin/dbua
+
+
+FTP &amp; HTTP access for ASM
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+run sql script catxdbdbca.sql
+
+	# cd ${ORACLE_HOME}
+	# sqlplus / as sysdba
+	SQL> @rdbms/admin/catxdbdbca.sql 2221 8880
+
+where 2221 is port for FTP and 8880 is port for HTTP accces.
+</pre>
+</body>
+</html>

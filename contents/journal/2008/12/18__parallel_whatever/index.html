@@ -1,0 +1,119 @@
+<html>
+<head>
+<meta name='title' content='Parallel Whatever'/>
+<meta name='publish-date' content='2008.12.18 12:50:00 +0000'/>
+<meta name='author' content='ms@kilabit.org'/>
+<link rel='stylesheet' href='/wui.css' type='text/css'/>
+</head>
+
+<body>
+<h1><a href='./index.html'> Parallel Whatever </a></h1>
+
+<p>
+SQLite creator, the one who have a second greatest quote
+
+<blockquote>
+"May you do good and not evil. <br/>
+ May you find forgiveness for yourself and forgive others.<br/>
+ May you share freely, never taking more than you give."<br/>
+</blockquote>
+
+that I have ever read - at least until now, is the one who point me
+(indirectly) first about the bad of thread with linked to to Edward A. Lee
+papers "The Problem With Threads".
+</p>
+
+<p>
+From my point of view and by looking current hardware development progress, I
+think he is right but still I have some problem in my mind.
+</p>
+
+<p>
+A small programmer like me usually use 2/4 processor, C, and Linux for having
+fun (yeah, typical ;). Someone called it a "desktop" user, that write and use
+program in a little box. The problem is: if thread is bad, what can I do to
+not use thread, or what is the solution if I face some problem that need to
+be parallel? did "thread" was so bad?
+</p>
+
+<p>
+So, after reading Lee's paper I got a little thinking about it, and need one
+answer. I go through Google doing some search about current progress in
+parallel programming, distributed computing, or whatever you called it.
+</p>
+
+<p>
+I search, I read, a lots.
+</p>
+
+<p>
+They are a lot of alternative that Lee suggest in their paper, some of them
+is using some programming pattern/technique/concept, language, and library.
+The one that I skip here is a language, forget it, like he said, it's a
+religious thing. Now we got two alternative, pattern and library.
+</p>
+
+<p>
+Some of pattern that Lee suggests (and others), is OK. But the problem with
+pattern is, first, it depend on the problem that you want to solve; second,
+it need time to fully understand the concept, but when you understand it
+you get what you pay, and time to implement the concept into code.
+</p>
+
+<p>
+The last solution is library. One advantage with library is it use some
+pattern/concept built into it. There are three library that I found meet with
+my language requirement: OpenMP, MPI, and Phoenix (MapReduce version for C).
+First, Phoenix and MPI, last time I check this two library is good if you
+have a cluster and big data, even if it can be used in one box it like
+"killing a fly with a bazooka". And I did not want to give a lecture or
+judging about peoples here, but when you want to write a program especially
+library or API you must think how others programmer will use it, so Keep It
+Simple Stupid! is my motto.
+</p>
+
+<p>
+OpenMP is a good concept, its _designed_ and developed by an experts, its
+have a great and clean syntax and module that easy to use by a new
+programmer. (I underline the 'designed' word because I did not known whether
+the person who design it also participate in developing it too). There is
+disadvantage on it; First, you need the latest compiler to used OpenMP, gcc
+implement it since version 4.2.3, but I think that is not a big problem; Second,
+imagine if there is a little tiny bity mini bug in OpenMP implementation, and
+your program is core dumped and you have been debugging all day and night and
+can not found where the bug is. but that what a life is for, right? what a
+boring life without a problem.
+</p>
+
+<p>
+Let just say that my first question is already answered by OpenMP, now go to
+the next question "did thread is so bad?". Remember when some one say that
+"goto" is evil? really? goto is not evil if you know when and where to use
+it, just like thread. Thread is not evil if you know when to thread, where to
+thread, and what to thread. But yes, debugging threaded program is really
+pain in the butt.
+</p>
+
+<p>
+I think nobody will ask what is my first greatest quote is, but I give you my
+third greatest quote,
+<blockquote>
+"If you think I am wrong, then you have right to think of that.<br/>
+If you think you are right, then you have wrong to think of that."
+</blockquote>
+</p>
+
+<p>
+Maybe I am wrong, maybe not. We will see later.
+</p>
+
+<p>
+Links,
+<ul>
+<li><a href="http://www.ddj.com/hpc-high-performance-computing/214500435;jsessionid=XMMLA5CV44PQAQSNDLOSKHSCJUNN2JVN">
+Q&amp;A: Parallel Programming</a></li>
+</ul>
+</p>
+
+</body>
+</html>

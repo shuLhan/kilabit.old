@@ -1,0 +1,179 @@
+<html>
+<head>
+<meta name='title' content='git Quick References'/>
+<meta name='author' content='ms@kilabit.org'/>
+<link rel='stylesheet' href='/wui.css' type='text/css'/>
+</head>
+
+<body>
+<h1><a href='./index.html'> git Quick References </a></h1>
+
+<pre>
+* Creating a new repository,
+
+	$ git init
+
+
+* Adding a new file to repository,
+
+	$ git add [filename]
+
+  or to add all files in directory recursively.
+
+	$ git add .
+
+
+* View the changes in repository,
+
+	+ Get list of files that has been changed,
+
+		$ git status
+
+	+ View the changes in all files,
+
+		$ git diff 
+
+	+ View changes on specific file,
+
+		$ git diff [filename]
+
+
+* Committing the change
+
+	$ git commit -a
+
+	# write a new commit messages
+	# save the file and exit.
+
+
+* View log of commit
+
+	$ git log
+
+
+* Undo commit
+
+	$ git reset --soft [commit]
+
+  Value of [commit] can be viewed from "git log" command.
+
+  NOTES: after reset some of files probably will be missing, and cannot be
+         undo.
+
+
+* Branching - creating a new repository based on the specific commit.
+
+	+ creating a new branch
+
+		$ git checkout -b [branch-name]
+
+	+ get list of all branch in repository
+
+		$ git branch
+
+	+ switching between branch
+
+		$ git checkout [branch-name]
+
+	+ deleting a branch
+
+		$ git branch -d [branch-name]
+
+	+ merging - combining two branch into one
+
+		$ git merge [branch-name]
+		# will merge branch [branch-name] into current active branch.
+
+
+* Copying a repository or creating a duplicate of repository
+
+	$ cp -r /path/to/repo /copy/of/repo
+
+  or with,
+
+	$ git clone /path/to/repo local-name
+
+
+* Creating a public repository
+
+  a. remote configuration
+
+	+ create a copy of repository
+
+		$ git clone --bare /path/to/repo local-name
+
+  b. client configuration
+
+	+ set remote repository
+
+		$ git remote add [remote-name] /path/to/repo
+
+	  or,
+
+		$ git remote add [remote-name] ssh://user@host:port/path/to/repo
+
+	+ save all local changes to remote
+
+		$ git push [remote-name]
+
+	  default [remote-name] is "origin" if not defined.
+
+
+	+ get all remote changes to local
+
+		$ git pull [remote-name]
+
+	  default [remote-name] is "origin" if not defined.
+
+
+* Git and SVN
+
+	+ initialize svn repository,
+
+		$ git svn init [svn-url]
+
+	+ get/fetch specific SVN revision
+
+		$ git svn fetch -r[REVISION-NUMBER]
+
+		$ git svn fetch -rHEAD
+
+		  to fetch only the latest commit on svn.
+
+	+ update local repository,
+
+		$ git svn rebase
+
+	+ commit changes to public SVN
+
+		$ git svn dcommit
+
+	+ update conflict in repository before updating with remote,
+
+		$ git stash
+		$ git svn rebase
+		$ git stash apply
+		$ git stash clear
+
+
+* git behind proxy
+
+  + install netcat BSD.
+  + create proxy-wrapper
+
+	$ echo "nc -Xconnect -x${PROXY_IP}:${PROXY_PORT} $*" > ~/bin/proxy-wrapper.sh
+  	$ chmod +x ~/bin/proxy-wrapper.sh
+  	$ export GIT_PROXY_COMMAND=~/bin/proxy-wrapper.sh
+
+	# do git process
+
+
+References
+----------
+
+[1] http://git-scm.com/
+[2] https://git.wiki.kernel.org/index.php/GitFaq
+
+</pre>
+</body>
+</html>

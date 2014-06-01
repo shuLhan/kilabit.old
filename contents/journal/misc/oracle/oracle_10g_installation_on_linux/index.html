@@ -1,0 +1,156 @@
+<html>
+<head>
+<meta name='title' content='Oracle 10g Installation on Linux'/>
+<meta name='author' content='ms@kilabit.org'/>
+<link rel='stylesheet' href='/wui.css' type='text/css'/>
+</head>
+
+<body>
+<h1><a href='./index.html'> Oracle 10g Installation on Linux </a></h1>
+
+<pre>
+1. Set hostname, see "/etc/hosts".
+
+2. Set Oracle environment,
+
+	$ export ORACLE_HOSTNAME=bubu
+	$ export ORACLE_HOSTNAME
+
+3. Add group and user for oracle,
+
+	# groupadd oinstall
+	# groupadd dba
+	# groupadd oper
+	# useradd -g oinstall -G dba,oper oracle
+	# passwd oracle
+
+   Check if user nobody is exist, if not exist create one,
+
+	# id nobody
+	# useradd nobody
+
+4. Configure kernel option based on your hardware specification.
+   Edit "/etc/sysctl.conf",
+
+	# oracle configuration
+	kernel.shmall = 2097152
+	kernel.shmmax = 2097152
+	#kernel.shmmax = 2147483648
+	kernel.shmmni = 4096
+	kernel.sem = 250 32000 100 128
+	fs.file-max = 65536
+	net.ipv4.ip_local_port_range = 1024 65000
+	rmem_default = 262144
+	rmem_max = 262144
+	wmem_default = 262144
+	wmem_max = 262144
+
+5. Setting shell limit for oracle user
+
+	# /etc/security/limits.conf
+
+	oracle  soft    nproc   2047
+	oracle  hard    nproc   16384
+	oracle  soft    nofile  1024
+	oracle  hard    nofile  65536
+
+	# /etc/pam.d/login
+
+	session  required       /lib/security/pam_limits.so
+
+	# /etc/profile or /etc/profile.local
+	# oracle user
+
+	if [ $USER = "oracle" ]; then
+        	if [ $SHELL = "/bin/ksh" ]; then
+                	ulimit -p 16384
+	                ulimit -n 65536
+        	else
+                	ulimit -u 16384 -n 65536
+	        fi
+	fi
+
+6. Creating Oracle base directory
+
+	# mkdir /mnt/data/apps/oracle
+	# chown -R oracle:oinstall /mnt/data/apps/oracle
+	# chmod -R 775 /mnt/data/apps/oracle
+
+7. Creating required directories
+
+	# mkdir /mnt/data/apps/oradata
+	# chown oracle:oinstall /mnt/data/apps/oradata
+	# chmod 775 /mnt/data/apps/oradata
+
+8. Configuring oracle user environment
+
+- set user oracle home to "/mnt/data/apps/oracle", in "/etc/passwd"
+- login as oracle
+
+	# su - oracle
+
+- edit "~/.bash_profile", add
+
+	umask 022
+
+- run ".bash_profile"
+
+	$ . ~/.bash_profile
+
+- set display
+
+	$ DISPLAY=local_host:0.0
+	$ export DISPLAY
+
+- set oracle base and and SID
+
+	$ ORACLE_BASE=/mnt/data/apps/oracle
+	$ ORACLE_SID=orcl
+	$ export ORACLE_BASE ORACLE_SID
+
+9. Edit "database/install/oraparam.ini", add "SuSE-10" to [Certified Versions]
+
+10. Change directory to database, run
+
+	$ ./runInstaller
+
+11. Follow the installation instruction
+
+12. Configuring new installation
+
+- run,
+
+	$ . /usr/local/bin/oraenv
+
+- Start SQLPLUS
+
+	$ sqlplus "/ AS SYSDBA"
+
+- run this script
+
+	SQL&gt; @?/rdbms/admin/utlrp.sql
+
+15. Run this script to create client static library
+
+	# $ORACLE_HOME/bin/genclntst
+
+16. Configuring GCC as Primary Compiler
+
+    - edit $ORACLE_HOME/plsql/spnc_commands, look for line like this,
+
+/opt/intel/compiler70/ia32/bin/icc -Qlocation,as,/usr/bin/
+-Qlocation,ld,/usr/bin/ %(src) -O1 -fPIC -fp -mp1 -fp_port
+-I$(ORACLE_HOME)/plsql/include -I$(ORACLE_HOME)/plsql/public -Wl,-s -shared
+-o
+%(so)
+
+       then comment it. And look for line like this,
+
+/usr/bin/gcc -B/usr/bin/ %(src) -c -O1 -fPIC -I$(ORACLE_HOME)/plsql/include
+-I$(ORACLE_HOME)/plsql/public -o %(obj) /usr/bin/ld -s -shared %(obj) -o
+%(so)
+
+       then UNcomment it.
+</pre>
+</body>
+</html>

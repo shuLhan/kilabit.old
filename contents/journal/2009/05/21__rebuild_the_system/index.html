@@ -1,0 +1,262 @@
+<html>
+<head>
+<meta name='title' content='Rebuild The System'/>
+<meta name='publish-date' content='2009.05.21 10:00:00 +0000'/>
+<meta name='author' content='ms@kilabit.org'/>
+<link rel='stylesheet' href='/wui.css' type='text/css'/>
+</head>
+
+<body>
+<h1><a href='./index.html'> Rebuild The System </a></h1>
+
+<p>
+Since i am too lazy to build
+<a href="http://www.gentoo.org/"> Gentoo Linux </a> from scratch, I decided
+to re-compile just half of the applications in my base system, which is <a
+href="http://www.opensuse.org/">OpenSuSE</a> 10.3, to utilizing my X2
+processor.
+</p>
+
+<p>
+List of source to be compiled:
+<ul>
+	<li><a href="http://www.kernel.org/">kernel</a></li>
+	<li><a href="http://git-scm.com/">git</a></li>
+	<li><a href="http://www.winehq.org/">wine</a></li>
+	<li><a href="ftp://ftp.trolltech.com/qt/source/">qt</a></li>
+	<li><a href="http://www.kde.org/">kde</a> 3</li>
+	<li><a href="http://www.x.org/">xorg</a></li>
+</ul>
+</p>
+
+<p>
+Started by defining custom CFLAGS to environment i add these variable to my .profile,
+<pre>
+export CFLAGS="-Wall -g -march=k8-sse3 -msse3 -O2 -pipe"
+export CPPFLAGS=${CFLAGS}
+export CXXFLAGS=${CFLAGS}
+</pre>
+</p>
+
+<h2>Part I: Linux kernel custom CFLAGS compilation</h2>
+<p>
+Below is a patch to customize Linux Makefile so it compile with custom
+CFLAGS. Since we do not want "-g" (debug flag) we defined the CFLAGS variable
+directly.
+</p>
+
+<pre>
+diff --git a/Makefile b/Makefile
+index b57e1f5..9abc0c4 100644
+--- a/Makefile
++++ b/Makefile
+@@ -229,10 +229,11 @@ CONFIG_SHELL := $(shell if [ -x "$$BASH" ]; then echo $$BASH; \
+      else if [ -x /bin/bash ]; then echo /bin/bash; \
+      else echo sh; fi ; fi)
+
++CUSTOM_CFLAGS= -march=k8-sse3 -msse3 -O2
+HOSTCC       = gcc
+HOSTCXX      = g++
+-HOSTCFLAGS   = -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer
+-HOSTCXXFLAGS = -O2
++HOSTCFLAGS   = -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer $(CUSTOM_CFLAGS)
++HOSTCXXFLAGS = -O2 $(CUSTOM_CFLAGS)
+
+# Decide whether to build built-in, modular, or both.
+# Normally, just do built-in.
+@@ -333,10 +334,10 @@ CHECK        = sparse
+CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
+          -Wbitwise -Wno-return-void $(CF)
+MODFLAGS    = -DMODULE
+-CFLAGS_MODULE   = $(MODFLAGS)
++CFLAGS_MODULE   = $(MODFLAGS) $(CUSTOM_CFLAGS)
+AFLAGS_MODULE   = $(MODFLAGS)
+LDFLAGS_MODULE  =
+-CFLAGS_KERNEL    =
++CFLAGS_KERNEL    = $(CUSTOM_CFLAGS)
+AFLAGS_KERNEL    =
+
+@@ -351,7 +352,8 @@ KBUILD_CPPFLAGS := -D__KERNEL__
+
+KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
+           -fno-strict-aliasing -fno-common \
+-           -Werror-implicit-function-declaration
++           -Werror-implicit-function-declaration \
++            $(CUSTOM_CFLAGS)
+KBUILD_AFLAGS   := -D__ASSEMBLY__
+
+# Read KERNELRELEASE from include/config/kernel.release (if it exists)
+</pre>
+
+
+<h2>Part II: Git</h2>
+
+<p>
+One advantage of Git was it's does need installation, you just do "make" and
+by setting some Git's environment variable it will work in any place in your
+system.
+</p>
+
+<p>
+First, add Git environment variable to .profile:
+<pre>
+export GIT_EXEC_PATH=/home/src/kernel.org/git.git
+export GITPERLLIB=${GIT_EXEC_PATH}/perl/blib/lib
+export PATH=${GIT_EXEC_PATH}:${PATH}
+export MANPATH=${GIT_EXEC_PATH}:${MANPATH}
+</pre>
+</p>
+
+<p>
+A patch to make Git's "Makefile" use CFLAGS from system and create link for man path and gitk for use with GIT_EXEC_PATH.
+
+<pre>
+diff --git a/.gitignore b/.gitignore
+index 41c0b20..6a4dd80 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -145,6 +145,7 @@ git-web--browse
+ git-whatchanged
+ git-write-tree
+ git-core-*/?*
++gitk
+ gitk-wish
+ gitweb/gitweb.cgi
+ test-chmtime
+diff --git a/Makefile b/Makefile
+index 26d180c..29f839b 100644
+--- a/Makefile
++++ b/Makefile
+@@ -189,7 +189,7 @@ uname_V := $(shell sh -c 'uname -v 2&gt;/dev/null || echo not')
+
+ # CFLAGS and LDFLAGS are for the users to override from the command line.
+
+-CFLAGS = -g -O2 -Wall
++CFLAGS ?= -g -O2 -Wall
+ LDFLAGS =
+ ALL_CFLAGS = $(CFLAGS)
+ ALL_LDFLAGS = $(LDFLAGS)
+@@ -256,6 +256,7 @@ RPMBUILD = rpmbuild
+ TCL_PATH = tclsh
+ TCLTK_PATH = wish
+ PTHREAD_LIBS = -lpthread
++LN = ln -sf
+
+ export TCL_PATH TCLTK_PATH
+
+@@ -1205,6 +1206,7 @@ all::
+ ifndef NO_TCLTK
+  $(QUIET_SUBDIR0)git-gui $(QUIET_SUBDIR1) gitexecdir='$(gitexec_instdir_SQ)' all
+  $(QUIET_SUBDIR0)gitk-git $(QUIET_SUBDIR1) all
++ @$(LN) gitk-git/gitk-wish gitk
+ endif
+ ifndef NO_PERL
+  $(QUIET_SUBDIR0)perl $(QUIET_SUBDIR1) PERL_PATH='$(PERL_PATH_SQ)' prefix='$(prefix_SQ)' all
+@@ -1402,6 +1404,7 @@ doc:
+
+ man:
+  $(MAKE) -C Documentation man
++ @$(LN) Documentation man1
+
+ html:
+  $(MAKE) -C Documentation html
+@@ -1646,7 +1649,7 @@ clean:
+  $(RM) config.log config.mak.autogen config.mak.append config.status config.cache
+  $(RM) -r $(GIT_TARNAME) .doc-tmp-dir
+  $(RM) $(GIT_TARNAME).tar.gz git-core_$(GIT_VERSION)-*.tar.gz
+- $(RM) $(htmldocs).tar.gz $(manpages).tar.gz
++ $(RM) $(htmldocs).tar.gz $(manpages).tar.gz man1
+  $(MAKE) -C Documentation/ clean
+ ifndef NO_PERL
+  $(RM) gitweb/gitweb.cgi
+@@ -1657,6 +1660,7 @@ endif
+ ifndef NO_TCLTK
+  $(MAKE) -C gitk-git clean
+  $(MAKE) -C git-gui clean
++ $(RM) gitk
+ endif
+  $(RM) GIT-VERSION-FILE GIT-CFLAGS GIT-GUI-VARS GIT-BUILD-OPTIONS
+</pre>
+</p>
+
+<h2>Part III: Wine</h2>
+
+<p>
+Wine will be installed in it's own directory, in this example i use
+"/home/sys/wine".
+</p>
+
+<p>
+First set .profile,
+<pre>
+WINE_DIR=/home/sys/wine
+export PATH=${WINE_DIR}/bin:${PATH}
+export LD_LIBRARY_PATH=${WINE_DIR}/lib:${LD_LIBRARY_PATH}
+export MANPATH=${WINE_DIR}/share/man:${MANPATH}
+</pre>
+
+and then compile Wine by configuring prefix point to "/home/sys/wine".
+</p>
+
+<h2>Part IV: Qt</h2>
+
+<p>
+Set .profile,
+<pre>
+export QTDIR=/home/sys/qt
+export PATH=${QTDIR}/bin:${PATH}
+export LD_LIBRARY_PATH=${QTDIR}/lib:${LD_LIBRARY_PATH}
+export MANPATH=${QTDIR}/doc/man:${MANPATH}
+</pre>
+</p>
+
+<p>
+Add CFLAGS value directly to qmake.conf. You cannot just add $(CFLAGS) there!
+
+<pre>
+diff --git a/mkspecs/linux-g++/qmake.conf b/mkspecs/linux-g++/qmake.conf
+index b233d21..2a0d48a 100644
+--- a/mkspecs/linux-g++/qmake.conf
++++ b/mkspecs/linux-g++/qmake.conf
+@@ -16,7 +16,7 @@ QMAKE_YACCFLAGS               = -d
+ QMAKE_YACCFLAGS_MANGLE  = -p $base -b $base
+ QMAKE_YACC_HEADER       = $base.tab.h
+ QMAKE_YACC_SOURCE       = $base.tab.c
+-QMAKE_CFLAGS           = -pipe
++QMAKE_CFLAGS           = -pipe -march=k8-sse3 -msse3 -O2
+ QMAKE_CFLAGS_DEPS      = -M
+ QMAKE_CFLAGS_WARN_ON   = -Wall -W
+ QMAKE_CFLAGS_WARN_OFF  = -w
+</pre>
+</p>
+
+
+<h2>Part V : KDE</h2>
+
+<p>
+It's easy, just follow BLFS's guide <a
+href="http://www.linuxfromscratch.org/blfs/view/stable/kde/kde.html">here.</a>
+After compiling kde-base -at least- and if you want to use kdm as a login
+manager then you should create PAM configuration. Go to /etc/pam.d, create
+"kde" and "kdm" file by cloning "xdm" file.
+</p>
+
+<pre>
+# cd /etc/pam.d
+# cp xdm kdm
+# cp xdm kde
+</pre>
+
+
+<h2>Part VI: X.org</h2>
+
+<p>
+It not easy, I would say impossible, because I use an abnormal prefix, which
+is "/home/sys/xorg". But if you wanna try it, looks <a
+href="http://www.linuxfromscratch.org/blfs/view/svn/x/x.html">here.</a>
+</p>
+
+<pre>END.OF.BLOG</pre>
+
+</body>
+</html>

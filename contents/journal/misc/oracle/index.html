@@ -1,0 +1,229 @@
+<html>
+<head>
+<meta name='title' content='O R A C L E'/>
+<meta name='author' content='ms@kilabit.org'/>
+<link rel='stylesheet' href='/wui.css' type='text/css'/>
+</head>
+
+<body>
+<h1><a href='./index.html'> O R A C L E </a></h1>
+
+<h3> Recover corrupt table-space </h3>
+
+<p>
+If <tt>startup mount</tt> give an error output like this,
+</p>
+
+<pre>
+ORA-01172: recovery of thread 1 stuck at block xxxxx of file y
+ORA-01151: use media recovery to recover block, restore backup if needed
+</pre>
+
+then recover table-space "y",
+
+<pre>
+$ sqlplus / as sysdba
+SQL&gt; recover datafile y;
+</pre>
+
+<p>
+If <tt>alter database open</tt> output is,
+</p>
+
+<pre>
+alter database open
+*
+ERROR at line 1:
+ORA-03113: end-of-file on communication channel
+</pre>
+
+then recover all table-space,
+
+<pre>
+$ sqlplus / as sysdba
+
+SQL&gt; rem for each name in v$tablespace, do recover tablespace
+SQL&gt; select ts#, name from V$tablespace;
+SQL&gt; recover tablepace zzzz;
+</pre>
+
+
+<h3> Moving tablespace to another disk/partition </h3>
+
+<p>
+If table-space is SYSTEM table-space you must shutdown the database first.
+
+<pre>
+SQL&gt; shutdown immediate
+
+//move/copy old tablespace file to a new directory//
+
+SQL&gt; startup mount
+SQL&gt; alter database rename file '/a' to '/b';
+SQL&gt; alter database open;
+</pre>
+</p>
+
+<p>
+Moving non-system table-spaces,
+<pre>
+SQL&gt; select * from dba_temp_files;
+SQL&gt; select * from dba_data_files order by file_id;
+
+SQL&gt; alter tablespace [ts-name] offline;
+
+# mv [old-ts-path] [new-ts-path]
+
+SQL&gt; alter tablespace [ts-name] rename datafile '[old-ts-path]' to '[new-ts-path]';
+
+SQL&gt; alter tablespace [ts-name] online;
+</pre>
+</p>
+
+<h3> Session Management </h3>
+
+<pre>
+SELECT s.sid,
+       s.serial#,
+       s.osuser,
+       s.program,
+       s.username
+FROM   v$session s
+WHERE STATUS = 'INACTIVE'
+ORDER BY s.osuser;
+
+alter system kill session '[sid], [serial]';
+</pre>
+
+<p>
+View number of cursor opened,
+<pre>
+select * from v$open_cursor where USER_NAME != 'SYS';
+</pre>
+
+or,
+
+<pre>
+select   v.value as numopencursors ,s.machine ,s.osuser,s.username, s.program
+from     v$sesstat v, v$session s
+where    v.statistic# = 3
+and      v.sid = s.sid
+and      v.value > 10
+order by v.value;
+
+select  sum(v.value)
+from    v$sesstat v, v$session s
+where   v.statistic# = 3
+and     v.sid = s.sid;
+</pre>
+</p>
+
+
+<h3> misc </h3>
+
+<ul>
+<li> Oracle alert log <br/>
+
+<pre>
+$ORACLE_BASE/admin/${SID}/bdump/alert_${SID}.log
+</pre>
+
+or,
+
+<pre>
+$ORACLE_HOME/admin/${SID}/bdump/alert_${SID}.log
+</pre>
+</li>
+
+<li> ASM disk <br/>
+<pre>
+v_$asm_disk
+v_$asm_diskgroup
+</pre>
+</li>
+
+<li> rman <br/>
+<pre>
+rman&gt; delete archivelog sequence [number]
+rman&gt; delete archivelog sequence between [number] and [number]
+</pre>
+</li>
+
+<li> Oracle database querying tablespace, <br/>
+<pre>
+v$tablespace;
+v$datafile;
+</pre>
+</li>
+
+<li> reducing size of occupied space on tablespace, <br/>
+<pre>
+// get datafile number
+SQL&gt; select file#, ts#, name from v$datafile;
+SQL&gt; alter database datafile [ts#] resize [size-in-M]
+</pre>
+</li>
+
+<li> Export/import entire database, <br/>
+
+<pre>
+exp SYSTEM/password FULL=y FILE=dba.dmp LOG=dba.log CONSISTENT=y
+--
+imp SYSTEM/password FULL=y FILE=dba.dmp 
+</pre>
+
+or,
+
+<pre>
+exp SYSTEM/password PARFILE=params.dat
+</pre>
+</li>
+
+<li> Export/import only specific user, <br/>
+<pre>
+exp [user]/[password] FILE=.dmp buffer=4096 grants='Y' compress='Y' owner=''
+--
+imp [user]/[password] FILE=.dmp
+</pre>
+</li>
+
+<li> Export/import specific user and tables, <br/>
+<pre>
+exp [user]/[password] FILE= TABLES=(,)
+--
+imp SYSTEM/password FILE= FROMUSER= TABLES=(,) 
+--
+imp SYSTEM/password FROMUSER= TOUSER= FILE=.dmp TABLES=(,)
+</pre>
+
+<p>
+Export issues,<br/><br/>
+<em> P: </em> EXP-00091: Exporting questionable statistics <br/>
+<em> A: </em> add option: <tt>statistics='none'</tt><br/>
+</p>
+</li>
+
+<li> Drop all user object, <br/>
+<pre>
+select 'drop '||object_type||' '|| object_name
+	|| decode(object_type,'TABLE',' CASCADE CONSTRAINTS;',';')
+from user_objects
+order by object_type desc;
+--
+purge recyclebin;
+--
+select * from user_objects;
+</pre>
+</li>
+
+<li> Update all column string, <br/>
+<pre>
+update [table-name]
+set [column-name] = replace([column-name], '/appl/tdpws', '/home/maintam');
+</pre>
+</li>
+
+</ul>
+
+</body>
+</html>
