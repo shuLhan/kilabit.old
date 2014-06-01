@@ -41,6 +41,11 @@ var WUI =
 				link = link.replace (/^\/\//, "/");
 				link = link.replace ("/index.html", "");
 
+				// do not fix it on homepage
+				if (WUI.homepage === link) {
+					return;
+				}
+
 				wc.find ("img").each (function (i)
 				{
 					var src = $(this).attr ("src");
