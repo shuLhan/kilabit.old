@@ -10,7 +10,7 @@
 	<link rel="stylesheet" href="css/bootstrap.min.css"/>
 	<link rel="stylesheet" href="css/wui.css"/>
 	<link rel="shortcut icon" href="favicon.ico"/>
-	<title> WUI! </title>
+	<title><?= $wui["title"] ?></title>
 </head>
 
 <body>
@@ -19,8 +19,8 @@
 			<div id="wui_header" class="col-sm-12">
 				<div class="row">
 					<div id="wui_header_left" class="col-sm-6 text-left">
-						<div class="title"> kilabit.info </div>
-						<div class="subtitle"> Simple | Small | Stable | Secure </div>
+						<div class="title"><?= $wui["title"] ?></div>
+						<div class="subtitle"><?= $wui["subtitle"] ?></div>
 					</div>
 					<div id="wui_header_right" class="col-sm-6 text-right">
 						<div id="wui_social_icon">
@@ -59,6 +59,10 @@
 	<script src="js/wui.js"></script>
 	<script>
 		WUI.homepage = "<?= $wui["homepage"] ?>";
+		WUI.contents_exclude = <?php
+				echo json_encode ($wui["contents_exclude"]
+							, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+			?>;
 		WUI.social_icon	= <?php
 				echo json_encode ($wui["social_icon"]
 							, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);

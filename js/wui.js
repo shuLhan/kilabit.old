@@ -1,6 +1,7 @@
 var WUI =
 {
 	homepage : "contents"
+,	contents_exclude : []
 ,	social_icon : {}
 ,	footer :
 	{
@@ -20,6 +21,11 @@ var WUI =
 		,	text		:"FLATICON"
 		,	url			:"http://flaticon.com"
 		}]
+	}
+
+,	path2id : function (str)
+	{
+		return str.replace (/[^a-zA-Z0-9]/g, "-");
 	}
 
 ,	set_content : function (link)
@@ -129,9 +135,18 @@ var WUI =
 		}
 	}
 
+,	process_exclude : function ()
+	{
+		for (var ex in WUI.contents_exclude) {
+			var id = WUI.path2id (WUI.contents_exclude[ex])
+
+			$("#wui_menu a[href='#"+ id +"']").addClass ("hidden");
+		}
+	}
+
 ,	set_frontpage : function ()
 	{
-		var id		= WUI.homepage.replace (/[^a-zA-Z0-9]/g, "-");
+		var id		= WUI.path2id (WUI.homepage);
 		var hp_el	= $("#wui_menu a[href='#"+ id +"']");
 		hp_el.trigger ("click");
 	}
@@ -201,6 +216,9 @@ var WUI =
 		$( document ).ready (function() {
 			// create top menu
 			WUI.create_top_menu ();
+
+			// hide exclude menu based on contents_exclude in config.php.
+			WUI.process_exclude ();
 
 			// set front page defined in the config.php
 			WUI.set_frontpage ();
