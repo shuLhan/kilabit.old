@@ -15,6 +15,10 @@ var WUI =
 		},{
 			image		:"/images/php.png"
 		,	url			:"http://php.net"
+		},{
+			image		:""
+		,	text		:"FLATICON"
+		,	url			:"http://flaticon.com"
 		}]
 	}
 
@@ -95,6 +99,43 @@ var WUI =
 		}
 	}
 
+,	create_top_menu : function ()
+	{
+		$("#wui_menu").append ("<ul class='nav nav-tabs' role='tablist'>");
+
+		var tab = $("#wui_menu ul");
+		for (var i = 0; i < wui_menu.length; i++) {
+			var m	= wui_menu[i];
+			var mi	= $("<li/>");
+			var a	= $("<a/>", {
+						href	: "#"+ m.id
+					,	html	: m.title
+					});
+
+			a.on ("click", {
+				id		: m.id
+			,	pid		: m.pid
+			,	link	: m.link
+			,	load	: m.load
+			}, WUI.on_menu_click);
+
+			mi.append (a);
+
+			tab.append (mi);
+
+			if (m.submenu.length > 0) {
+				WUI.create_submenu (m.id, m.submenu);
+			}
+		}
+	}
+
+,	set_frontpage : function ()
+	{
+		var id		= WUI.homepage.replace (/[^a-zA-Z0-9]/g, "-");
+		var hp_el	= $("#wui_menu a[href='#"+ id +"']");
+		hp_el.trigger ("click");
+	}
+
 ,	generate_social_icon : function ()
 	{
 		var el = $("#wui_social_icon");
@@ -108,7 +149,8 @@ var WUI =
 			}
 
 			var a = $("<a/>", {
-					href : WUI.social_icon[k]
+					href 	: WUI.social_icon[k]
+				,	target	:"_blank"
 				});
 
 			var img = $("<img/>", {
@@ -137,11 +179,13 @@ var WUI =
 
 			var a	= $("<a/>", {
 						href	:tx.url
+					,	target	:"_blank"
 					});
 
 			var img = $("<img/>", {
 						"class"	:"wui_footer_thanks"
 					,	src		:tx.image
+					,	alt		:tx.text
 					});
 
 			var span = $("<span/>");
@@ -156,40 +200,14 @@ var WUI =
 	{
 		$( document ).ready (function() {
 			// create top menu
-			$("#wui_menu").append ("<ul class='nav nav-tabs' role='tablist'>");
-
-			var tab = $("#wui_menu ul");
-			for (var i = 0; i < wui_menu.length; i++) {
-				var m	= wui_menu[i];
-				var mi	= $("<li/>");
-				var a	= $("<a/>", {
-							href	: "#"+ m.id
-						,	html	: m.title
-						});
-
-				a.on ("click", {
-					id		: m.id
-				,	pid		: m.pid
-				,	link	: m.link
-				,	load	: m.load
-				}, WUI.on_menu_click);
-
-				mi.append (a);
-
-				tab.append (mi);
-
-				if (m.submenu.length > 0) {
-					WUI.create_submenu (m.id, m.submenu);
-				}
-			}
+			WUI.create_top_menu ();
 
 			// set front page defined in the config.php
-			var id		= WUI.homepage.replace (/[^a-zA-Z0-9]/g, "-");
-			var hp_el	= $("#wui_menu a[href='#"+ id +"']");
-			hp_el.trigger ("click");
+			WUI.set_frontpage ();
 
 			// set social icon
 			WUI.generate_social_icon ();
+
 			WUI.generate_footer ();
 
 			// jquery: disable auto scrolling to top
