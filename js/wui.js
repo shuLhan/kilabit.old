@@ -1,6 +1,22 @@
 var WUI =
 {
 	homepage : "contents"
+,	social_icon : {}
+,	footer :
+	{
+		text		:new Date().getFullYear() +" - kilabit.info"
+	,	thanks_to	:
+		[{
+			image		:"/images/bootstrap.png"
+		,	url			:"http://getbootstrap.com"
+		},{
+			image		:"/images/jquery.png"
+		,	url			:"http://jquery.com"
+		},{
+			image		:"/images/php.png"
+		,	url			:"http://php.net"
+		}]
+	}
 
 ,	set_content : function (link)
 	{
@@ -41,7 +57,7 @@ var WUI =
 		// show submenu if exist
 		$("#wui_menu #"+ id).removeClass ("hidden");
 
-		if (load) {
+		if (true === load) {
 			WUI.set_content (link);
 		}
 	}
@@ -76,6 +92,63 @@ var WUI =
 			if (m.submenu.length > 0) {
 				WUI.create_submenu (m.id, m.submenu);
 			}
+		}
+	}
+
+,	generate_social_icon : function ()
+	{
+		var el = $("#wui_social_icon");
+
+		for (var k in WUI.social_icon) {
+			if (! WUI.social_icon.hasOwnProperty (k)) {
+				continue;
+			}
+			if ("" === WUI.social_icon[k]) {
+				continue;
+			}
+
+			var a = $("<a/>", {
+					href : WUI.social_icon[k]
+				});
+
+			var img = $("<img/>", {
+					"class" : "wui_social_icon"
+				,	src		: "/images/"+ k +".svg"
+				});
+
+			var span = $("<span/>");
+
+			a.append (img);
+			span.append (a);
+			el.append (span);
+		}
+	}
+
+,	generate_footer : function ()
+	{
+		var fl = $("#wui_footer_left");
+		var fr = $("#wui_footer_right");
+
+		fl.append ("<span>"+ WUI.footer.text +"</span>");
+		fr.append ("Powered by ");
+
+		for (var k in WUI.footer.thanks_to) {
+			var tx = WUI.footer.thanks_to[k];
+
+			var a	= $("<a/>", {
+						href	:tx.url
+					});
+
+			var img = $("<img/>", {
+						"class"	:"wui_footer_thanks"
+					,	src		:tx.image
+					});
+
+			var span = $("<span/>");
+
+			a.append (img);
+			span.append (a);
+			fr.append (span);
 		}
 	}
 
@@ -114,6 +187,14 @@ var WUI =
 			var id		= WUI.homepage.replace (/[^a-zA-Z0-9]/g, "-");
 			var hp_el	= $("#wui_menu a[href='#"+ id +"']");
 			hp_el.trigger ("click");
+
+			// set social icon
+			WUI.generate_social_icon ();
+			WUI.generate_footer ();
+
+			// jquery: disable auto scrolling to top
+			// credit: http://www.techiecorner.com/2768/jquery-disable-autoscrolling-to-top-when-click-on-anchor/
+			$('body').on('click', '[href^=#]', function (e) { e.preventDefault() });
 		});
 	}
 };

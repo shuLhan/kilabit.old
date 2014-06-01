@@ -1,20 +1,6 @@
+/* Bootstrap */
 .container {
 	max-width	: 800px;
-}
-
-#wui_header {
-	border-bottom	: 1px solid silver;
-	margin-bottom	: 10px;
-}
-
-.title {
-	font-size		: 22px;
-	font-weight		: bold;
-}
-
-.subtitle {
-	font-family		: monospace;
-	font-size		: 12px;
 }
 
 .breadcrumb {
@@ -26,4 +12,51 @@
 	pointer-events	: none;
 	cursor			: default;
 	color			: #000;
+}
+
+/* WUI */
+#wui_header {
+}
+
+#wui_menu {
+	margin-top		: 10px;
+}
+
+#wui_footer {
+	border-top		: 1px solid silver;
+	padding-top		: 4px;
+}
+
+.title {
+	font-family		: sans-serif;
+	font-size		: 24px;
+	font-weight		: bold;
+}
+
+.subtitle {
+	font-family		: monospace;
+	font-size		: 12px;
+}
+
+.wui_social_icon {
+	width		: 48px;
+	height		: 48px;
+}
+
+.wui_footer_thanks {
+	width			: 32px;
+	height			: auto;
+	margin			: 0px 10px;
+}
+
+@media (max-width: 768px) {
+	#wui_header_right,
+	#wui_footer_right {
+		float : left !important;
+	}
+}
+
+/* DOM element */
+hr {
+	margin			: 0px;
 }
