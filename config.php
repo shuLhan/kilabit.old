@@ -11,4 +11,5 @@ $wui["social_icon"]		= [
 ,	"google_plus"	=> "http://plus.google.com/+MhdSulhan"
 ,	"linked"		=> "http://id.linkedin.com/in/muhamadsulhan/"
 ,	"twitter"		=> "http://twitter.com/MhdSulhan"
+,	"feed"			=> "http://kilabit.info/feed/"
 ];
