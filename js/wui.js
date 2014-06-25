@@ -25,7 +25,7 @@ var WUI =
 
 ,	path2id : function (str)
 	{
-		return str.replace (/[^a-zA-Z0-9]/g, "-");
+		return str.replace (/\//g, "-");
 	}
 
 ,	set_content : function (link)
@@ -164,9 +164,21 @@ var WUI =
 
 ,	set_frontpage : function ()
 	{
-		var id		= WUI.path2id (WUI.homepage);
-		var hp_el	= $("#wui_menu a[href='#"+ id +"']");
-		hp_el.trigger ("click");
+		var ids		= WUI.path2id (WUI.homepage);
+
+		console.log (ids);
+
+		var ida		= ids.split ("-");
+		var id		= "";
+
+		for (var i = 0; i < ida.length; i++) {
+			if ("" !== ida[i]) {
+				id += "-" + ida[i];
+				console.log (id);
+				var hp_el = $("#wui_menu a[href='#"+ id +"']");
+				hp_el.trigger ("click");
+			}
+		}
 	}
 
 ,	generate_social_icon : function ()

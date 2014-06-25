@@ -1,5 +1,14 @@
 <?php
-	require_once "wui.php"
+	require_once "wui.php";
+
+	$open = str_replace ("/index.html", "", $_GET["open"]);
+	$open = rtrim ($open, "/");
+
+	if ("" === $open) {
+		$link = $wui["homepage"];
+	} else {
+		$link = $open;
+	}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -7,8 +16,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="css/bootstrap.min.css"/>
-	<link rel="stylesheet" href="css/wui.css"/>
+	<link rel="stylesheet" href="/css/bootstrap.min.css"/>
+	<link rel="stylesheet" href="/css/wui.css"/>
 	<link rel="shortcut icon" href="favicon.ico"/>
 	<title><?= $wui["title"] ?></title>
 </head>
@@ -53,12 +62,12 @@
 		</div>
 	</div>
 
-	<script src="js/jquery.min.js"></script>
-	<script src="js/bootstrap.min.js"></script>
-	<script src="js/wui_menu.js"></script>
-	<script src="js/wui.js"></script>
+	<script src="/js/jquery.min.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
+	<script src="/js/wui_menu.js"></script>
+	<script src="/js/wui.js"></script>
 	<script>
-		WUI.homepage = "<?= $wui["homepage"] ?>";
+		WUI.homepage = "<?= $link ?>";
 		WUI.contents_exclude = <?php
 				echo json_encode ($wui["contents_exclude"]
 							, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);

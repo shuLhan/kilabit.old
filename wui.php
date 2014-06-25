@@ -54,7 +54,7 @@ function get_meta (&$m, $p, $id)
 	if (null === $xml->body) {
 		$m["link"] = "";
 	} else {
-		$m["link"] = $p;
+		$m["link"] = substr ($p, 2);
 	}
 
 	if (null === $perma) {
