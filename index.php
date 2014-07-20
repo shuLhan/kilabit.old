@@ -1,4 +1,9 @@
 <?php
+/*
+	Copyright 2014 - Mhd Sulhan
+	Authors:
+		- mhd.sulhan (m.shulhan@gmail.com)
+*/
 	require_once "wui.php";
 
 	$open = str_replace ("/index.html", "", $_GET["open"]);
@@ -38,7 +43,6 @@
 				</div>
 			</div>
 		</div>
-		<hr/>
 
 		<div class="row">
 			<div id="wui_menu" class="col-sm-12">

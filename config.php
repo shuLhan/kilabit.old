@@ -1,9 +1,14 @@
 <?php
+/*
+	Copyright 2014 - Mhd Sulhan
+	Authors:
+		- mhd.sulhan (m.shulhan@gmail.com)
+*/
 $wui["title"]			= "kilabit.info";
 $wui["subtitle"]		= "Simple | Small | Stable | Secure";
 $wui["contents_dir"]	= "./";
 $wui["homepage"]		= "/home";
-$wui["contents_exclude"]= [ "/doc" ];
+$wui["contents_exclude"]= [ "/doc", "/_kemxtri", "/_sima" ];
 /* Order matter */
 $wui["social_icon"]		= [
 	"facebook"		=> ""
