@@ -1,4 +1,9 @@
 <?php
+/*
+	Copyright 2014 - Mhd Sulhan
+	Authors:
+		- mhd.sulhan (m.shulhan@gmail.com)
+*/
 
 require_once "config.php";
 
@@ -72,6 +77,7 @@ function list_dir ($dir, $pid)
 	$idx	= 0;
 	$menu	= [];
 	$files	= scandir ($dir);
+	global $wui;
 
 	foreach ($files as $f) {
 		if ($f === ".") {
@@ -84,6 +90,10 @@ function list_dir ($dir, $pid)
 		$p = $dir."/".$f;
 
 		if (! is_dir ($p)) {
+			continue;
+		}
+
+		if (in_array (substr ($p, 2), $wui["contents_exclude"])) {
 			continue;
 		}
 
