@@ -157,8 +157,11 @@ var WUI =
 	{
 		for (var ex in WUI.contents_exclude) {
 			var id = WUI.path2id (WUI.contents_exclude[ex])
+			var el = $("#wui_menu a[href='#"+ id +"']");
 
-			$("#wui_menu a[href='#"+ id +"']").addClass ("hidden");
+			if (el) {
+				el.addClass ("hidden");
+			}
 		}
 	}
 
@@ -166,15 +169,12 @@ var WUI =
 	{
 		var ids		= WUI.path2id (WUI.homepage);
 
-		console.log (ids);
-
 		var ida		= ids.split ("-");
 		var id		= "";
 
 		for (var i = 0; i < ida.length; i++) {
 			if ("" !== ida[i]) {
 				id += "-" + ida[i];
-				console.log (id);
 				var hp_el = $("#wui_menu a[href='#"+ id +"']");
 				hp_el.trigger ("click");
 			}
