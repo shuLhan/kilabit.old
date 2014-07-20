@@ -7,7 +7,7 @@
 	session_start ();
 
 	// if you session is not exist redirect back to login.
-	if (null === $_SESSION["you"]) {
+	if (! isset ($_SESSION["you"])) {
 		$host = $_SERVER['HTTP_HOST'];
 		$uri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
 		$extra	= "index.php";
@@ -25,7 +25,6 @@
 	<link rel="stylesheet" href="/css/bootstrap.min.css"/>
 	<!-- summernote -->
 	<link rel="stylesheet" href="/css/font-awesome.min.css"/>
-	<link rel="stylesheet" href="/css/summernote.css"/>
 	<link rel="shortcut icon" href="favicon.ico"/>
 	<title>Manage Wui!</title>
 </head>
@@ -57,10 +56,23 @@
 					id="editor_form"
 					class="form-horizontal"
 					role="form"
-					action="journal.php"
+					action="content.php"
 					method="post"
 				>
-				<div class="form-group">
+					<div class="form-group">
+						<label for="e_node_parent" class="col-sm-2 control-label">Parent node</label>
+						<div class="col-sm-10">
+							<input
+								name="e_node_parent"
+								type="text"
+								class="form-control"
+								id="e_node_parent"
+								placeholder="Node name"
+								required
+							>
+						</div>
+					</div>
+					<div class="form-group">
 						<label for="e_node_name" class="col-sm-2 control-label">Node name</label>
 						<div class="col-sm-10">
 							<input
@@ -213,7 +225,7 @@
 	<script src="/js/jquery.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/bootstrap-treeview.min.js"></script>
-	<script src="/js/summernote.min.js"></script>
+	<script src="/js/ckeditor/ckeditor.js"></script>
 	<script>
 		function replace_properties (nodes, old_key, new_key, child_key)
 		{
@@ -266,7 +278,7 @@
 			$("#editor_form").removeClass ("hidden");
 			$("#node_form").addClass ("hidden");
 
-			var link = node.link;
+			var link = node.link +"?_dc="+ new Date ().getTime ();
 			var editor = $("#e_content");
 
 			editor.empty ();
@@ -290,6 +302,7 @@
 					// set field node name
 					var ids = node.id.split ("-");
 					$("input#e_node_name").val (ids[ids.length - 1]);
+					$("input#e_node_parent").val (node.pid);
 
 					// set field based on meta data					
 					$xml.find ("html > head > meta").each (function () {
@@ -301,10 +314,7 @@
 
 					var body = $xml.find ("body").html ().trim ();
 
-					console.log (body);
-
-					editor.code (body);
-					editor.empty ();
+					CKEDITOR.instances.e_content.setData (body);
 				});
 		}
 
@@ -330,10 +340,8 @@
 				}
 			});
 
-			$("#e_content").summernote ({
-					height		:300
-				,	minHeight	:300
-				,	maxHeight	:null
+			CKEDITOR.replace ("e_content", {
+					filebrowserUploadUrl: 'upload.php'
 				});
 
 			$("#node_form").on("submit", function (event) {
@@ -348,6 +356,35 @@
 				,	success	: function (data, status) {
 						$("#node_parent").prop ("disabled", true);
 						alert ("Data has been saved");
+					}
+				});
+
+				event.preventDefault();
+			});
+
+			$("#editor_form").on("submit", function (event) {
+				var $form = $(this);
+				var data = {};
+
+				data.e_node_parent = $form.find ("#e_node_parent").val ();
+				data.e_node_name = $form.find ("#e_node_name").val ();
+				data.e_title = $form.find ("#e_title").val ();
+				data["e_publish-date"] = $form.find ("#e_publish-date").val ();
+				data.e_author = $form.find ("#e_author").val ();
+				data.e_content = CKEDITOR.instances.e_content.getData ();
+
+				$.ajax({
+					type	: $form.attr('method')
+				,	url		: $form.attr('action')
+				,	data	: data
+				,	dataType: "json"
+				,	success	: function (data, status) {
+						$("#node_parent").prop ("disabled", true);
+						alert (data.msg);
+					}
+				,	error	: function (xhr, status, errorThrown)
+					{
+						alert (xhr);
 					}
 				});
 
