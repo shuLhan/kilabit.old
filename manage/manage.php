@@ -40,6 +40,7 @@
 						<span class="glyphicon glyphicon-minus"></span>
 					</button>
 					<button
+						id="btn_new_journal"
 						type="button"
 						class="btn btn-default"
 					>
@@ -60,16 +61,16 @@
 					method="post"
 				>
 					<div class="form-group">
-						<label for="e_node_parent" class="col-sm-2 control-label">Parent node</label>
+						<label for="node_parent" class="col-sm-2 control-label">Parent node</label>
 						<div class="col-sm-4">
-							<input
-								name="e_node_parent"
+							<select
+								name="node_parent"
 								type="text"
 								class="form-control"
-								id="e_node_parent"
+								id="node_parent"
 								placeholder="Node name"
 								required
-							>
+							></select>
 						</div>
 
 						<label for="e_publish-date" class="col-sm-2 control-label">Publish date</label>
@@ -271,6 +272,16 @@
 			$("#node_parent").val (node.pid);
 		}
 
+		function form_edit_content_reset ()
+		{
+			$("#node_parent").val ("");
+			$("#e_node_name").val ("");
+			$("#e_title").val ("");
+			$("#e_publish-date").val ("");
+			$("#e_author").val ("");
+			CKEDITOR.instances.e_content.setData ("");
+		}
+
 		function form_edit_content (node)
 		{
 			$("#editor_form").removeClass ("hidden");
@@ -300,7 +311,7 @@
 					// set field node name
 					var ids = node.id.split ("-");
 					$("input#e_node_name").val (ids[ids.length - 1]);
-					$("input#e_node_parent").val (node.pid);
+					$("#node_parent").val (node.pid);
 
 					// set field based on meta data					
 					$xml.find ("html > head > meta").each (function () {
@@ -325,6 +336,10 @@
 			node_parent.append ("<option></option>");
 
 			init_node_parent_selection (node_parent, wui_menu, "nodes", 0)
+
+			$("#btn_new_journal").click (function () {
+					form_edit_content_reset ();
+				});
 
 			$("#tree").treeview ({
 				data			: wui_menu
@@ -364,7 +379,7 @@
 				var $form = $(this);
 				var data = {};
 
-				data.e_node_parent = $form.find ("#e_node_parent").val ();
+				data.e_node_parent = $form.find ("#node_parent").val ();
 				data.e_node_name = $form.find ("#e_node_name").val ();
 				data.e_title = $form.find ("#e_title").val ();
 				data["e_publish-date"] = $form.find ("#e_publish-date").val ();
