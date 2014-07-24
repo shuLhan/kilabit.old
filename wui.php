@@ -127,7 +127,7 @@ function generate_menu ($dir)
 
 	array_multisort ($menu);
 
-	$fmenu = fopen ("js/wui_menu.js", "wb");
+	$fmenu = fopen ($dir ."/js/wui_menu.js", "wb");
 
 	fwrite ($fmenu, "var wui_menu = ");
 	fwrite ($fmenu, json_encode ($menu, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
@@ -136,8 +136,11 @@ function generate_menu ($dir)
 	fclose ($fmenu);
 }
 
-if (is_cli ()) {
-	generate_menu ($argv[1]);
-} else {
-	generate_menu ($wui["contents_dir"]);
+function run ($wui)
+{
+	if (is_cli ()) {
+		generate_menu ($argv[1]);
+	} else {
+		generate_menu ($wui["contents_dir"]);
+	}
 }
