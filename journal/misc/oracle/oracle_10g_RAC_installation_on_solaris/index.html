@@ -1,18 +1,17 @@
 <html>
 <head>
-<meta name='title' content='Oracle 10g RAC Installation on Solaris'/>
-<meta name='author' content='ms@kilabit.org'/>
-<link rel='stylesheet' href='/wui.css' type='text/css'/>
+<meta name="title" content="Oracle 10g RAC Installation on Solaris"/>
+<meta name="publish-date" content="2011.01.08 13:22:49 +0700"/>
+<meta name="author" content="ms@kilabit.info"/>
 </head>
-
 <body>
-<h1><a href='./index.html'> Oracle 10g RAC Installation on Solaris </a></h1>
+<h1>Oracle 10g RAC Installation on Solaris</h1>
 
 <pre>
 Notes:
-	o the '#' at first line mean is the command must be _run_ by root.
-	o the '$' at first line mean is the command must be run by user, in
-          this case user 'oracle'.
+	o the &#39;#&#39; at first line mean is the command must be _run_ by root.
+	o the &#39;$&#39; at first line mean is the command must be run by user, in
+          this case user &#39;oracle&#39;.
 
 - create group for oracle
 
@@ -34,14 +33,14 @@ Notes:
 - configure solaris 10 projects attributes
 
 	# projadd group.dba
-	# projmod -sK "project.max-shm-memory=(privileged,4294967295,deny)"
+	# projmod -sK &quot;project.max-shm-memory=(privileged,4294967295,deny)&quot;
 	# group.dba
-	# projmod -sK "project.max-sem-ids=(privileged,100,deny)" group.dba
-	# projmod -sK "project.max-shm-ids=(privileged,100,deny)" group.dba
-	# projmod -sK "project.max-sem-nsems=(privileged,256,deny)" group.dba
-	# echo "oracle::::type=normal;project=group.dba" >> /etc/user_attr
+	# projmod -sK &quot;project.max-sem-ids=(privileged,100,deny)&quot; group.dba
+	# projmod -sK &quot;project.max-shm-ids=(privileged,100,deny)&quot; group.dba
+	# projmod -sK &quot;project.max-sem-nsems=(privileged,256,deny)&quot; group.dba
+	# echo &quot;oracle::::type=normal;project=group.dba&quot; &gt;&gt; /etc/user_attr
 
-- and add this to "/etc/system",
+- and add this to &quot;/etc/system&quot;,
 
 	set noexec_user_stack=1
 	set semsys:seminfo_semmni=100
@@ -91,9 +90,10 @@ run sql script catxdbdbca.sql
 
 	# cd ${ORACLE_HOME}
 	# sqlplus / as sysdba
-	SQL> @rdbms/admin/catxdbdbca.sql 2221 8880
+	SQL&gt; @rdbms/admin/catxdbdbca.sql 2221 8880
 
 where 2221 is port for FTP and 8880 is port for HTTP accces.
 </pre>
+
 </body>
 </html>

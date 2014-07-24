@@ -1,136 +1,58 @@
 <html>
 <head>
-<meta name='title' content='Rescached is here!'/>
-<meta name='publish-date' content='2009.12.04 12:16:46 +0000'/>
-<meta name='author' content='ms@kilabit.org'/>
-<link rel='stylesheet' href='/wui.css' type='text/css'/>
+<meta name="title" content="Rescached is here!"/>
+<meta name="publish-date" content="2009.12.04 12:16:46 +0000"/>
+<meta name="author" content="ms@kilabit.info"/>
 </head>
-
 <body>
-<h1><a href='./index.html'> Rescached is here! </a></h1>
+<h1>Rescached is here!</h1>
 
-<p>
-I am too excited to not published it now, because this pet is really save my
-bandwidth and make my Internet connection one step more fast than before.
-<strike>Although it's not finished yet, but for daily use</strike> It rocks!
-</p>
+<p>I am too excited to not published it now, because this pet is really save my bandwidth and make my Internet connection one step more fast than before. <s>Although it&#39;s not finished yet, but for daily use</s> It rocks!</p>
 
-<p>
-So here it is,
-</p>
-<hr />
-
-<p style='text-align: center;'>
-<a href='http://www.kilabit.org/projects/rescached/doc/rescached_-_doc_user.html'
-	target='_blank'>
-<strong>&lt;&lt;&lt;   rescached   &gt;&gt;&gt;</strong>
-</a><br/>
-~ a resolver cache daemon ~ <br/>
-{ brought to you by kilabit.org (&#596;) 2010 } <br/>
-</p>
+<p>So here it is,</p>
 
 <hr />
-<p class='quote'>I should make a logo and attach it here or add a blink tag,
-but my soul is on vacation right now.</p>
+<p style="text-align:center"><a href="http://www.kilabit.org/projects/rescached/doc/rescached_-_doc_user.html" target="_blank"><strong>&lt;&lt;&lt; rescached &gt;&gt;&gt;</strong> </a><br />
+~ a resolver cache daemon ~<br />
+{ brought to you by kilabit.org (ɔ) 2010 }</p>
 
-<p>
-<strong><em>So what is rescached? what can it do?</em></strong>
-</p>
-<p>
-rescached is a program that caching all DNS queries and answers
-that user ask to him.
-</p>
+<hr />
+<p>I should make a logo and attach it here or add a blink tag, but my soul is on vacation right now.</p>
 
-<p>
-To make it simple, When you opening www.reddit.com page on your browser,
-browser will ask the system "what is the IP address of www.reddit.com ?",
-system will pass this question to one of the DNS servers that you set on your
-system; and after one of the DNS server answer it, system will extract it and
-pass the answer to your browser, "this is IP address of www.reddit.com:
-77.67.126.99".
-</p>
+<p><strong><em>So what is rescached? what can it do?</em></strong></p>
 
-<p style='text-align: center;'>
-browser -&gt; system -&gt; (one or more DNS server) -&gt; system -&gt; browser
-</p>
+<p>rescached is a program that caching all DNS queries and answers that user ask to him.</p>
 
-<p>
-Your browser and your system will do this every times, every days, and every
-nights you opening www.reddit.com page. Remember that those DNS servers
-probably is not in your neighbourhood, it could be in another city, state, or
-country; traveling across buildings, under the sea, just to ask "what is IP
-address of www.reddit.com ?"
-</p>
+<p>To make it simple, When you opening www.reddit.com page on your browser, browser will ask the system &quot;what is the IP address of www.reddit.com ?&quot;, system will pass this question to one of the DNS servers that you set on your system; and after one of the DNS server answer it, system will extract it and pass the answer to your browser, &quot;this is IP address of www.reddit.com: 77.67.126.99&quot;.</p>
 
-<p>
-Rescached come to your system, with an empty box ready to filled up with
-anything about hostname and IP address.  So, when you opening www.reddit.com
-page, instead of asking DNS servers, system will ask rescached program first,
-rescached program will check in his box if it had an IP address of
-www.reddit.com. If it does not exist, rescached will pass the question to DNS
-servers, save the answer in his box and pass the answer back to the system.
-</p>
+<p style="text-align:center">browser -&gt; system -&gt; (one or more DNS server) -&gt; system -&gt; browser</p>
 
-<p style='text-align: center;'>
-browser -&gt; system -&gt; rescached -&gt; system -&gt; browser
-</p>
+<p>Your browser and your system will do this every times, every days, and every nights you opening www.reddit.com page. Remember that those DNS servers probably is not in your neighbourhood, it could be in another city, state, or country; traveling across buildings, under the sea, just to ask &quot;what is IP address of www.reddit.com ?&quot;</p>
 
-<p>
-All this process only happened in your internal computer, does not pass through the wire.
-</p>
+<p>Rescached come to your system, with an empty box ready to filled up with anything about hostname and IP address. So, when you opening www.reddit.com page, instead of asking DNS servers, system will ask rescached program first, rescached program will check in his box if it had an IP address of www.reddit.com. If it does not exist, rescached will pass the question to DNS servers, save the answer in his box and pass the answer back to the system.</p>
 
-<p>
-Now, imagine average user browsing activity. Lots of page, lots of links,
-lots of DNS query pass through the wires.
-</p>
+<p style="text-align:center">browser -&gt; system -&gt; rescached -&gt; system -&gt; browser</p>
 
-<p><strong><em>
-What is the different between rescached and another DNS cache daemon ?
-</em></strong></p>
+<p>All this process only happened in your internal computer, does not pass through the wire.</p>
 
-<p>
-Your computer does not run every times, some times you need to restart it or
-shutting it down. Rescached developer know this. So, instead of passing the
-same question every times computer restarted, rescached save all IP address
-that his have in his box to your hard disk when the system down or when you
-turned the rescached program off. So, after computer is restarted and
-rescached program is running again, rescached will read all IP address that
-his save on your hard disk and put it in his box again. So, rescached still
-know the answer for any host name that the system ask from last activity.
-</p>
+<p>Now, imagine average user browsing activity. Lots of page, lots of links, lots of DNS query pass through the wires.</p>
 
-<p><strong><em>
-How many IP address it can hold in his box ?
-</em></strong></p>
+<p><strong><em>What is the different between rescached and another DNS cache daemon ? </em></strong></p>
 
-<p>
-Many. It is depend on your setting, it can be 100, 2000, 30000, or 400000.
-You can set this value on rescached configuration file. Of course it also
-depend on how much memory do you have on your system.
-</p>
+<p>Your computer does not run every times, some times you need to restart it or shutting it down. Rescached developer know this. So, instead of passing the same question every times computer restarted, rescached save all IP address that his have in his box to your hard disk when the system down or when you turned the rescached program off. So, after computer is restarted and rescached program is running again, rescached will read all IP address that his save on your hard disk and put it in his box again. So, rescached still know the answer for any host name that the system ask from last activity.</p>
 
-<br/>
+<p><strong><em>How many IP address it can hold in his box ? </em></strong></p>
 
-<p>
-So, why you still here ? Go
-<a href='http://github.com/shuLhan/rescached' target='_blank'>
-there
-</a>[1] .
-</p>
-<p>
-Arch Linux user can installed it from
-<a href='http://aur.archlinux.org/packages.php?ID=40095' target='_blank'>
-AUR
-</a>[2].
-</p>
+<p>Many. It is depend on your setting, it can be 100, 2000, 30000, or 400000. You can set this value on rescached configuration file. Of course it also depend on how much memory do you have on your system.</p>
 
-<p style='text-align: center;'><strong>
-Git it, make it, run it!
-</strong></p>
+<p>So, why you still here ? Go <a href="http://github.com/shuLhan/rescached" target="_blank"> there </a>[1] .</p>
 
-<p class='footnote'>
-[1] http://github.com/shuLhan/rescached <br/>
-[2] http://aur.archlinux.org/packages.php?ID=40095 <br/>
-</p>
+<p>Arch Linux user can installed it from <a href="http://aur.archlinux.org/packages.php?ID=40095" target="_blank"> AUR </a>[2].</p>
+
+<p style="text-align:center"><strong>Git it, make it, run it! </strong></p>
+
+<p>[1] http://github.com/shuLhan/rescached<br />
+[2] http://aur.archlinux.org/packages.php?ID=40095</p>
+
 </body>
 </html>

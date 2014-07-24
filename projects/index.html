@@ -1,184 +1,81 @@
 <html>
 <head>
-<meta name='title' content='Projects'/>
+<meta name="title" content="Projects"/>
+<meta name="publish-date" content="2011.01.08 13:22:49 +0700"/>
+<meta name="author" content="ms@kilabit.info"/>
 </head>
-
 <body>
-<h1> Projects </h1>
-<h2> libvos </h2>
-<p>
-libvos is a C++ library. First implementation was intended for reading and
-writing Delimited Separated Value (DSV) data only, but then evolved and have
-more capabilities.
-</p>
+<h1>Projects</h1>
 
-<p>
-libvos contain several modules that can be independent or dependable
-through class inheritance and <tt>include</tt> pragma.
-</p>
+<h2>libvos</h2>
 
-<p>
-Current modules and features,
-</p>
+<p>libvos is a C++ library. First implementation was intended for reading and writing Delimited Separated Value (DSV) data only, but then evolved and have more capabilities.</p>
+
+<p>libvos contain several modules that can be independent or dependable through class inheritance and <tt>include</tt> pragma.</p>
+
+<p>Current modules and features,</p>
 
 <ul>
-<li>
-Buffer module, very easy and simple module for processing sequence of
-byte of data. In example: string or network packet.
-</li>
-
-<li>
-File module, module to talk to local file system, reading and writing file.
-</li>
-
-<li>
-Dir module, module to talk to local file system, listing and caching
-directory
-content.
-</li>
-
-<li>
-Reading and writing Delimited Separated Value (DSV) data.
-</li>
-
-<li>
-Reading and writing INI file format.
-</li>
-
-<li>
-Socket module, talk to network using UDP or TCP socket.
-</li>
-
-<li>
-FTP module, very easy and simple module to talk to FTP server.
-</li>
-
-<li>
-FTP server, module for serving file system or any hierarchy of data to
-networks using FTP.
-</li>
-
-<li>
-OCI module, Minimalist and simple module for sending a query to Oracle
-Database server and receiving query data (not fully supported).
-</li>
+	<li>Buffer module, very easy and simple module for processing sequence of byte of data. In example: string or network packet.</li>
+	<li>File module, module to talk to local file system, reading and writing file.</li>
+	<li>Dir module, module to talk to local file system, listing and caching directory content.</li>
+	<li>Reading and writing Delimited Separated Value (DSV) data.</li>
+	<li>Reading and writing INI file format.</li>
+	<li>Socket module, talk to network using UDP or TCP socket.</li>
+	<li>FTP module, very easy and simple module to talk to FTP server.</li>
+	<li>FTP server, module for serving file system or any hierarchy of data to networks using FTP.</li>
+	<li>OCI module, Minimalist and simple module for sending a query to Oracle Database server and receiving query data (not fully supported).</li>
 </ul>
 
-<p>
-For more information see 
-<a target='_blank' href='/projects/libvos/doc/index.html'>
-libvos Documentation
-</a>
-<sup>1</sup>.
-</p>
+<p>For more information see <a href="/projects/libvos/doc/index.html" target="_blank"> libvos Documentation </a> <sup>1</sup>.</p>
 
-<p>
-Get the latest libvos source code
-<a target='_blank' href='http://github.com/shuLhan/libvos/'>here</a>
-<sup>2</sup>.
-</p>
+<p>Get the latest libvos source code <a href="http://github.com/shuLhan/libvos/" target="_blank">here</a> <sup>2</sup>.</p>
 
-<p class='footnote'>
-[1] http://www.kilabit.org/projects/libvos/doc/index.html <br/>
-[2] http://github.com/shuLhan/libvos/ <br/>
-</p>
+<p>[1] http://www.kilabit.org/projects/libvos/doc/index.html<br />
+[2] http://github.com/shuLhan/libvos/</p>
 
-<br/>
-<br/>
+<p><br />
+<!-- recursive, bitches! --></p>
 
-<!-- recursive, bitches! -->
-<h2><a target='_blank' href='http://journal.kilabit.org/rescached-is-here'>
-rescached </a></h2>
-<img class='logo' src='/images/rescached_logo.png'
-	width='213' height='160'
-	alt='rescached logo' align='right'
-/>
-<p>
-Rescached is a daemon that act as a DNS server, serve the clients queries,
-but also caching all that queries and answers for later use. Unlike any
-others daemon, this daemon save all the DNS answer on disk if it's exit, and
-load it back if it's started again.
-</p>
-<p>
-DNS service is the most frequently used traffic on the internet, every time
-users open a web page, checking an email, sending a message, etc; name lookup
-or internet address mapping from host-name to IP address is done first. This
-program eliminated all the requests to outside DNS server by caching the most
-frequently requested host-name. Those, if it is setting up properly can
-decrease your network traffic.
-</p>
-<p>
-For more information see
-<a target='_blank' href='/projects/rescached/doc/rescached_-_doc_user.html'>
-rescached user documentation. </a><sup> 1 </sup>
-</p>
-<p>
-Get the latest rescached source code
-<a target='_blank' href='http://github.com/shuLhan/rescached/'>here</a>
-<sup> 2 </sup>.
-</p>
+<h2><a href="http://journal.kilabit.org/rescached-is-here" target="_blank">rescached </a></h2>
 
-<p class='footnote'>
-[1] http://www.kilabit.org/projects/rescached/doc/rescached_-_doc_user.html
-<br/>
-[2] http://github.com/shuLhan/rescached/ <br/>
-</p>
+<p><img alt="rescached logo" class="logo" src="/images/rescached_logo.png" style="float:right; height:160px; width:213px" /></p>
 
-<br/>
-<br/>
+<p>Rescached is a daemon that act as a DNS server, serve the clients queries, but also caching all that queries and answers for later use. Unlike any others daemon, this daemon save all the DNS answer on disk if it&#39;s exit, and load it back if it&#39;s started again.</p>
+
+<p>DNS service is the most frequently used traffic on the internet, every time users open a web page, checking an email, sending a message, etc; name lookup or internet address mapping from host-name to IP address is done first. This program eliminated all the requests to outside DNS server by caching the most frequently requested host-name. Those, if it is setting up properly can decrease your network traffic.</p>
+
+<p>For more information see <a href="/projects/rescached/doc/rescached_-_doc_user.html" target="_blank"> rescached user documentation. </a><sup> 1 </sup></p>
+
+<p>Get the latest rescached source code <a href="http://github.com/shuLhan/rescached/" target="_blank">here</a> <sup> 2 </sup>.</p>
+
+<p>[1] http://www.kilabit.org/projects/rescached/doc/rescached_-_doc_user.html<br />
+[2] http://github.com/shuLhan/rescached/</p>
 
 <h2>Vos</h2>
-<img class='logo' src='/images/vos_logo.png' width='216' height='116'
-	alt='vos logo' align='right'
-/>
-<a
-href='http://cloud.github.com/downloads/shuLhan/vos/vos-2009.09.11.tar.bz2'
-class='download'>
-<img width='48' height='48' border='0' src='/images/download.png'
-alt='vos download'/> Download <sup> 1 </sup></a>
-<br />
-<br />
+
+<p><img alt="vos logo" class="logo" src="/images/vos_logo.png" style="float:right; height:116px; width:216px" /> <a class="download" href="http://cloud.github.com/downloads/shuLhan/vos/vos-2009.09.11.tar.bz2"> <img alt="vos download" src="/images/download.png" style="height:48px; width:48px" /> Download <sup> 1 </sup></a></p>
+
+<p>Vos is a program to process formatted data, i.e. CSV data. Vos is designed to process a large input file, a file where their size is larger than the size of memory, and can be tuned to adapt with your machine environment.</p>
+
 <p>
-Vos is a program to process formatted data, i.e. CSV data.
-Vos is designed to process a large input file, a file where their size is
-larger than the size of memory, and can be tuned to adapt with your machine
-environment.
-</p>
-<br /><br />
 Vos currently has four main features,
+</p>
+
 <ul>
-<li><b>Sorting</b>, Vos can sort one or more field in input file in one pass.
-</li>
-
-<li><b>Reformatting</b>, By declaring only specific fields or using a
-different separator in vos script, Vos can re-create a new file with a new
-format and data.
-</li>
-
-<li><b>Filtering</b>, Vos can omit and include specific data in specific
-field/record.
-</li>
-
-<li><b>Join</b>, Vos can join two file into one file with all or specific
-fields included in output file.
-</li>
+	<li><strong>Sorting</strong>, Vos can sort one or more field in input file in one pass.</li>
+	<li><strong>Reformatting</strong>, By declaring only specific fields or using a different separator in vos script, Vos can re-create a new file with a new format and data.</li>
+	<li><strong>Filtering</strong>, Vos can omit and include specific data in specific field/record.</li>
+	<li><strong>Join</strong>, Vos can join two file into one file with all or specific fields included in output file.</li>
 </ul>
 
-<p>
-For more information see
-<a target='_blank' href='/projects/vos/vos_user_manual.html'>
-Vos User Manual</a> <sup> 2 </sup>.
-</p>
+<p>For more information see <a href="/projects/vos/vos_user_manual.html" target="_blank"> Vos User Manual</a> <sup> 2 </sup>.</p>
 
-<p>
-Get the latest Vos source code
-<a target='_blank' href='http://github.com/shuLhan/vos/'>here</a>
-<sup> 3 </sup>.
-</p>
-<p class='footnote'>
-[1] http://cloud.github.com/downloads/shuLhan/vos/vos-2009.09.11.tar.bz2 <br/>
-[2] http://www.kilabit.org/projects/vos/vos_user_manual.html <br/>
-[3] http://github.com/shuLhan/vos/ <br/>
-</p>
+<p>Get the latest Vos source code <a href="http://github.com/shuLhan/vos/" target="_blank">here</a> <sup> 3 </sup>.</p>
+
+<p>[1] http://cloud.github.com/downloads/shuLhan/vos/vos-2009.09.11.tar.bz2<br />
+[2] http://www.kilabit.org/projects/vos/vos_user_manual.html<br />
+[3] http://github.com/shuLhan/vos/</p>
+
 </body>
 </html>

@@ -1,18 +1,16 @@
 <html>
 <head>
-<meta name='title' content='git Quick References'/>
-<meta name='author' content='ms@kilabit.org'/>
-<link rel='stylesheet' href='/wui.css' type='text/css'/>
+<meta name="title" content="git Quick References"/>
+<meta name="publish-date" content="2011.01.08 13:22:49 +0700"/>
+<meta name="author" content="ms@kilabit.info"/>
 </head>
-
 <body>
-<h1><a href='./index.html'> git Quick References </a></h1>
+<h1>git Quick References</h1>
 
 <pre>
 * Creating a new repository,
 
 	$ git init
-
 
 * Adding a new file to repository,
 
@@ -55,7 +53,7 @@
 
 	$ git reset --soft [commit]
 
-  Value of [commit] can be viewed from "git log" command.
+  Value of [commit] can be viewed from &quot;git log&quot; command.
 
   NOTES: after reset some of files probably will be missing, and cannot be
          undo.
@@ -116,14 +114,14 @@
 
 		$ git push [remote-name]
 
-	  default [remote-name] is "origin" if not defined.
+	  default [remote-name] is &quot;origin&quot; if not defined.
 
 
 	+ get all remote changes to local
 
 		$ git pull [remote-name]
 
-	  default [remote-name] is "origin" if not defined.
+	  default [remote-name] is &quot;origin&quot; if not defined.
 
 
 * Git and SVN
@@ -161,7 +159,7 @@
   + install netcat BSD.
   + create proxy-wrapper
 
-	$ echo "nc -Xconnect -x${PROXY_IP}:${PROXY_PORT} $*" > ~/bin/proxy-wrapper.sh
+	$ echo &quot;nc -Xconnect -x${PROXY_IP}:${PROXY_PORT} $*&quot; &gt; ~/bin/proxy-wrapper.sh
   	$ chmod +x ~/bin/proxy-wrapper.sh
   	$ export GIT_PROXY_COMMAND=~/bin/proxy-wrapper.sh
 
@@ -175,5 +173,6 @@ References
 [2] https://git.wiki.kernel.org/index.php/GitFaq
 
 </pre>
+
 </body>
 </html>

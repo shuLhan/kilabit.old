@@ -1,47 +1,38 @@
 <html>
 <head>
-<meta name='title' content='Is ext3 FS slow?'/>
-<meta name='publish-date' content='2009.04.27 12:27:00 +0000'/>
-<meta name='author' content='ms@kilabit.org'/>
-<link rel='stylesheet' href='/wui.css' type='text/css'/>
+<meta name="title" content="Is ext3 FS slow?"/>
+<meta name="publish-date" content="2009.04.27 12:27:00 +0000"/>
+<meta name="author" content="ms@kilabit.info"/>
 </head>
-
 <body>
-<h1><a href='./index.html'> Is ext3 FS slow? </a></h1>
+<h1>Is ext3 FS slow?</h1>
 
-<p>
-Or, rm?
-</p>
+<p>Or, rm?</p>
 
-<p>
-Disk,
+<p>Disk,</p>
+
 <pre>
 root@bubu $ mount
 /dev/sda1 on / type ext3 (rw,noatime,nodiratime,acl,user_xattr,data=writeback)
 </pre>
-</p>
 
-<p>
-Kernel scheduling,
+<p>Kernel scheduling,</p>
+
 <pre>
 root@bubu $ cat /sys/block/sda/queue/scheduler
 noop anticipatory [deadline] cfq
 </pre>
-</p>
 
-<p>
-Directory to remove,
+<p>Directory to remove,</p>
 
 <pre>
 root@bubu $ ls -l 0A/ | wc -l
 25601
 </pre>
 
-those 25061 nodes is only an empty directory, it was a squid empty cache.
-</p>
+<p>those 25061 nodes is only an empty directory, it was a squid empty cache.</p>
 
-<p>
-Time to remove all nodes in directory,
+<p>Time to remove all nodes in directory,</p>
 
 <pre>
 root@bubu $ time rm -rf 0A/
@@ -49,13 +40,9 @@ real    5m12.053s
 user    0m0.155s
 sys     0m8.857s
 </pre>
-</p>
 
-<p>
-NOTE TO MYSELF: never use ext3 for database, proxy, or any disk related machine.
-<br/>
-TODO: try another file system (?)
-</p>
+<p>NOTE TO MYSELF: never use ext3 for database, proxy, or any disk related machine.<br />
+TODO: try another file system (?)</p>
 
 </body>
 </html>

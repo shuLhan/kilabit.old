@@ -1,15 +1,14 @@
 <html>
 <head>
-<meta name='title' content='Oracle 10g Installation on Linux'/>
-<meta name='author' content='ms@kilabit.org'/>
-<link rel='stylesheet' href='/wui.css' type='text/css'/>
+<meta name="title" content="Oracle 10g Installation on Linux"/>
+<meta name="publish-date" content="2011.01.08 13:22:49 +0700"/>
+<meta name="author" content="ms@kilabit.info"/>
 </head>
-
 <body>
-<h1><a href='./index.html'> Oracle 10g Installation on Linux </a></h1>
+<h1>Oracle 10g Installation on Linux</h1>
 
 <pre>
-1. Set hostname, see "/etc/hosts".
+1. Set hostname, see &quot;/etc/hosts&quot;.
 
 2. Set Oracle environment,
 
@@ -30,7 +29,7 @@
 	# useradd nobody
 
 4. Configure kernel option based on your hardware specification.
-   Edit "/etc/sysctl.conf",
+   Edit &quot;/etc/sysctl.conf&quot;,
 
 	# oracle configuration
 	kernel.shmall = 2097152
@@ -61,8 +60,8 @@
 	# /etc/profile or /etc/profile.local
 	# oracle user
 
-	if [ $USER = "oracle" ]; then
-        	if [ $SHELL = "/bin/ksh" ]; then
+	if [ $USER = &quot;oracle&quot; ]; then
+        	if [ $SHELL = &quot;/bin/ksh&quot; ]; then
                 	ulimit -p 16384
 	                ulimit -n 65536
         	else
@@ -84,16 +83,16 @@
 
 8. Configuring oracle user environment
 
-- set user oracle home to "/mnt/data/apps/oracle", in "/etc/passwd"
+- set user oracle home to &quot;/mnt/data/apps/oracle&quot;, in &quot;/etc/passwd&quot;
 - login as oracle
 
 	# su - oracle
 
-- edit "~/.bash_profile", add
+- edit &quot;~/.bash_profile&quot;, add
 
 	umask 022
 
-- run ".bash_profile"
+- run &quot;.bash_profile&quot;
 
 	$ . ~/.bash_profile
 
@@ -108,7 +107,7 @@
 	$ ORACLE_SID=orcl
 	$ export ORACLE_BASE ORACLE_SID
 
-9. Edit "database/install/oraparam.ini", add "SuSE-10" to [Certified Versions]
+9. Edit &quot;database/install/oraparam.ini&quot;, add &quot;SuSE-10&quot; to [Certified Versions]
 
 10. Change directory to database, run
 
@@ -124,7 +123,7 @@
 
 - Start SQLPLUS
 
-	$ sqlplus "/ AS SYSDBA"
+	$ sqlplus &quot;/ AS SYSDBA&quot;
 
 - run this script
 
@@ -152,5 +151,6 @@
 
        then UNcomment it.
 </pre>
+
 </body>
 </html>

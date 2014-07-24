@@ -1,0 +1,76 @@
+<html>
+<head>
+<meta name="title" content="Auto...what?"/>
+<meta name="publish-date" content="2008.05.27 16:14:00 +0000"/>
+<meta name="author" content="ms@kilabit.info"/>
+</head>
+<body>
+<h1>Auto...what?</h1>
+
+<h2>Autoconf + Automake</h2>
+
+<p>In my opinion Autoconf + Automake is bad, because:</p>
+
+<ol>
+	<li>I don&#39;t Like it.
+	<p>Four years (maybe not long enough, but...) being a programmer in *nix environment, I never want to touch or event to read about &quot;What is Autoconf/Automake&quot;.</p>
+
+	<p>OK, I&#39;m lie. I have read it several time, try to understand what it is, how to used it, but it just does not make sense to me, since I first know it.</p>
+	</li>
+	<li>It&#39;s become hard to maintain a source code.
+	<p>Source program become large and large, just to make the program can run in other system. It&#39;s mean more &quot;if&quot;, &quot;ifndef&quot;. BAD. Even if the process to make the source-that-can-compile-in-your-system is handled automatically by Autoconf program it self, but programmer still need to create some configuration for Autoconf + Automake by hand.</p>
+
+	<p>It is not a magnet.</p>
+
+	<p>Remember that auto* itself is a program that could have a bug in it.</p>
+	</li>
+	<li>Make a newbie hard to understand the flow of program. The only way to make a newbie can read the code is by &quot;make&quot; the source first.</li>
+	<li>Complexity. Still in my opinion, Autoconf + Automake make it complex automatically.</li>
+</ol>
+
+<p>Why don&#39;t just separated the original source code, and then create another source directory for patch for different system?</p>
+
+<p>In my stupid example:</p>
+
+<pre>
+original-source/
+ a.c  # 1024 Lines
+ b.c  # 512 Lines
+ main.c  # 256 Lines
+ Makefile # 128 Lines
+patch/
+ Linux-x86/ --&gt; Link to original-source
+ sun-x86/
+  a.c  # 512 (max) Lines
+  b.c  # 256 (max) Lines
+  main.c  # 128 (max) Lines
+  Makefile # 64 (max) Lines
+  patch.sh # 5-8 Lines
+</pre>
+
+<p>When user want to compile this source for sun-x86 they just go to &quot;patch/sun-x86&quot; directory, run the &quot;patch.sh&quot;, go back to original-source and then run &quot;make&quot; like usual.</p>
+
+<p>Programmer who want to fix the program based on their system, just create another patch in their system patch directory without touching the &quot;original-source&quot;, and make original and another system maintainer happy.</p>
+
+<p>A Newbie that want to fix a bug or want to contribute to the program can start from the &quot;original-source&quot;.</p>
+
+<h2>About dependencies checking</h2>
+
+<p>I am agree with a program that check dependencies of source code, before compiling, but not a program that change the source code just because some &quot;.h&quot; files is missing; or even worse, create a new source file.</p>
+
+<h2>Today Solutions</h2>
+
+<p>Actually, there is a solution to this multi-system-problem. They called &quot;Distributed Source Code Management&quot;, DSCM. One of the DSCM that we already know is &quot;git&quot;, have been used by Linux kernel developer. There is of course another DSCM like BitKeeper and mercurial, but &quot;git&quot; has been tested for a couple of year and heavily used.</p>
+
+<p>With DSCM, we used this term now rather than point to the name of software directly, programmer can create several branch, quick and clean. This branch can be represented like,</p>
+
+<pre>
+	master (x86)
+	sun-x86
+	win-x86
+</pre>
+
+<p>&quot;sun-x86&quot; and &quot;win-x86&quot; is a branch of master. Any change to master can be push or pulled to another branch and with a little fix or changes. Just like that. win-win-win.</p>
+
+</body>
+</html>

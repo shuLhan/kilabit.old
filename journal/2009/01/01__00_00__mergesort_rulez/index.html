@@ -1,57 +1,44 @@
 <html>
 <head>
-<meta name='title' content='Mergesort Rulez!'/>
-<meta name='publish-date' content='2009.01.01 00:00:00 +0000'/>
-<meta name='author' content='ms@kilabit.org'/>
-<link rel='stylesheet' href='/wui.css' type='text/css'/>
+<meta name="title" content="Mergesort Rulez!"/>
+<meta name="publish-date" content="2009.01.01 00:00:00 +0000"/>
+<meta name="author" content="ms@kilabit.info"/>
 </head>
-
 <body>
-<h1><a href='./index.html'> Mergesort Rulez! </a></h1>
+<h1>Mergesort Rulez!</h1>
 
-<p><em>
-(and Blogger table Sucks!)
-</em></p>
+<p><em>(and Blogger table Sucks!) </em></p>
 
-<p>
-<a href='./aosafld_presentation.pdf'>Analysis of Sorting Algorithm for Large Data</a>
-</p>
+<p><a href="./aosafld_presentation.pdf">Analysis of Sorting Algorithm for Large Data</a></p>
 
-<p>
-Comparing several sorting algorithm to measure the most efficient algorithm
-(in processing time and and speed) for sorting large data, data where their
-size is larger than system memory.
-</p>
+<p>Comparing several sorting algorithm to measure the most efficient algorithm (in processing time and and speed) for sorting large data, data where their size is larger than system memory.</p>
 
-<p>
-Sorting algorithms that I use in this analysis:
+<p>Sorting algorithms that I use in this analysis:</p>
+
 <ul>
-	<li> Merge sort</li>
-	<li> Bucket sort</li>
-	<li> Quick sort</li>
-	<li> Binary sort</li>
+	<li>Merge sort</li>
+	<li>Bucket sort</li>
+	<li>Quick sort</li>
+	<li>Binary sort</li>
 </ul>
-</p>
 
-<p>
-Test Machine :
+<p>Test Machine :</p>
+
 <ul>
 	<li>cpu: Intel(R) Celeron(R) CPU 550 @ 2.00GHz</li>
 	<li>cache size: 1024 KB</li>
 	<li>RAM size: 512 MB</li>
 	<li>OS: openSUSE 10.3 (default install)</li>
 </ul>
-</p>
 
-<p>
-Some Notes:
+<p>Some Notes:</p>
+
 <ul>
-	<li>Time's includes read/write of data.</li>
+	<li>Time&#39;s includes read/write of data.</li>
 	<li>Input and output data is in csv file format, with 11 columns.</li>
 </ul>
-</p>
 
-<h2>Test 1 – Sorting Random Data</h2>
+<h2>Test 1 Sorting Random Data</h2>
 
 <pre>
                            +-----------------------------------------------------+
@@ -66,10 +53,9 @@ Some Notes:
 +-------+------------------+----------+---------+----------+----------+----------+
 </pre>
 
-<img title='sort result for random data' src='./img_random.png'
-	alt='sort result for random data' width='481' height='421'/>
+<p><img alt="sort result for random data" src="./img_random.png" style="height:421px; width:481px" title="sort result for random data" /></p>
 
-<h2>Test 2 – Sorting Ascending Data (data that already sorted)</h2>
+<h2>Test 2 Sorting Ascending Data (data that already sorted)</h2>
 
 <pre>
                            +-----------------------------------------------------+
@@ -84,16 +70,13 @@ Some Notes:
 +-------+------------------+----------+---------+----------+----------+----------+
 </pre>
 
-<img title='sort result for ascending data' src='./img_ascending.png'
-	alt='sort result for ascending data' width='481' height='421' />
+<p><img alt="sort result for ascending data" src="./img_ascending.png" style="height:421px; width:481px" title="sort result for ascending data" /></p>
 
-
-<h2>Test 3 – Sorting Descending Data (data that already sorted in reverse
-order)</h2>
+<h2>Test 3 Sorting Descending Data (data that already sorted in reverse order)</h2>
 
 <pre>
                            +-----------------------------------------------------+
-                           | Size of Input Data (* 1,000,000 of record)          |
+                           | Size of Input Data (* 1,000,000 of record)          |
         +------------------+-----------------------------------------------------+
         |  Sort Algorithm  |   2.5    |    5    |    10    |    15    |    20    |
 +-------+------------------+----------+---------+----------+----------+----------+
@@ -104,9 +87,7 @@ order)</h2>
 +-------+------------------+----------+---------+----------+----------+----------+
 </pre>
 
-<img title='sort result for data in descending order' src='./img_descending.png'
-	alt='sort result for data in descending order'
-	width='481' height='421'/>
+<p><img alt="sort result for data in descending order" src="./img_descending.png" style="height:421px; width:481px" title="sort result for data in descending order" /></p>
 
 </body>
 </html>

@@ -1,22 +1,17 @@
 <html>
 <head>
-<meta name='title'
-      content='Oracle 10g Clusterware &amp; RAC Installation on Solaris'/>
-<meta name='author' content='ms@kilabit.org'/>
-<link rel='stylesheet' href='/wui.css' type='text/css'/>
+<meta name="title" content="Oracle 10g Clusterware and RAC Installation on Solaris"/>
+<meta name="publish-date" content="2011.01.08 13:22:49 +0700"/>
+<meta name="author" content="ms@kilabit.info"/>
 </head>
-
 <body>
-<h1>
-<a href='./index.html'>
-Oracle 10g Clusterware &amp; RAC Installation on Solaris
-</a></h1>
+<h1>Oracle 10g Clusterware &amp; RAC Installation on Solaris</h1>
 
 <pre>
 Notes:
-	o the '#' at first line mean is the command must be _run_ as root.
-	o the '$' at first line mean is the command must be run as user, in
-          this case user 'oracle'.
+	o the &#39;#&#39; at first line mean is the command must be _run_ as root.
+	o the &#39;$&#39; at first line mean is the command must be run as user, in
+          this case user &#39;oracle&#39;.
 
 NODE 1: Solaris 5.10
 
@@ -36,29 +31,29 @@ NODE 2: Solaris 5.10
 - FOR EACH NODE, configure networks; Usually IP address has been set in
   install process.
 
-	o set '/etc/hosts' in all node.
+	o set &#39;/etc/hosts&#39; in all node.
 
 - FOR EACH NODE, turn on NTP client; or pick one node as NTP server.
 
-	@ see '/etc/inet/ntp.client'
-	@ see '/etc/inet/ntp.server'
+	@ see &#39;/etc/inet/ntp.client&#39;
+	@ see &#39;/etc/inet/ntp.server&#39;
 
 - FOR EACH NODE, set udp buffer.
 
 	# ( cat &lt;&lt;-EOF
 #!/usr/bin/bash
 
-case "$1" in
-'start')
+case &quot;$1&quot; in
+&#39;start&#39;)
         ndd -set /dev/udp udp_xmit_hiwat 65536
         ndd -set /dev/udp udp_recv_hiwat 65536
         ;;
-'status')
+&#39;status&#39;)
         ndd /dev/udp udp_xmit_hiwat
         ndd /dev/udp udp_recv_hiwat
         ;;
 *)
-        echo "usage: $0 {start | status}"
+        echo &quot;usage: $0 {start | status}&quot;
         exit 1
         ;;
 esac
@@ -89,14 +84,14 @@ EOF
 - FOR EACH NODE, configure solaris 10 projects attributes
 
 	# projadd group.dba
-	# projmod -sK "project.max-shm-memory=(privileged,4294967295,deny)"
+	# projmod -sK &quot;project.max-shm-memory=(privileged,4294967295,deny)&quot;
 	# group.dba
-	# projmod -sK "project.max-sem-ids=(privileged,100,deny)" group.dba
-	# projmod -sK "project.max-shm-ids=(privileged,100,deny)" group.dba
-	# projmod -sK "project.max-sem-nsems=(privileged,256,deny)" group.dba
-	# echo "oracle::::type=normal;project=group.dba" >> /etc/user_attr
+	# projmod -sK &quot;project.max-sem-ids=(privileged,100,deny)&quot; group.dba
+	# projmod -sK &quot;project.max-shm-ids=(privileged,100,deny)&quot; group.dba
+	# projmod -sK &quot;project.max-sem-nsems=(privileged,256,deny)&quot; group.dba
+	# echo &quot;oracle::::type=normal;project=group.dba&quot; &gt;&gt; /etc/user_attr
 
-	or/and add this to `/etc/system',
+	or/and add this to `/etc/system&#39;,
 
 	set noexec_user_stack=1
 	set semsys:seminfo_semmni=100
@@ -117,12 +112,12 @@ EOF
 
 - ONLY ON NODE 1, combine all public keys into one file
 
-	$ ssh rac1-solaris cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
-	$ ssh rac1-solaris cat ~/.ssh/id_dsa.pub >> ~/.ssh/authorized_keys
-	$ ssh rac2-solaris cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
-	$ ssh rac2-solaris cat ~/.ssh/id_dsa.pub >> ~/.ssh/authorized_keys
+	$ ssh rac1-solaris cat ~/.ssh/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys
+	$ ssh rac1-solaris cat ~/.ssh/id_dsa.pub &gt;&gt; ~/.ssh/authorized_keys
+	$ ssh rac2-solaris cat ~/.ssh/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys
+	$ ssh rac2-solaris cat ~/.ssh/id_dsa.pub &gt;&gt; ~/.ssh/authorized_keys
 
-- ONLY ON NODE 1, copy the "~/.ssh/authorized_keys" file to others Node
+- ONLY ON NODE 1, copy the &quot;~/.ssh/authorized_keys&quot; file to others Node
 
 	$ scp ~/.ssh/authorized_keys rac2:~/.ssh/
 
@@ -136,8 +131,8 @@ SUNWtoo SUNWi1of SUNWi1cs SUNWi15cs SUNWxwfnt
 	# pkgadd -d /cdrom/cdrom0/Solaris_10/Product/ SUNWi1cs
 	# pkgadd -d /cdrom/cdrom0/Solaris_10/Product/ SUNWi15cs
 
-	$ echo "umask 022" > ~/.profile
-	$ echo "export ORACLE_BASE=/export/home/oracle" >> ~/.profile
+	$ echo &quot;umask 022&quot; &gt; ~/.profile
+	$ echo &quot;export ORACLE_BASE=/export/home/oracle&quot; &gt;&gt; ~/.profile
 	$ . ~/.profile
 
 - ONLY ON NODE 1, install clusterware,
@@ -154,7 +149,7 @@ Appendix A: CVU
 
 - checking os dependencies
 
-	$ ./runcluvfy.sh stage –post hwos –n rac1,rac2 -verbose
+	$ ./runcluvfy.sh stage -post hwos -n rac1,rac2 -verbose
 
 
 Appendix B: iscsi disk : initiator, target and client
