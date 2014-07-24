@@ -28,24 +28,20 @@ try {
 		mkdir ($node);
 	}
 
-	$header = <<<EOF
+	$contents = <<<EOF
 <html>
-	<head>
-		<meta name="title" content="$e_title"/>
-		<meta name="publish-date" content="$e_pub_date"/>
-		<meta name="author" content="$e_author"/>
-	</head>
-	<body>
-
-EOF;
-
-	$footer = <<<EOF
-
-	</body>
+<head>
+<meta name="title" content="$e_title"/>
+<meta name="publish-date" content="$e_pub_date"/>
+<meta name="author" content="$e_author"/>
+</head>
+<body>
+$e_content
+</body>
 </html>
 EOF;
 
-	file_put_contents ($node ."/index.html", $header . $e_content . $footer);
+	file_put_contents ($node ."/index.html", $contents);
 
 	$r["success"] = true;
 	$r["msg"] = "Data has been saved.";

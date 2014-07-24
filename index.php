@@ -50,16 +50,24 @@
 		</div>
 
 		<div class="row">
-			<div id="wui_content" class="col-sm-12">
+			<div class="col-sm-12">
+				<div id="wui_content"></div>
+				<table
+					id="wui_content_meta"
+					class="table table-condensed"
+				>
+				</table>
 			</div>
 		</div>
 
 		<div class="row">
-			<div id="wui_footer" class="col-sm-12">
+			<div class="col-sm-12">
 				<div class="row">
-					<div id="wui_footer_left" class="col-sm-6 text-left">
-					</div>
-					<div id="wui_footer_right" class="col-sm-6 text-right">
+					<div id="wui_footer">
+						<div id="wui_footer_left" class="col-sm-6 text-left">
+						</div>
+						<div id="wui_footer_right" class="col-sm-6 text-right">
+						</div>
 					</div>
 				</div>
 			</div>

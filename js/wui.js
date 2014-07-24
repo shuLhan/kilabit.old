@@ -28,13 +28,40 @@ var WUI =
 		return str.replace (/\//g, "-");
 	}
 
+,	set_content_meta : function ($xml, link)
+	{
+		var meta = $("#wui_content_meta");
+
+		meta.empty ();
+
+		// set field based on meta data
+		$xml.find ("html > head > meta").each (function () {
+			var m_name = $(this).attr ("name");
+			var m_content = $(this).attr ("content");
+
+			if (undefined !== m_name) {
+				meta.append ("<tr><th>"+ m_name +":</th><td>"+ m_content +"</td></tr>");
+			}
+		});
+
+		meta.append (
+			"<tr>"
+				+"<th>permalink:</th>"
+				+"<td>"
+					+"<a href='"+ link +"'>"+ link +"</a>"
+				+"</td>"
+			+"</tr>"
+		);
+	}
+
 ,	set_content : function (link)
 	{
 		var wc = $("#wui_content");
+		var ts = "?_ts="+ new Date ().getTime ();
 
 		wc.empty ();
 
-		wc.load (link, function (res, stat, xhr)
+		wc.load (link + ts, function (res, stat, xhr)
 			{
 				// fix image source
 				link = link.replace (/^\.\//, "/");
@@ -52,6 +79,11 @@ var WUI =
 					src = src.replace (/^\.\//, "");
 					$(this).attr ("src", link +"/"+ src);
 				});
+
+				var $xml = $( $.parseXML (res) );
+
+				// add meta to content
+				WUI.set_content_meta ($xml, link);
 			});
 	}
 
@@ -247,7 +279,7 @@ var WUI =
 			// create top menu
 			WUI.create_top_menu ();
 
-			// hide exclude menu based on contents_exclude in config.php.
+			// hide menu based on contents_exclude in config.php.
 			WUI.process_exclude ();
 
 			// set front page defined in the config.php
