@@ -1,3 +1,8 @@
+/*
+	Copyright 2014 - Mhd Sulhan
+	Authors:
+		- mhd.sulhan (m.shulhan@gmail.com)
+*/
 /* Bootstrap */
 .container {
 	max-width	: 800px;
@@ -88,7 +93,6 @@ table {
 th, td {
 	padding			: 8px;
 	vertical-align	: top;
-	border-bottom	: thin silver solid;
 }
 
 th {

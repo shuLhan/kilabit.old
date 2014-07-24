@@ -61,7 +61,7 @@
 				>
 					<div class="form-group">
 						<label for="e_node_parent" class="col-sm-2 control-label">Parent node</label>
-						<div class="col-sm-10">
+						<div class="col-sm-4">
 							<input
 								name="e_node_parent"
 								type="text"
@@ -71,36 +71,9 @@
 								required
 							>
 						</div>
-					</div>
-					<div class="form-group">
-						<label for="e_node_name" class="col-sm-2 control-label">Node name</label>
-						<div class="col-sm-10">
-							<input
-								name="e_node_name"
-								type="text"
-								class="form-control"
-								id="e_node_name"
-								placeholder="Node name"
-								required
-							>
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="e_title" class="col-sm-2 control-label">Title</label>
-						<div class="col-sm-10">
-							<input
-								name="e_title"
-								type="text"
-								class="form-control"
-								id="e_title"
-								placeholder="Title"
-								required
-							>
-						</div>
-					</div>
-					<div class="form-group">
+
 						<label for="e_publish-date" class="col-sm-2 control-label">Publish date</label>
-						<div class="col-sm-10">
+						<div class="col-sm-4">
 							<input
 								name="e_publish-date"
 								type="date"
@@ -112,14 +85,39 @@
 						</div>
 					</div>
 					<div class="form-group">
+						<label for="e_node_name" class="col-sm-2 control-label">Node name</label>
+						<div class="col-sm-4">
+							<input
+								name="e_node_name"
+								type="text"
+								class="form-control"
+								id="e_node_name"
+								placeholder="Node name"
+								required
+							>
+						</div>
+
 						<label for="e_author" class="col-sm-2 control-label">Author</label>
-						<div class="col-sm-10">
+						<div class="col-sm-4">
 							<input
 								name="e_author"
 								type="text"
 								class="form-control"
 								id="e_author"
 								placeholder="Author"
+							>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="e_title" class="col-sm-2 control-label">Title</label>
+						<div class="col-sm-4">
+							<input
+								name="e_title"
+								type="text"
+								class="form-control"
+								id="e_title"
+								placeholder="Title"
+								required
 							>
 						</div>
 					</div>
@@ -158,7 +156,7 @@
 							class="col-sm-2 control-label"
 						>Parent Node
 						</label>
-						<div class="col-sm-10">
+						<div class="col-sm-4">
 							<select
 								name="node_parent"
 								class="form-control"
@@ -176,7 +174,7 @@
 							class="col-sm-2 control-label"
 						>Node name
 						</label>
-						<div class="col-sm-10">
+						<div class="col-sm-4">
 							<input
 								name="node_name"
 								type="text"
@@ -193,7 +191,7 @@
 							class="col-sm-2 control-label"
 						>Title
 						</label>
-						<div class="col-sm-10">
+						<div class="col-sm-4">
 							<input
 								name="node_title"
 								type="text"
