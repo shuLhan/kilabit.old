@@ -4,6 +4,8 @@
 	Authors:
 		- mhd.sulhan (m.shulhan@gmail.com)
 */
+require_once "../wui.php";
+
 define ("APP_PATH", realpath (dirname (__FILE__) ."/../"));
 
 $node_parent = $_POST["node_parent"];
@@ -33,6 +35,11 @@ $content = <<<EOF
 EOF;
 
 file_put_contents ($node ."/index.html", $content);
+
+// reindex
+$wui["contents_dir"] = "../";
+
+run ($wui);
 
 $r["success"] = true;
 
