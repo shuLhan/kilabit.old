@@ -40,6 +40,14 @@
 						<span class="glyphicon glyphicon-minus"></span>
 					</button>
 					<button
+						id="btn_new_node"
+						type="button"
+						class="btn btn-default"
+					>
+						<span class="glyphicon glyphicon-plus"></span>
+						New Node
+					</button>
+					<button
 						id="btn_new_journal"
 						type="button"
 						class="btn btn-default"
@@ -64,10 +72,10 @@
 						<label for="node_parent" class="col-sm-2 control-label">Parent node</label>
 						<div class="col-sm-4">
 							<select
-								name="node_parent"
+								name="e_node_parent"
 								type="text"
 								class="form-control"
-								id="node_parent"
+								id="e_node_parent"
 								placeholder="Node name"
 								required
 							></select>
@@ -245,17 +253,21 @@
 			}
 		}
 
-		function init_node_parent_selection (c, nodes, child_key, tabs)
+		function init_node_parent_selection (nodes, child_key, tabs)
 		{
+			var np_node = $("#node_parent");
+			var np_editor = $("#e_node_parent");
+
 			for (var i = 0; i < nodes.length; i++) {
 				var n = nodes[i];
 
 				if (n.load === false) {
-					c.append ("<option>"+ n.id +"</option>");
+					np_node.append ("<option>"+ n.id +"</option>");
+					np_editor.append ("<option>"+ n.id +"</option>");
 				}
 				if (undefined !== n[child_key]
 				&&  n[child_key].length > 0) {
-					init_node_parent_selection (c, nodes[i][child_key], child_key, tabs + 1);
+					init_node_parent_selection (nodes[i][child_key], child_key, tabs + 1);
 				}
 			}
 		}
@@ -267,13 +279,29 @@
 
 			var ids = node.id.split ("-");
 
+			$("#node_form #node_parent").attr ("disabled");
 			$("input#node_name").val (ids[ids.length - 1]);
 			$("input#node_title").val (node.text);
 			$("#node_parent").val (node.pid);
 		}
 
+		function form_edit_node_reset ()
+		{
+			$("#editor_form").addClass ("hidden");
+			$("#node_form").removeClass ("hidden");
+
+			$("#node_form #node_parent").removeAttr ("disabled");
+
+			$("#node_parent").val ("");
+			$("input#node_name").val ("");
+			$("input#node_title").val ("");
+		}
+
 		function form_edit_content_reset ()
 		{
+			$("#editor_form").removeClass ("hidden");
+			$("#node_form").addClass ("hidden");
+
 			$("#node_parent").val ("");
 			$("#e_node_name").val ("");
 			$("#e_title").val ("");
@@ -311,7 +339,7 @@
 					// set field node name
 					var ids = node.id.split ("-");
 					$("input#e_node_name").val (ids[ids.length - 1]);
-					$("#node_parent").val (node.pid);
+					$("#editor_form #node_parent").val (node.pid);
 
 					// set field based on meta data					
 					$xml.find ("html > head > meta").each (function () {
@@ -332,10 +360,17 @@
 			replace_properties (wui_menu, "submenu", "nodes", "submenu");
 			replace_properties (wui_menu, "title", "text", "nodes");
 
-			var node_parent = $("#node_parent");
-			node_parent.append ("<option></option>");
+			var np_node = $("#node_parent");
+			var np_editor = $("#e_node_parent");
 
-			init_node_parent_selection (node_parent, wui_menu, "nodes", 0)
+			np_node.append ("<option></option>");
+			np_editor.append ("<option></option>");
+
+			init_node_parent_selection (wui_menu, "nodes", 0);
+
+			$("#btn_new_node").click (function () {
+					form_edit_node_reset ();
+				});
 
 			$("#btn_new_journal").click (function () {
 					form_edit_content_reset ();
@@ -379,7 +414,7 @@
 				var $form = $(this);
 				var data = {};
 
-				data.e_node_parent = $form.find ("#node_parent").val ();
+				data.e_node_parent = $form.find ("#e_node_parent").val ();
 				data.e_node_name = $form.find ("#e_node_name").val ();
 				data.e_title = $form.find ("#e_title").val ();
 				data["e_publish-date"] = $form.find ("#e_publish-date").val ();
@@ -392,7 +427,7 @@
 				,	data	: data
 				,	dataType: "json"
 				,	success	: function (data, status) {
-						$("#node_parent").prop ("disabled", true);
+						$("#e_node_parent").prop ("disabled", true);
 						alert (data.msg);
 					}
 				,	error	: function (xhr, status, errorThrown)

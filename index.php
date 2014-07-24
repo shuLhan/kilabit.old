@@ -6,6 +6,8 @@
 */
 	require_once "wui.php";
 
+	run ($wui);
+
 	$open = str_replace ("/index.html", "", $_GET["open"]);
 	$open = rtrim ($open, "/");
 
