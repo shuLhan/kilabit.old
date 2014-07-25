@@ -1,0 +1,53 @@
+<html>
+<head>
+<meta name="title" content="Arch Linux di IBM X3650 M4"/>
+<meta name="publish_date" content="2014.05.02 12:45 "/>
+<meta name="author" content="ms@kilabit.info"/>
+</head>
+<body>
+<h1>Arch Linux di IBM X3650 M4</h1>
+
+<p><img alt="IBM X3650 M4" src="./x3650M4.jpg" /></p>
+
+<p>Pertanyaan pertama yang saya pikirkan saat mau install Arch Linux di server IBM adalah &quot;Apakah bisa?&quot;</p>
+
+<p>Ya. Ternyata bisa dan memang harusnya bisa.</p>
+
+<p>Saya sudah lupa bahwa pengguna-pengguna Linux pada umumnya menggunakannya di server dan IBM adalah salah satu penyedia server terbesar. Kalau sebuah server mendukung RedHat atau SuSE pasti distro-distro lain akan mendukungnya juga, karena kernel-nya relatif sama.</p>
+
+<p>Hari ini saya menginstall Linux di server IBM X3650 M4 di Wisma Ritra. Dulu, sebelum saya tahu server itu makhluk seperti apa, server yang memiliki rak besi dengan susunan harddisk serial di luar yang bisa dibongkar pasang dan dengan monitor yang bisa ditutup dan geser seperti laptop, saya terkagum-kagum dengan tampilannya.</p>
+
+<p>&quot;Keren, pasti dalamnya canggih!&quot;</p>
+
+<p>Sekarang, saya melihat server itu tidak ada bedanya dengan desktop biasa. Memang perangkatnya lebih canggih dari desktop, ada yang bisa ganti power supply sambil tetap hidup, ada yang bisa tambah harddisk, RAM, dan CPU pada saat sistem berjalan, motherboard-nya dibuat seefisien dan secepat mungkin, begitu juga perangkat lainnya. Tetapi tetap saja hanya ada tiga komponen: harddisk, RAM, CPU.</p>
+
+<p>Dan untuk pertama kalinya saya menginstal linux dengan sistem UEFI dan RAID.</p>
+
+<p>Apa itu UEFI?</p>
+
+<p>Bagi yang belum tahu, UEFI atau Unified Extensible Firmware Interface itu pengganti BIOS. BIOS atau Basic Input Output System adalah sistem terendah yang ada pada komputer untuk mengakses, mungkin lebih tepatnya mencek dan memberi akses, semua perangkat ke sistem yang lebih tinggi yaitu sistem operasi. BIOS terbatas pada ukuran memori, sehingga kemampuannya juga terbatas. Fitur BIOS yang biasanya sering dipakai bagi yang suka oprek adalah overclock CPU atau mengganti urutan perangkat boot.</p>
+
+<p>Untuk tahu apakah sebuah komputer memiliki sistem UEFI atau BIOS caranya sederhana. Jika pada saat booting masuk ke menu pengaturan, dan mouse bisa berfungsi, komputer itu pasti sudah mendukung UEFI.</p>
+
+<p>Ada konsep yang baru lagi berbarengan dengan UEFI, namanya GPT atau GUID Partition Table. GPT adalah pengganti MBR. Bagi yang tahu MBR, pasti tahu bahwa partisi di harddisk yang menggunakan MBR itu terbatas, GPT tidak terbatas.</p>
+
+<p>Dengan pe-de saya menggunakan Arch Linux yang sudah disiapkan di dalam USB dan melakukan booting. Dengan bantuan laptop yang terbuka di sebelah kanan, sambil membuka situs wiki.archlinux.org, saya mulai mencoba instalasi seperti biasa. Awalnya saya coba dengan menghapus semua partisi, yang sudah ada Windows-nya, dan saya coba partisi baru dengan LVM dan RAID. [1]</p>
+
+<p>Pemasangan yang pertama gagal, walau hanya butuh waktu kurang lebih dua jam.</p>
+
+<p>Yang menyebalkan dari server itu adalah waktu booting-nya sangat lama.</p>
+
+<p>Pemasangan yang kedua tanpa LVM berhasil. [2]</p>
+
+<p>Kesalahan saya yaitu pada saat penyiapan partisi. Ternyata untuk sistem UEFI harus ada partisi pertama dengan tipe FAT32 sebagai /boot.</p>
+
+<p>Dan saya kira memasang RAID itu juga susah, ternyata hanya pairing beberapa partisi dengan menggunakan struktur partisi (ukuran dan sistem file) yang sama menjadi satu. Yang sulit itu adalah perawatan, karena apabila salah satu harddisk rusak, maka harus cepat menyaiapkan harddisk yang baru.</p>
+
+<p>--</p>
+
+<p>[1] https://wiki.archlinux.org/index.php/Software_RAID_and_LVM</p>
+
+<p>[2] https://bbs.archlinux.org/viewtopic.php?id=177722</p>
+
+</body>
+</html>

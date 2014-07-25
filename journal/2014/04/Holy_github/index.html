@@ -1,0 +1,48 @@
+<html>
+<head>
+<meta name="title" content="Holy github!"/>
+<meta name="publish_date" content="2014.04.17 20:29:00"/>
+<meta name="author" content="ms@kilabit.info"/>
+</head>
+<body>
+<h1>Holy github!</h1>
+
+<p>I use git to keep tracks of my home configuration and github as my backup server. Accidentally, today, when I run diff on my home directory with my git configuration backup I found that my .gitconfig option &quot;[sendemail]&quot; has been changed, and ...</p>
+
+<p>Oh, wait ...</p>
+
+<p>What if someone also do this on github?</p>
+
+<p>So, I go to github and search for &quot;smtppass&quot;. I found some repository with smtppass filled in.</p>
+
+<p>Here is a result that I tried and working,</p>
+
+<p><img alt="Github email password leak" src="./holy_github.png" style="margin:10px" /></p>
+
+<p>Holy github!</p>
+
+<p><strong>Update</strong>: I have inform github support about this, and here is the reply from one of their staff.</p>
+
+<pre>
+<code>From: "Haleigh (GitHub Staff)" &lt;support@github.com&gt;
+To: Mhd Sulhan &lt;m.shulhan@gmail.com&gt;
+Message-ID: &lt;discussions/d0a63ac0c71311e380db04477d516110/comments/1012466@github.com&gt;
+In-Reply-To: &lt;53514e2c1a5c3_29363fe8e771f2a4785aa@github-fe133-cp1-prd.iad.github.net.mail&gt;
+References: &lt;53514e2c1a5c3_29363fe8e771f2a4785aa@github-fe133-cp1-prd.iad.github.net.mail&gt;
+Subject: Re: Email password leak in public repository.
+Mime-Version: 1.0
+Content-Type: text/plain;
+charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-SG-EID: GILdSeq0y2tr3ZX5/p0O19oxV0pQOx/0hP7Msw8IaX0VG7CuD6h7wAYZ+F9TXKd1to1U7+2zWkwIXdmB57c4/j/pSgA1W5Qs6/bclca5tNQatpKAkC7FNdI48OcuBxWJl/hOyMo9Ux1ljLBQsLw3NJUc5I8Mrf+acqJL3xWJ0Ow=
+X-Feedback-ID: 1120282:2Wv/oNEpTh6CoJNE/kv0Vebovh40FCRTex+O2CJZzhU=:2Wv/oNEpTh6CoJNE/kv0Vebovh40FCRTex+O2CJZzhU=:SG
+
+Hi there,
+
+Thanks for the report. We're checking it out.
+
+Cheers,
+Haleigh</code></pre>
+
+</body>
+</html>

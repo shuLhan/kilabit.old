@@ -1,0 +1,95 @@
+<html>
+<head>
+<meta name="title" content="VirtualBox: Bridge Network"/>
+<meta name="publish_date" content="2013.07.06 22:16:00"/>
+<meta name="author" content="ms@kilabit.info"/>
+</head>
+<body>
+<h1>VirtualBox: Bridge Network</h1>
+
+<p>Biasanya, untuk membuat jaringan bridge pada Virtualbox, antara Host dan Guest tidak perlu pengaturan apapun lagi, karena VirtualBox versi terbaru sudah otomatis mengaturnya untuk anda. Tinggal pilih opsi &quot;Bridged Adapter&quot;, pilih nama perangkat yang telah terkoneksi internet yang akan di-bridge sehingga IP beserta gateway-nya akan otomatis diset sesuai dengan pengaturan pada mesin router.</p>
+
+<p>Gambaran normal koneksi bridge dengan VirtualBox,</p>
+
+<pre>
+<code>HOST &lt;== eth0/wlan0 ==&gt; ROUTER &lt;== eth0/wlan0 ==&gt; GUEST
+
+DHCP                                              DHCP</code></pre>
+
+<p>Permasalahannya adalah bagaimana jika,</p>
+
+<ul>
+	<li>anda tidak punya mesin router, atau</li>
+	<li>ingin supaya Host dan Guest tetap saling bisa terkoneksi tapi dengan subnet yang berbeda, atau</li>
+	<li>ingin alamat IP statis pada mesin Guest?</li>
+</ul>
+
+<p>Berikut gambaran pengaturan jaringan yang diinginkan,</p>
+
+<pre>
+<code>INTERNET &lt;== ppp0 ==&gt;      HOST      &lt; ETH0 == ?&gt;       GUEST
+
+                      192.168.1.1/24               192.168.1.253/24</code></pre>
+
+<p>Diasumsikan, Host terkoneksi ke internet melalui perangkat ppp0 atau wlan0, sehingga perangkat jaringan yang tersisa, atau yang tidak terpakai, yaitu eth0.</p>
+
+<p>Untuk itu, saya akan menggunakan eth0 pada Host sebagai gateway yang akan digunakan oleh Guest untuk dapat saling terkoneksi. Membuat perangkat baru, tap0, untuk Guest. Dan menambahkan alamat IP Guest ke tabel routing di mesin Host.</p>
+
+<p>Berikut script untuk konfigurasi VirtualBox dengan bridged network tersendiri, dengan IP statis.</p>
+
+<pre>
+<code class="language-bash">#!/bin/sh
+
+ETH=eth0
+TAP=tap0
+ETHIP=192.168.1.1
+TAPIP=192.168.1.253
+
+echo "ETH IP : ${ETHIP}"
+echo "TAP IP : ${TAPIP}"
+
+## turn on HOST device
+
+ip link set dev $ETH up
+
+## set HOST device address
+
+ip addr add $ETHIP/24 dev $ETH
+
+## create GUEST device
+
+ip tuntap add dev tap0 mode tap group vboxusers
+
+## set ip-forward on HOST and GUEST devices
+
+echo 1 &gt; /proc/sys/net/ipv4/ip_forward
+echo 1 &gt; /proc/sys/net/ipv4/conf/$ETH/proxy_arp
+echo 1 &gt; /proc/sys/net/ipv4/conf/$TAP/proxy_arp
+
+## turn on GUEST device
+
+ip link set dev $TAP up
+
+## reset GUEST device address
+
+ip addr add 0.0.0.0/24 dev $TAP
+
+## add GUEST IP address to HOST routing table
+
+ip route add $TAPIP dev $TAP</code></pre>
+
+<p>Setelah script di atas dijalankan pada pengaturan VirtualBox &gt; Network, pada bagian &quot;Attached to&quot; piih &quot;Bridged Network&quot;, dan pada bagian &quot;Name&quot; pilih &quot;tap0&quot;.</p>
+
+<p>Pengaturan jaringan pada Guest yaitu,</p>
+
+<pre>
+<code>IP Address : 192.168.1.1
+Netmask    : 255.255.255.0
+Gateway    : 192.168.1.1
+DNS1       : 8.8.8.8
+DNS2       : 8.8.4.4</code></pre>
+
+<p>Jalankan mesin virtual anda dan Host dan Guest akan terkoneksi, dan Guest juga masih bisa terhubung ke internet.</p>
+
+</body>
+</html>

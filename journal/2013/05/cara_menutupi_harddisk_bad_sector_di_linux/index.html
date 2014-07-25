@@ -1,0 +1,184 @@
+<html>
+<head>
+<meta name="title" content="Cara Menutupi Harddisk bad-sector di Linux"/>
+<meta name="publish_date" content="2013.05.21 09:24:00"/>
+<meta name="author" content="ms@kilabit.info"/>
+</head>
+<body>
+<h1>Cara Menutupi Harddisk bad-sector di Linux</h1>
+
+<p>Sebelumnya, sedikit pesan singkat dari saya:</p>
+
+<p style="margin-left:40px"><em>Jangan pernah menghidupkan laptop di dalam mobil yang sedang berjalan.</em></p>
+
+<p>Untuk menutupi harddisk bad-sector ada dua cara, cara singkat dan cara panjang.</p>
+
+<p>Cara singkat,</p>
+
+<pre>
+<code class="language-bash">$ fsck.ext4 -vcck [harddisk]</code></pre>
+
+<p>akan dilakukan oleh sistem, dengan program fsck akan menjalankan program <tt>badblocks</tt> dan menyimpan setiap bad-sector di inode tertentu supaya tidak terpakai oleh berkas atau direktori. Untuk informasi lebih lanjut, <code>man fsck</code>.</p>
+
+<p>Cara panjang di bagian seterusnya.</p>
+
+<p>Paket-paket yang dibutuhkan,</p>
+
+<ul>
+	<li>smartmontools</li>
+	<li>e2fsprogs.</li>
+</ul>
+
+<h2>00 - Catat informasi harddisk</h2>
+
+<p>Periksa besar unit, sektor, dan partisi pada harddisk anda dengan cara,</p>
+
+<pre>
+<code class="language-bash">$ fdisk -lu [harddisk]</code></pre>
+
+<p>Keluarannya seperti,</p>
+
+<pre>
+<code class="language-bash">Disk /dev/sda: 320.1 GB, 320072933376 bytes, 625142448 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0xaaf6aaf6
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *          63    23438834    11719386   83  Linux
+/dev/sda2        23438835   625142447   300851806+  83  Linux</code></pre>
+
+<p>dan,</p>
+
+<pre>
+<code class="language-bash">$ tune2fs -l /dev/sda2 | grep Block</code></pre>
+
+<p>keluarannya seperti,</p>
+
+<pre>
+<code>Block count:              75212951
+Block size:               4096
+Blocks per group:         32768</code></pre>
+
+<p>Yang perlu dicatat adalah Unit size (512), dan Block Size (4096), seperti yang terlihat pada keluaran berwarna merah di atas. Selain itu yang perlu diperhatikan adalah &quot;Start&quot; dan &quot;End&quot; (warna biru pada keluaran) dari setiap partisi karena nanti akan digunakan.</p>
+
+<h2>01 - Jalankan tes harddisk</h2>
+
+<p>Simpan skrip berikut dengan nama <code>smartctl-select.sh</code>,</p>
+
+<pre>
+<code class="language-bash">#!/bin/bash
+
+smartctl -t select,$1-max /dev/sda2</code></pre>
+
+<p>Jalankan program tersebut dengan diawali dari Logical Block Address (LBA) 0,</p>
+
+<pre>
+<code class="language-bash">$ ./smartctl-select.sh 0</code></pre>
+
+<p>Tunggu beberapa saat sampai hasil tes keluar,</p>
+
+<pre>
+<code class="language-bash">smartctl 6.1 2013-03-16 r3800 [i686-linux-3.9.2-1-ARCH] (local build)
+Copyright (C) 2002-13, Bruce Allen, Christian Franke, www.smartmontools.org
+
+=== START OF READ SMART DATA SECTION ===
+
+SMART Self-test log structure revision number 1
+Num  Test_Description    Status                  Remaining  LifeTime(hours)  LBA_of_first_error
+#1  Selective offline   Completed: read failure       90%      1845         27949496</code></pre>
+
+<p>Keluaran dari tes yaitu &quot;Completed: read failure&quot;, dengan sektor LBA yang gagal berada di 27949496. Karena nilai tersebut berada di antara 23438835 dan 625142447 itu berarti partisi yang memiliki bad-sector adalah /dev/sda2 (lihat kembali keluaran fdisk pada bagian 00).</p>
+
+<h2>02 - Hitung sektor dari LBA</h2>
+
+<p>Simpan skrip berikut dengan nama <code>get-sector.sh</code> (ganti nilai u dengan unit-size, bs dengan Block-Size, sesuai dengan dari hard disk anda; dan partstart sesuai dengan nilai &quot;Start&quot; dari partisi yang rusak).</p>
+
+<pre>
+<code class="language-bash">#!/bin/bash
+
+export u=512
+export bs=4096
+
+export partstart=23438835
+export lba=$1
+export sector=0
+
+let sector=$[(($lba - $partstart) * $u) / $bs]
+
+echo $sector</code></pre>
+
+<p>Jalankan skrip tersebut dengan parameter LBA yang error untuk mendapatkan posisi sektor,</p>
+
+<pre>
+<code class="language-bash">$ ./get-sector.sh 27949496</code></pre>
+
+<p>keluarannya: 563832.</p>
+
+<h2>03 - Cek kemungkinan bad-sector di sektor selanjutnya</h2>
+
+<p>Simpan skrip berikut dengan nama <code>cbb.sh</code>,</p>
+
+<pre>
+<code class="language-bash">#!/bin/bash
+
+export i=$1;
+export x=$2;
+
+rm -f cbb.out;
+
+trap "exit" INT;
+while [ $i -lt $x ];
+  do echo $i;
+  dd if=/dev/sda2 of=/dev/null bs=4096 count=1 skip=$i status=none;
+  let i+=1;
+done &amp;&gt; cbb.out</code></pre>
+
+<p>Jalankan skrip tersebut,</p>
+
+<pre>
+<code class="language-bash">$ ./cbb.sh 563830 564000</code></pre>
+
+<p>Skrip tersebut akan mencek bad-sector dari sektor 563830 sampai sektor 564000. Hasil cek akan tersimpan di berkas bad.out. Contoh keluarannya,</p>
+
+<pre>
+<code>563830
+563831
+dd: error reading ‘/dev/sda2’: Input/output error
+563832
+dd: error reading ‘/dev/sda2’: Input/output error
+563833</code></pre>
+
+<p>Dari keluaran di atas diketahui bad-sector mulai di posisi 563831 dan berakhir di 563832 (2 sektor).</p>
+
+<h2>04 - Timpa bad-sector dengan nilai 0</h2>
+
+<p>Simpan skrip berikut dengan nama <code>dd.sh</code>,</p>
+
+<pre>
+<code class="language-bash">#!/bin/bash
+
+export _c=$1
+export _s=$2
+
+read -p "Are you sure? " -n 1 -r
+
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+        dd if=/dev/zero of=/dev/sda2 bs=4096 count=$_c seek=$_s
+        sync
+fi</code></pre>
+
+<p>Jalankan dengan parameter pertama yaitu jumlah bad-sector yang akan ditimpa, dan parameter kedua yaitu posisi awal dari sektor yang akan ditimpa,</p>
+
+<pre>
+<code>$ ./dd.sh 2 563831</code></pre>
+
+<h2>05 - Cuci dan ulangi</h2>
+
+<p>Jalankan ulang langkah 01 sampai 04 sampai hasil tes dari <code>smartctl</code> mengeluarkan keluaran &quot;Completed without error&quot; atau nilai LBA_of_first_error-nya kosong.</p>
+
+</body>
+</html>
