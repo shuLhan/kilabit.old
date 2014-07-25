@@ -8,6 +8,8 @@ $wui["title"]			= "kilabit.info";
 $wui["subtitle"]		= "Simple | Small | Stable | Secure";
 $wui["contents_dir"]	= "./";
 $wui["homepage"]		= "/home";
+$wui["journal_dir"]		= "/journal";
+$wui["journal_name"]	= "Journal";
 $wui["contents_exclude"]= [ "/doc", "/_kemxtri", "/_sima" ];
 /* Order matter */
 $wui["social_icon"]		= [
