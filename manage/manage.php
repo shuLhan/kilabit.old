@@ -102,7 +102,6 @@
 								class="form-control"
 								id="e_node_name"
 								placeholder="Node name"
-								required
 							>
 						</div>
 
@@ -302,6 +301,8 @@
 			$("#editor_form").removeClass ("hidden");
 			$("#node_form").addClass ("hidden");
 
+			$("#e_node_parent").removeAttr ("disabled");
+
 			$("#node_parent").val ("");
 			$("#e_node_name").val ("");
 			$("#e_title").val ("");
@@ -339,7 +340,7 @@
 					// set field node name
 					var ids = node.id.split ("-");
 					$("input#e_node_name").val (ids[ids.length - 1]);
-					$("#editor_form #node_parent").val (node.pid);
+					$("#e_node_parent").val (node.pid);
 
 					// set field based on meta data					
 					$xml.find ("html > head > meta").each (function () {
@@ -404,6 +405,7 @@
 				,	success	: function (data, status) {
 						$("#node_parent").prop ("disabled", true);
 						alert ("Data has been saved");
+						location.reload ();
 					}
 				});
 
@@ -429,6 +431,7 @@
 				,	success	: function (data, status) {
 						$("#e_node_parent").prop ("disabled", true);
 						alert (data.msg);
+						location.reload ();
 					}
 				,	error	: function (xhr, status, errorThrown)
 					{

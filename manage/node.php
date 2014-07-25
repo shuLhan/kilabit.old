@@ -37,7 +37,7 @@ EOF;
 file_put_contents ($node ."/index.html", $content);
 
 // reindex
-$wui["contents_dir"] = "../";
+$wui["contents_dir"] = "..";
 
 run ($wui);
 

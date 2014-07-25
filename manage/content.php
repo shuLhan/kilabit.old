@@ -4,6 +4,8 @@
 	Authors:
 		- mhd.sulhan (m.shulhan@gmail.com)
 */
+require_once ("../wui.php");
+
 define ("APP_PATH", realpath (dirname (__FILE__) ."/../"));
 
 try {
@@ -13,6 +15,13 @@ try {
 	$e_pub_date = $_POST["e_publish-date"];
 	$e_author = $_POST["e_author"];
 	$e_content = $_POST["e_content"];
+
+	// check node name, if empty use date + title
+	if (null === $node_name || "" === $node_name) {
+		$node_name = str_replace ("-", "_", $e_title);
+		$node_name = str_replace (":", "_", $e_title);
+		$node_name = str_replace (" ", "_", $node_name);
+	}
 
 	// replace '-' with '/'
 	$node_parent = str_replace ("-", "/", $node_parent);
@@ -42,6 +51,10 @@ $e_content
 EOF;
 
 	file_put_contents ($node ."/index.html", $contents);
+
+	// reindex
+	$wui["contents_dir"] = "..";
+	run ($wui);
 
 	$r["success"] = true;
 	$r["msg"] = "Data has been saved.";
