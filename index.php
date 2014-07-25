@@ -8,8 +8,12 @@
 
 	run ($wui);
 
-	$open = str_replace ("/index.html", "", $_GET["open"]);
-	$open = rtrim ($open, "/");
+	if (isset ($_GET["open"])) {
+		$open = str_replace ("/index.html", "", $_GET["open"]);
+		$open = rtrim ($open, "/");
+	} else {
+		$open = "";
+	}
 
 	if ("" === $open) {
 		$link = $wui["homepage"];
