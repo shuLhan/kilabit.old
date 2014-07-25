@@ -8,8 +8,8 @@
 
 	// if you session is not exist redirect back to login.
 	if (! isset ($_SESSION["you"])) {
-		$host = $_SERVER['HTTP_HOST'];
-		$uri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+		$host = $_SERVER["HTTP_HOST"];
+		$uri = rtrim(dirname($_SERVER["PHP_SELF"]), "/\\");
 		$extra	= "index.php";
 
 		header ("Location: http://$host$uri/$extra");
@@ -25,6 +25,7 @@
 	<link rel="stylesheet" href="/css/bootstrap.min.css"/>
 	<!-- summernote -->
 	<link rel="stylesheet" href="/css/font-awesome.min.css"/>
+	<link rel="stylesheet" href="/manage/manage.css"/>
 	<link rel="shortcut icon" href="favicon.ico"/>
 	<title>Manage Wui!</title>
 </head>
@@ -56,7 +57,14 @@
 						New Journal
 					</button>
 				</div>
-				<div id="tree">
+
+				<!-- tree view -->
+				<div class="tree panel panel-default">
+					<div class="panel-heading">
+					Node Tree
+					</div>
+					<div id="tree" class="panel-body">
+					</div>
 				</div>
 			</div>
 			<div class="col-md-9">
@@ -306,6 +314,27 @@
 			$("input#node_title").val ("");
 		}
 
+		function form_edit_node_submit (event)
+		{
+			var $form = $(this);
+
+			$("#node_parent").removeAttr ("disabled");
+
+			$.ajax ({
+					type	: $form.attr ("method")
+				,	url		: $form.attr ("action")
+				,	data	: $form.serialize ()
+				,	success	: function (data, status)
+					{
+						$("#node_parent").prop ("disabled", true);
+						alert ("Data has been saved");
+						location.reload ();
+					}
+				});
+
+			event.preventDefault();
+		}
+
 		function form_edit_content_reset ()
 		{
 			$("#editor_form").removeClass ("hidden");
@@ -357,13 +386,53 @@
 							var m_name = $(this).attr ("name");
 							var m_content = $(this).attr ("content");
 
-							$("#e_"+ m_name).val (m_content);
+							if (m_name === "publish_date") {
+								var dt = m_content.split (" ");
+
+								$("#e_publish_date").val (dt[0]);
+								$("#e_publish_time").val (dt[1]);
+							} else {
+								$("#e_"+ m_name).val (m_content);
+							}
 						});
 
 					var body = $xml.find ("body").html ().trim ();
 
 					CKEDITOR.instances.e_content.setData (body);
 				});
+		}
+
+		function form_edit_content_submit (event)
+		{
+			var $form	= $(this);
+			var data	= {};
+
+			data.e_node_parent	= $form.find ("#e_node_parent").val ();
+			data.e_node_name	= $form.find ("#e_node_name").val ();
+			data.e_title		= $form.find ("#e_title").val ();
+			data.e_publish_date = $form.find ("#e_publish_date").val ();
+			data.e_publish_time = $form.find ("#e_publish_time").val ();
+			data.e_author		= $form.find ("#e_author").val ();
+			data.e_content		= CKEDITOR.instances.e_content.getData ();
+
+			$.ajax ({
+					type	: $form.attr ("method")
+				,	url		: $form.attr ("action")
+				,	data	: data
+				,	dataType: "json"
+				,	success	: function (data, status)
+					{
+						$("#e_node_parent").prop ("disabled", true);
+						alert (data.msg);
+						location.reload ();
+					}
+				,	error	: function (xhr, status, errorThrown)
+					{
+						alert (xhr);
+					}
+				});
+
+			event.preventDefault();
 		}
 
 		$( document ).ready (function() {
@@ -400,58 +469,85 @@
 			});
 
 			CKEDITOR.replace ("e_content", {
-					filebrowserUploadUrl: 'upload.php'
+					filebrowserUploadUrl: "upload.php"
+				,	height	:"300px"
+				,	toolbar	:
+					[{
+						name	:"document"
+					,	groups	:
+						[
+							"mode"
+						,	"basicstyles"
+						,	"cleanup"
+						]
+					,	items	:
+						[
+							"Source"
+						,	"-"
+						,	"Bold"
+						,	"Italic"
+						,	"Underline"
+						,	"Strike"
+						,	"Subscript"
+						,	"Superscript"
+						,	"-"
+						,	"RemoveFormat"
+						]
+					},{
+						name	:"paragraph"
+					,	groups	:
+						[
+							"list"
+						,	"indent"
+						,	"blocks"
+						,	"align"
+						,	"bidi"
+						]
+					,	items	:
+						[
+						"NumberedList"
+						, "BulletedList"
+						, "-"
+						, "Outdent"
+						, "Indent"
+						, "-"
+						, "Blockquote"
+						, "CreateDiv"
+						, "-"
+						, "JustifyLeft"
+						, "JustifyCenter"
+						, "JustifyRight"
+						, "JustifyBlock"
+						, "-"
+						, "BidiLtr"
+						, "BidiRtl"
+						, "Language"
+						]
+					},{
+						name	: "links"
+					,	items	: [ "Link", "Unlink", "Anchor" ]
+					},{
+						name	: "insert"
+					,	items	:
+						[
+						  "CodeSnippet"
+						, "Image"
+						, "Flash"
+						, "Table"
+						, "HorizontalRule"
+						, "Smiley"
+						, "SpecialChar"
+						, "PageBreak"
+						, "Iframe"
+						]
+					},{
+						name	: "styles"
+					,	items	: [ "Styles", "Format", "Font", "FontSize" ]
+					}]
 				});
 
-			$("#node_form").on("submit", function (event) {
-				var $form = $(this);
-
-				$("#node_parent").removeAttr ("disabled");
-
-				$.ajax({
-					type	: $form.attr('method')
-				,	url		: $form.attr('action')
-				,	data	: $form.serialize()
-				,	success	: function (data, status) {
-						$("#node_parent").prop ("disabled", true);
-						alert ("Data has been saved");
-						location.reload ();
-					}
-				});
-
-				event.preventDefault();
-			});
-
-			$("#editor_form").on("submit", function (event) {
-				var $form	= $(this);
-				var data	= {};
-
-				data.e_node_parent	= $form.find ("#e_node_parent").val ();
-				data.e_node_name	= $form.find ("#e_node_name").val ();
-				data.e_title		= $form.find ("#e_title").val ();
-				data.e_publish_date = $form.find ("#e_publish_date").val ();
-				data.e_publish_time = $form.find ("#e_publish_time").val ();
-				data.e_author		= $form.find ("#e_author").val ();
-				data.e_content		= CKEDITOR.instances.e_content.getData ();
-
-				$.ajax({
-					type	: $form.attr('method')
-				,	url		: $form.attr('action')
-				,	data	: data
-				,	dataType: "json"
-				,	success	: function (data, status) {
-						$("#e_node_parent").prop ("disabled", true);
-						alert (data.msg);
-						location.reload ();
-					}
-				,	error	: function (xhr, status, errorThrown)
-					{
-						alert (xhr);
-					}
-				});
-
-				event.preventDefault();
-			});
+			$("#node_form").on ("submit", form_edit_node_submit);
+			$("#editor_form").on ("submit", form_edit_content_submit);
 		});
 	</script>
 </body>
