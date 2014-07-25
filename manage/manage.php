@@ -77,17 +77,16 @@
 								class="form-control"
 								id="e_node_parent"
 								placeholder="Node name"
-								required
 							></select>
 						</div>
 
-						<label for="e_publish-date" class="col-sm-2 control-label">Publish date</label>
+						<label for="e_publish_date" class="col-sm-2 control-label">Publish date</label>
 						<div class="col-sm-4">
 							<input
-								name="e_publish-date"
+								name="e_publish_date"
 								type="date"
 								class="form-control"
-								id="e_publish-date"
+								id="e_publish_date"
 								placeholder="Publish date"
 								required
 							>
@@ -105,14 +104,14 @@
 							>
 						</div>
 
-						<label for="e_author" class="col-sm-2 control-label">Author</label>
+						<label for="e_publish_time" class="col-sm-2 control-label">Publish Time</label>
 						<div class="col-sm-4">
 							<input
-								name="e_author"
+								name="e_publish_time"
 								type="text"
 								class="form-control"
-								id="e_author"
-								placeholder="Author"
+								id="e_publish_time"
+								placeholder="Publish Time"
 							>
 						</div>
 					</div>
@@ -126,6 +125,17 @@
 								id="e_title"
 								placeholder="Title"
 								required
+							>
+						</div>
+
+						<label for="e_author" class="col-sm-2 control-label">Author</label>
+						<div class="col-sm-4">
+							<input
+								name="e_author"
+								type="text"
+								class="form-control"
+								id="e_author"
+								placeholder="Author"
 							>
 						</div>
 					</div>
@@ -303,10 +313,10 @@
 
 			$("#e_node_parent").removeAttr ("disabled");
 
-			$("#node_parent").val ("");
+			$("#e_node_parent").val ("");
 			$("#e_node_name").val ("");
 			$("#e_title").val ("");
-			$("#e_publish-date").val ("");
+			$("#e_publish_date").val ("");
 			$("#e_author").val ("");
 			CKEDITOR.instances.e_content.setData ("");
 		}
@@ -413,15 +423,16 @@
 			});
 
 			$("#editor_form").on("submit", function (event) {
-				var $form = $(this);
-				var data = {};
+				var $form	= $(this);
+				var data	= {};
 
-				data.e_node_parent = $form.find ("#e_node_parent").val ();
-				data.e_node_name = $form.find ("#e_node_name").val ();
-				data.e_title = $form.find ("#e_title").val ();
-				data["e_publish-date"] = $form.find ("#e_publish-date").val ();
-				data.e_author = $form.find ("#e_author").val ();
-				data.e_content = CKEDITOR.instances.e_content.getData ();
+				data.e_node_parent	= $form.find ("#e_node_parent").val ();
+				data.e_node_name	= $form.find ("#e_node_name").val ();
+				data.e_title		= $form.find ("#e_title").val ();
+				data.e_publish_date = $form.find ("#e_publish_date").val ();
+				data.e_publish_time = $form.find ("#e_publish_time").val ();
+				data.e_author		= $form.find ("#e_author").val ();
+				data.e_content		= CKEDITOR.instances.e_content.getData ();
 
 				$.ajax({
 					type	: $form.attr('method')
