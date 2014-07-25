@@ -37,8 +37,12 @@ foreach ($nodes as $name => $node) {
 }
 
 // sort index by modified time.
-array_multisort ($findex[1], SORT_DESC, SORT_NUMERIC
-				,$findex[0], SORT_ASC, SORT_STRING);
+foreach ($findex as $k => $v) {
+	$path[$k]	= $v["path"];
+	$mtime[$k]	= $v["mtime"];
+}
+
+array_multisort ($mtime, SORT_DESC, $path, SORT_ASC, $findex);
 
 // take only ten of them.
 $findex = array_slice ($findex, 0, 10);
