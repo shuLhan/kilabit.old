@@ -80,6 +80,22 @@
 						</div>
 					</div>
 				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						<strong>Other sites</strong>
+						<ul>
+							<li><a	href="http://mup.kilabit.info"
+									target="_blank"
+								>Makanan untuk Pikiran</a></li>
+							<li><a	href="http://github.com/shuLhan"
+									target="_blank"
+								>Repositori Sumber Kode</a></li>
+							<li><a	href="http://id.linkedin.com/in/muhamadsulhan/"
+									target="_blank"
+								>Portofolio</a></li>
+						</ul>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
