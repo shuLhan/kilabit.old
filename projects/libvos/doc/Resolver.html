@@ -1,0 +1,493 @@
+<html>
+<head>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<h1> Resolver Module </h1>
+
+<ul class="toc">
+<li><a href="#mod_dep"> Module Dependencies </a></li>
+<li><a href="#desc"> Description </a></li>
+<li><a href="#class_var"> Class Variables </a></li>
+<li><a href="#class_method"> Class Methods </a></li>
+	<ul>
+	<li><a href="#Resolver::Resolver"><tt> Resolver::Resolver </tt></a></li>
+	<li><a href="#Resolver::~Resolver"><tt> Resolver::~Resolver </tt></a></li>
+	<li><a href="#Resolver::init"><tt> Resolver::init </tt></a></li>
+	<li><a href="#Resolver::dump"><tt> Resolver::dump </tt></a></li>
+	<li><a href="#Resolver::set_server"><tt> Resolver::set_server </tt></a></li>
+	<li><a href="#Resolver::add_server"><tt> Resolver::add_server </tt></a></li>
+	<li><a href="#Resolver::rotate_server"><tt> Resolver::rotate_server </tt></a></li>
+	<li><a href="#Resolver::send_udp"><tt> Resolver::send_udp </tt></a></li>
+	<li><a href="#Resolver::recv_udp"><tt> Resolver::recv_udp </tt></a></li>
+	<li><a href="#Resolver::recv_tcp"><tt> Resolver::recv_tcp </tt></a></li>
+	<li><a href="#Resolver::resolve_udp"><tt> Resolver::resolve_udp </tt></a></li>
+	<li><a href="#Resolver::resolve_tcp"><tt> Resolver::resolve_tcp </tt></a></li>
+	<li><a href="#Resolver::resolve"><tt> Resolver::resolve </tt></a></li>
+	</ul>
+</ul>
+
+
+<h2><a name="mod_dep"> Module Dependencies </h2>
+<pre>
+  Buffer <---------+          Socket
+    ^              |             ^
+    |              |             |
+ ...|..............|.............|.....
+ .  |              |             |    .
+ . DNS_rr *--- DNSQuery *--- Resolver .
+ .                                    .
+ ......................................
+
+
+Legend:
+^ : inheritance.
+* : include.
+</pre>
+
+
+<h2><a name="desc"> Description </a></h2>
+<p>
+Resolver is a module for translating host-name to IP address, by sending a
+DNS query to one of the parent server in the list of "<tt>_servers</tt>"
+using UDP or TCP.
+</p>
+
+<h2><a name="class_var">Class Variables</a></h2>
+
+<table class="class-var">
+<tr>
+	<th>Type</th><th>Name</th><th>Description</th>
+</tr><tr>
+	<td> fd_set </td>
+	<td> _fd_all </td>
+	<td> collection of all open file descriptor. </td>
+</tr><tr>
+	<td> fd_set </td>
+	<td> _fd_read </td>
+	<td> temporary descriptor used only when receiving reply from server. </td>
+</tr><tr>
+	<td> int </td>
+	<td> _maxfd </td>
+	<td> maximum file descriptor in this object. </td>
+</tr><tr>
+	<td> unsigned int </td>
+	<td> _n_try </td>
+	<td> temporary variable for counting number of packet re-send back to
+server. </td>
+</tr><tr>
+	<td> struct timeval </td>
+	<td> _timeout </td>
+	<td> temporary data for storing timeout value. </td>
+</tr><tr>
+	<td> SockAddr* </td>
+	<td> _servers </td>
+	<td> list of parent DNS server addresses. </td>
+</tr><tr>
+	<td> static unsigned int </td>
+	<td> PORT </td>
+	<td> default DNS server port. </td>
+</tr><tr>
+	<td> static unsigned int </td>
+	<td> UDP_PACKET_SIZE </td>
+	<td> default DNS packet size for UDP.</td>
+</tr><tr>
+	<td> static unsigned int </td>
+	<td> TIMEOUT </td>
+	<td> default timeout value, in seconds, for waiting reply from
+server. </td>
+</tr><tr>
+	<td> static unsigned int </td>
+	<td> N_TRY </td>
+	<td> maximum number of client trying to resend a packet back to
+server when no reply from server after specific 'TIMEOUT' is reached.
+	</td>
+</tr>
+</table>
+
+
+<h2><a name="class_method"> Class Methods </a></h2>
+
+<h3><a name="Resolver::Resolver"><tt> Resolver::Resolver </tt></a></h3>
+<table class="class-method">
+<tr>
+	<th>Code</th>
+	<td colspan="3"> Resolver() </td>
+</tr><tr>
+	<th>Parameter</th>
+	<td>-</td>
+</tr><tr>
+	<th>Return Value</th>
+	<td>-</td>
+</tr><tr>
+	<th>Description</th>
+	<td colspan="3"> Resolver constructor. </td>
+</tr>
+</table>
+
+<h3><a name="Resolver::~Resolver"><tt> Resolver::~Resolver </tt></a></h3>
+<table class="class-method">
+<tr>
+	<th>Code</th>
+	<td colspan="3"> ~Resolver() </td>
+</tr><tr>
+	<th>Parameter</th>
+	<td>-</td>
+</tr><tr>
+	<th>Return Value</th>
+	<td>-</td>
+</tr><tr>
+	<th>Description</th>
+	<td colspan="3"> Resolver destructor. </td>
+</tr>
+</table>
+
+<h3><a name="Resolver::init"><tt> Resolver::init </tt></a></h3>
+<table class="class-method">
+<tr>
+	<th>Code</th>
+	<td colspan="3"> int init(const int type = SOCK_DGRAM) </td>
+</tr><tr>
+	<th>Parameter</th>
+	<td><tt> type </tt></td>
+	<td>:</td>
+	<td> connection type, valid values:
+		<ul>
+		<li><tt> SOCK_DGRAM</tt> for UDP connection, or
+		<li><tt> SOCK_STREAM</tt> for TCP connection.
+		</ul>
+	</td>
+</tr><tr>
+	<th rowspan="2">Return Value</th>
+		<td><tt> 0 </tt></td>
+		<td>:</td>
+		<td> success. </td>
+	</tr><tr>
+		<td><tt> -1 </tt></td>
+		<td>:</td>
+		<td> fail. </td>
+</tr><tr>
+	<th>Description</th>
+	<td colspan="3"> Initialize Resolver object, create UDP and TCP
+socket. </td>
+</tr>
+</table>
+
+<h3><a name="Resolver::dump"><tt> Resolver::dump </tt></a></h3>
+<table class="class-method">
+<tr>
+	<th>Code</th>
+	<td colspan="3"> void dump() </td>
+</tr><tr>
+	<th>Parameter</th>
+	<td>-</td>
+</tr><tr>
+	<th>Return Value</th>
+	<td>-</td>
+</tr><tr>
+	<th>Description</th>
+	<td colspan="3"> Print content of Resolver object to standard output. </td>
+</tr>
+</table>
+
+<h3><a name="Resolver::set_server"><tt> Resolver::set_server </tt></a></h3>
+<table class="class-method">
+<tr>
+	<th>Code</th>
+	<td colspan="3"> int set_server(char* server_list) </td>
+</tr><tr>
+	<th>Parameter</th>
+	<td><tt> server_list </td>
+	<td>:</td>
+	<td> list of IP address of parent server. Each address is separated
+by comma. I.e: "8.8.8.8, 8.8.4.4".
+	</td>
+</tr><tr>
+	<th rowspan="2">Return Value</th>
+		<td><tt> 0 </tt></td>
+		<td>:</td>
+		<td> success. </td>
+	</tr><tr>
+		<td><tt> -1 </tt></td>
+		<td>:</td>
+		<td> fail. </td>
+</tr><tr>
+	<th>Description</th>
+	<td colspan="3"> Create a new parent server list from
+"<tt>server_list</tt>" value. Remove all parent server in <tt>_servers</tt>
+before creating a new list.
+	</td>
+</tr>
+</table>
+
+<h3><a name="Resolver::add_server"><tt> Resolver::add_server </tt></a></h3>
+<table class="class-method">
+<tr>
+	<th>Code</th>
+	<td colspan="3"> int add_server(char* server_list) </td>
+</tr><tr>
+	<th>Parameter</th>
+	<td><tt> server_list </tt></td>
+	<td>:</td>
+	<td> list of IP address of parent server. Each address is separated
+by comma. I.e: "8.8.8.8, 8.8.4.4".
+	</td>
+</tr><tr>
+	<th rowspan="2">Return Value</th>
+		<td><tt> 0 </tt></td>
+		<td>:</td>
+		<td> success. </td>
+	</tr><tr>
+		<td><tt> -1 </tt></td>
+		<td>:</td>
+		<td> fail. </td>
+</tr><tr>
+	<th>Description</th>
+	<td colspan="3"> Add another parent server to the list of server,
+'<tt>_servers</tt>'. Keep an old list if <tt>_servers</tt> is not nil.
+	</td>
+</tr>
+</table>
+
+<h3><a name="Resolver::rotate_server"><tt> Resolver::rotate_server </tt></a></h3>
+<table class="class-method">
+<tr>
+	<th>Code</th>
+	<td colspan="3"> void rotate_server() </td>
+</tr><tr>
+	<th>Parameter</th>
+	<td>-</td>
+</tr><tr>
+	<th>Return Value</th>
+	<td>-</td>
+</tr><tr>
+	<th>Description</th>
+	<td colspan="3"> Switch or change parent server to the one in the
+list. </td>
+</tr>
+</table>
+
+
+<h3><a name="Resolver::send_udp"><tt> Resolver::send_udp </tt></a></h3>
+<table class="class-method">
+<tr>
+	<th>Code</th>
+	<td colspan="3">
+int send_udp(DNSQuery* question)
+	</td>
+</tr><tr>
+	<th>Parameter</th>
+	<td><tt> question </tt></td>
+	<td>:</td>
+	<td> pointer to DNS packet that will be send to server.</td>
+</tr><tr>
+	<th rowspan="2">Return Value</th>
+		<td><tt> 0 </tt></td>
+		<td>:</td>
+		<td> success. </td>
+	</tr><tr>
+		<td><tt> -1 </tt></td>
+		<td>:</td>
+		<td> fail. </td>
+</tr><tr>
+	<th>Description</th>
+	<td colspan="3"> Send DNS packet "<tt>question</tt>" to one of the
+parent server.
+	</td>
+</tr>
+</table>
+
+<h3><a name="Resolver::recv_udp"><tt> Resolver::recv_udp </tt></a></h3>
+<table class="class-method">
+<tr>
+	<th>Code</th>
+	<td colspan="3">
+int recv_udp(DNSQuery* answer)
+	</td>
+</tr><tr>
+	<th>Parameter</th>
+	<td><tt> answer </tt></td>
+	<td>:</td>
+	<td> output, a DNS packet reply from parent server. </td>
+</tr><tr>
+	<th rowspan="2">Return Value</th>
+		<td><tt> 0 </tt></td>
+		<td>:</td>
+		<td> success. </td>
+	</tr><tr>
+		<td><tt> -1 </tt></td>
+		<td>:</td>
+		<td> fail. </td>
+</tr><tr>
+	<th>Description</th>
+	<td colspan="3"> Receive DNS reply from parent server.
+	</td>
+</tr>
+</table>
+
+<h3><a name="Resolver::send_tcp"><tt> Resolver::send_tcp </tt></a></h3>
+<table class="class-method">
+<tr>
+	<th>Code</th>
+	<td colspan="3">
+int send_tcp(DNSQuery* question)
+	</td>
+</tr><tr>
+	<th>Parameter</th>
+	<td><tt> question </tt></td>
+	<td>:</td>
+	<td> pointer to DNS packet that will be send to parent server. </td>
+</tr><tr>
+	<th rowspan="2">Return Value</th>
+		<td><tt> 0 </tt></td>
+		<td>:</td>
+		<td> success. </td>
+	</tr><tr>
+		<td><tt> -1 </tt></td>
+		<td>:</td>
+		<td> fail. </td>
+</tr><tr>
+	<th>Description</th>
+	<td colspan="3"> Send a DNS query packet to one of parent servers
+through TCP connection.
+	</td>
+</tr>
+</table>
+
+
+<h3><a name="Resolver::recv_tcp"><tt> Resolver::recv_tcp </tt></a></h3>
+<table class="class-method">
+<tr>
+	<th>Code</th>
+	<td colspan="3">
+int recv_tcp(DNSQuery* answer)
+	</td>
+</tr><tr>
+	<th>Parameter</th>
+	<td><tt> answer </tt></td>
+	<td>:</td>
+	<td> output, a DNS packet reply from parent server. </td>
+</tr><tr>
+	<th rowspan="2">Return Value</th>
+		<td><tt> 0 </tt></td>
+		<td>:</td>
+		<td> success. </td>
+	</tr><tr>
+		<td><tt> -1 </tt></td>
+		<td>:</td>
+		<td> fail. </td>
+</tr><tr>
+	<th>Description</th>
+	<td colspan="3"> Receive a DNS reply from parent server through TCP
+channel. Note that, DNS packet will converted to UDP mode (without header
+length) even though it was from TCP.
+	</td>
+</tr>
+</table>
+
+<h3><a name="Resolver::resolve_udp"><tt> Resolver::resolve_udp </tt></a></h3>
+<table class="class-method">
+<tr>
+	<th>Code</th>
+	<td colspan="3">
+int resolve_udp(DNSQuery* question, DNSQuery* answer)
+	</td>
+</tr><tr>
+	<th rowspan="2">Parameter</th>
+		<td><tt> question </tt></td>
+		<td>:</td>
+		<td> pointer to DNSQuery object (DNS packet).</td>
+	</tr><tr>
+		<td><tt> answer </tt></td>
+		<td>:</td>
+		<td> output, a reply from DNS server. </td>
+</tr><tr>
+	<th rowspan="2">Return Value</th>
+		<td><tt> 0 </tt></td>
+		<td>:</td>
+		<td> success. </td>
+	</tr><tr>
+		<td><tt> -1 </tt></td>
+		<td>:</td>
+		<td> fail. </td>
+</tr><tr>
+	<th>Description</th>
+	<td colspan="3"> Send "<tt>question</tt>" to parent server to get an
+"<tt>answer</tt>" using UDP. If <tt>question</tt> is TCP packet,
+<tt>question</tt> will be converted to UDP packet.
+	</td>
+</tr>
+</table>
+
+<h3><a name="Resolver::resolve_tcp"><tt> Resolver::resolve_tcp </tt></a></h3>
+<table class="class-method">
+<tr>
+	<th>Code</th>
+	<td colspan="3">
+int resolve_tcp(DNSQuery* question, DNSQuery* answer)
+	</td>
+</tr><tr>
+	<th rowspan="2">Parameter</th>
+		<td><tt> question </tt></td>
+		<td>:</td>
+		<td> pointer to DNSQuery object (DNS packet).</td>
+	</tr><tr>
+		<td><tt> answer </tt></td>
+		<td>:</td>
+		<td> output, a reply from DNS server. </td>
+</tr><tr>
+	<th rowspan="2">Return Value</th>
+		<td><tt> 0 </tt></td>
+		<td>:</td>
+		<td> success. </td>
+	</tr><tr>
+		<td><tt> -1 </tt></td>
+		<td>:</td>
+		<td> fail. </td>
+</tr><tr>
+	<th>Description</th>
+	<td colspan="3"> Send "<tt>question</tt>" to parent server to get an
+"<tt>answer</tt>" using TCP. If <tt>question</tt> is UDP packet, it will be
+converted to TCP packet.
+	</td>
+</tr>
+</table>
+
+<h3><a name="Resolver::resolve"><tt> Resolver::resolve </tt></a></h3>
+<table class="class-method">
+<tr>
+	<th>Code</th>
+	<td colspan="3"> int resolve(DNSQuery* question, DNSQuery* answer) </td>
+</tr><tr>
+	<th rowspan="2">Parameter</th>
+		<td><tt> question </tt></td>
+		<td>:</td>
+		<td> pointer to DNSQuery object (DNS packet).</td>
+	</tr><tr>
+		<td><tt> answer </tt></td>
+		<td>:</td>
+		<td> output, a reply from DNS server. </td>
+</tr><tr>
+	<th rowspan="2">Return Value</th>
+		<td><tt> 0 </tt></td>
+		<td>:</td>
+		<td> success. </td>
+	</tr><tr>
+		<td><tt> -1 </tt></td>
+		<td>:</td>
+		<td> fail. </td>
+</tr><tr>
+	<th>Description</th>
+	<td colspan="3">
+Send <tt>question</tt> to parent server to get an <tt>answer</tt> using
+UDP/TCP. If type of packet in <tt>question</tt> is UDP
+(<tt>BUFFER_IS_UDP</tt>), then <tt>question</tt> will be send using UDP, or
+if type of packet in <tt>question</tt> is TCP (<tt>BUFFER_IS_TCP</tt>), then
+packet will be send using TCP.
+	</td>
+</tr>
+</table>
+
+</body>
+</html>

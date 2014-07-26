@@ -1,0 +1,33 @@
+<html>
+<head>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<h1> Directory Module </h1>
+
+<ul class="toc">
+<li><a href="DirNode.html"> DirNode Module </a></li>
+<li><a href="Dir.html"> Dir Module </a></li>
+</ul>
+
+<p>
+Directory module is an interface to file system. When File module is for
+reading and writing content of file in file system, Directory module is
+created for handling content of directory: list of files with their
+attributes.
+</p>
+<p>
+Directory module is built using two class: DirNode and Dir. DirNode represent
+each node (node is a single directory/file/symbolic link.) in the content of
+directory, it contains node name, permission, size, modification time, and
+attribute modification time.
+</p>
+<p>
+Dir class is a class that collecting and processing all the node in one
+directory, including all the nodes in the subdirectory, into one root DirNode
+object.
+</p>
+
+
+</body>
+</html>

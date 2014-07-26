@@ -10,7 +10,12 @@ $wui["contents_dir"]	= "./";
 $wui["homepage"]		= "/home";
 $wui["journal_dir"]		= "/journal";
 $wui["journal_name"]	= "Journal";
-$wui["contents_exclude"]= [ "/doc", "/_kemxtri", "/_sima" ];
+$wui["contents_exclude"]= [
+						  "/doc"
+						, "/_kemxtri"
+						, "/_sima"
+						, "/projects/libvos/doc"
+						];
 /* Order matter */
 $wui["social_icon"]		= [
 	"facebook"		=> ""
