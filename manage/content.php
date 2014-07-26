@@ -79,9 +79,11 @@ try {
 
 	// check node name, if empty use date + title
 	if (null === $node_name || "" === $node_name) {
-		$node_name = str_replace ("-", "_", $e_title);
-		$node_name = str_replace (":", "_", $e_title);
-		$node_name = str_replace (" ", "_", $node_name);
+		$node_name = trim ( preg_replace ("/[^a-zA-Z0-9]/", "_", $e_title) , "_" );
+	}
+
+	if (null === $e_pub_time || "" === $e_pub_time) {
+		$e_pub_time = "00:00:00";
 	}
 
 	// replace '-' with '/'

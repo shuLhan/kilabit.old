@@ -370,7 +370,7 @@
 
 			$("#e_node_parent").removeAttr ("disabled");
 
-			$("#e_node_parent").val ("-");
+			$("#e_node_parent").val ("");
 			$("#e_node_name").val ("");
 			$("#e_title").val ("");
 			$("#e_publish_date").val (get_current_date ());
@@ -472,7 +472,9 @@
 			var np_node = $("#node_parent");
 			var np_editor = $("#e_node_parent");
 
+			np_node.append ("<option></option>");
 			np_node.append ("<option>-</option>");
+			np_editor.append ("<option></option>");
 			np_editor.append ("<option>-</option>");
 
 			init_node_parent_selection (wui_menu, "nodes", 0);
