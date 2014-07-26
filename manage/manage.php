@@ -95,7 +95,7 @@
 								type="date"
 								class="form-control"
 								id="e_publish_date"
-								placeholder="Publish date"
+								placeholder="Year.Month.Day *"
 								required
 							>
 						</div>
@@ -108,7 +108,7 @@
 								type="text"
 								class="form-control"
 								id="e_node_name"
-								placeholder="Node name"
+								placeholder="Directory name in file system"
 							>
 						</div>
 
@@ -119,7 +119,7 @@
 								type="text"
 								class="form-control"
 								id="e_publish_time"
-								placeholder="Publish Time"
+								placeholder="Hour:Minute:Second"
 							>
 						</div>
 					</div>
@@ -131,7 +131,7 @@
 								type="text"
 								class="form-control"
 								id="e_title"
-								placeholder="Title"
+								placeholder="* Awesome Title *"
 								required
 							>
 						</div>
@@ -143,7 +143,7 @@
 								type="text"
 								class="form-control"
 								id="e_author"
-								placeholder="Author"
+								placeholder="you@domain.com"
 							>
 						</div>
 					</div>
@@ -206,7 +206,7 @@
 								type="text"
 								class="form-control"
 								id="node_name"
-								placeholder="Node name"
+								placeholder="Directory name in file system"
 								required
 							>
 						</div>
@@ -309,7 +309,7 @@
 
 			$("#node_form #node_parent").removeAttr ("disabled");
 
-			$("#node_parent").val ("");
+			$("#node_parent").val ("-");
 			$("input#node_name").val ("");
 			$("input#node_title").val ("");
 		}
@@ -335,6 +335,34 @@
 			event.preventDefault();
 		}
 
+		function get_current_date ()
+		{
+			var today = new Date();
+			var dd = today.getDate();
+			var mm = today.getMonth()+1; //January is 0!
+			var yyyy = today.getFullYear();
+
+			if(dd<10){dd='0'+dd}
+			if(mm<10){mm='0'+mm}
+			today = yyyy+"."+mm+"."+dd;
+
+			return today;
+		}
+
+		function get_current_time ()
+		{
+			var t = new Date ();
+			var h = t.getHours ();
+			var m = t.getMinutes ();
+			var s = t.getSeconds ();
+
+			if (h < 10) { h = '0' + h; }
+			if (m < 10) { m = '0' + m; }
+			if (s < 10) { s = '0' + s; }
+
+			return h +":"+ m +":"+ s;
+		}
+
 		function form_edit_content_reset ()
 		{
 			$("#editor_form").removeClass ("hidden");
@@ -342,10 +370,11 @@
 
 			$("#e_node_parent").removeAttr ("disabled");
 
-			$("#e_node_parent").val ("");
+			$("#e_node_parent").val ("-");
 			$("#e_node_name").val ("");
 			$("#e_title").val ("");
-			$("#e_publish_date").val ("");
+			$("#e_publish_date").val (get_current_date ());
+			$("#e_publish_time").val (get_current_time ());
 			$("#e_author").val ("");
 			CKEDITOR.instances.e_content.setData ("");
 		}
@@ -443,8 +472,8 @@
 			var np_node = $("#node_parent");
 			var np_editor = $("#e_node_parent");
 
-			np_node.append ("<option></option>");
-			np_editor.append ("<option></option>");
+			np_node.append ("<option>-</option>");
+			np_editor.append ("<option>-</option>");
 
 			init_node_parent_selection (wui_menu, "nodes", 0);
 
