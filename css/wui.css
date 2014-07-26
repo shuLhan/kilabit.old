@@ -41,10 +41,14 @@
 	width			: 12em;
 }
 
+#wui_content_share {
+	margin-top		: 10px;
+}
+
 #wui_footer {
 	border-top		: 1px solid silver;
 	padding-top		: 4px;
-	margin			: 0px;
+	margin			: 10px 0px 10px 0px;
 }
 
 .title {

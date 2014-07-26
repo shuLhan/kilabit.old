@@ -57,7 +57,11 @@
 
 		<div class="row">
 			<div class="col-sm-12">
-				<div id="wui_content"></div>
+				<div id="wui_content_share">
+				</div>
+
+				<div id="wui_content">
+				</div>
 				<table
 					id="wui_content_meta"
 					class="table table-condensed"
@@ -79,7 +83,9 @@
 			</div>
 		</div>
 	</div>
-
+<!--
+	<script src="http://platform.twitter.com/widgets.js" type="text/javascript"></script>
+-->
 	<script src="/js/jquery.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/wui_menu.js"></script>

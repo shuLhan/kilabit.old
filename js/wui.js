@@ -33,8 +33,9 @@ var WUI =
 		return str.replace (/\//g, "-");
 	}
 
-,	set_content_meta : function ($xml, link)
+,	set_content_meta : function (res, link)
 	{
+		var $xml = $( $.parseXML (res) );
 		var meta = $("#wui_content_meta");
 
 		meta.empty ();
@@ -59,10 +60,30 @@ var WUI =
 		);
 	}
 
-,	set_content : function (link)
+,	set_content_share : function (node)
 	{
-		var wc = $("#wui_content");
-		var ts = "?_ts="+ new Date ().getTime ();
+		var link	= node.link.replace ("/index.html", "");
+		var share	= $("#wui_content_share");
+
+		share.empty ();
+
+		share.append ("<a href='https://twitter.com/share'"
+						+"class='twitter-share-button'"
+						+"data-lang='en'"
+						+"data-via='MhdSulhan'"
+						+"data-url='http://"+ window.location.hostname + link +"'"
+						+"data-text='"+ node.title +"'"
+						+">Tweet</a>"
+			);
+
+		twttr.widgets.load ();
+	}
+
+,	set_content : function (node)
+	{
+		var link	= node.link;
+		var wc		= $("#wui_content");
+		var ts		= "?_ts="+ new Date ().getTime ();
 
 		wc.empty ();
 
@@ -74,9 +95,9 @@ var WUI =
 				link = link.replace ("/index.html", "");
 
 				// do not fix it on homepage
-				if (WUI.homepage === link) {
-					return;
-				}
+//				if (WUI.homepage === link) {
+//					return;
+//				}
 
 				wc.find ("img").each (function (i)
 				{
@@ -85,10 +106,10 @@ var WUI =
 					$(this).attr ("src", link +"/"+ src);
 				});
 
-				var $xml = $( $.parseXML (res) );
-
 				// add meta to content
-				WUI.set_content_meta ($xml, link);
+				WUI.set_content_meta (res, link);
+
+//				WUI.set_content_share (node);
 			});
 	}
 
@@ -123,7 +144,7 @@ var WUI =
 		$("#wui_menu #"+ id).removeClass ("hidden");
 
 		if (true === load) {
-			WUI.set_content (link);
+			WUI.set_content (e.data);
 		}
 	}
 
@@ -148,6 +169,7 @@ var WUI =
 			,	pid		: m.pid
 			,	link	: m.link
 			,	load	: m.load
+			,	title	: m.title
 			}, WUI.on_menu_click);
 
 			mi.append (a);
@@ -205,7 +227,6 @@ var WUI =
 ,	set_frontpage : function ()
 	{
 		var ids		= WUI.path2id (WUI.homepage);
-
 		var ida		= ids.split ("-");
 		var id		= "";
 
