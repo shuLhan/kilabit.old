@@ -1,0 +1,8 @@
+Options +FollowSymlinks
+RewriteEngine On
+RewriteBase /
+RewriteRule ^(js|css|images|manage|fonts|feed|projects/libvos|projects/vos)[/]?.*$  - [NC,L]
+RewriteRule ^.*\.(png|jpg|jpeg|ico|svg|gif)$	-			[NC,L]
+RewriteRule ^.*\.php.*$				-			[NC,L]
+RewriteRule ^.*\/index\.html\??.*		-			[NC,L]
+RewriteRule ^(.*)$				/index.php?open=$1	[NC,L]
