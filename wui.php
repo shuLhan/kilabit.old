@@ -109,6 +109,14 @@ function list_dir ($dir, $pid)
 		$menu[$idx]["id"]	= $id;
 		$menu[$idx]["pid"]	= $pid;
 
+		$fcomment = $p."/comment.json";
+
+		if (file_exists ($fcomment)) {
+			$menu[$idx]["comment"] = true;
+		} else {
+			$menu[$idx]["comment"] = false;
+		}
+
 		get_meta ($menu[$idx], $findex, $id);
 
 		$submenu = list_dir ($p, $id);

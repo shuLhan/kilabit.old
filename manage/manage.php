@@ -32,7 +32,7 @@
 <body>
 	<div class="container-fluid">
 		<div class="row">
-			<div class="col-md-3">
+			<div class="col-sm-3">
 				<div class="btn-group">
 					<button
 						type="button"
@@ -67,8 +67,9 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-md-9">
-				<!-- journal editor begin -->
+
+			<!-- journal editor begin -->
+			<div class="col-sm-9">
 				<form
 					id="editor_form"
 					class="form-horizontal"
@@ -82,7 +83,7 @@
 							<select
 								name="e_node_parent"
 								type="text"
-								class="form-control"
+								class="form-control input-sm"
 								id="e_node_parent"
 								placeholder="Node name"
 							></select>
@@ -93,7 +94,7 @@
 							<input
 								name="e_publish_date"
 								type="date"
-								class="form-control"
+								class="form-control input-sm"
 								id="e_publish_date"
 								placeholder="Year.Month.Day *"
 								required
@@ -106,7 +107,7 @@
 							<input
 								name="e_node_name"
 								type="text"
-								class="form-control"
+								class="form-control input-sm"
 								id="e_node_name"
 								placeholder="Directory name in file system"
 							>
@@ -117,7 +118,7 @@
 							<input
 								name="e_publish_time"
 								type="text"
-								class="form-control"
+								class="form-control input-sm"
 								id="e_publish_time"
 								placeholder="Hour:Minute:Second"
 							>
@@ -129,7 +130,7 @@
 							<input
 								name="e_title"
 								type="text"
-								class="form-control"
+								class="form-control input-sm"
 								id="e_title"
 								placeholder="* Awesome Title *"
 								required
@@ -141,10 +142,21 @@
 							<input
 								name="e_author"
 								type="text"
-								class="form-control"
+								class="form-control input-sm"
 								id="e_author"
 								placeholder="you@domain.com"
 							>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-6">
+							<label class="checkbox-inline input-sm">
+								<input
+									name="e_comment"
+									type="checkbox"
+									id="e_comment"
+								/>Allow comment
+							</label>
 						</div>
 					</div>
 					<div class="form-group">
@@ -376,6 +388,7 @@
 			$("#e_publish_date").val (get_current_date ());
 			$("#e_publish_time").val (get_current_time ());
 			$("#e_author").val ("");
+			$("#e_comment").val ("off");
 			CKEDITOR.instances.e_content.setData ("");
 		}
 
@@ -425,6 +438,8 @@
 							}
 						});
 
+					$("#e_comment").prop ("checked", node.comment);
+
 					var body = $xml.find ("body").html ().trim ();
 
 					CKEDITOR.instances.e_content.setData (body);
@@ -442,6 +457,7 @@
 			data.e_publish_date = $form.find ("#e_publish_date").val ();
 			data.e_publish_time = $form.find ("#e_publish_time").val ();
 			data.e_author		= $form.find ("#e_author").val ();
+			data.e_comment		= $form.find ("#e_comment").prop ("checked");
 			data.e_content		= CKEDITOR.instances.e_content.getData ();
 
 			$.ajax ({
@@ -501,7 +517,7 @@
 
 			CKEDITOR.replace ("e_content", {
 					filebrowserUploadUrl: "upload.php"
-				,	height	:"300px"
+				,	height	:"280px"
 				,	toolbar	:
 					[{
 						name	:"document"

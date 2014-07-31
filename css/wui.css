@@ -28,12 +28,11 @@
 }
 
 #wui_content_meta {
-	margin			: 20px 0px 0px 0px;
+	margin			: 0px 0px 0px 0px;
 }
 
 #wui_content_meta * {
 	border			: 0px solid;
-	background-color: #F5F5F5;
 	font-size		: 10px;
 }
 

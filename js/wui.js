@@ -28,6 +28,33 @@ var WUI =
 		}]
 	}
 
+,	wui_comment_on_submit : function (event)
+	{
+		var $form	= $(this);
+		var data	= {};
+
+		data.c_link			= $form.find ("#c_link").val ();
+		data.c_content		= $form.find ("#c_content").val ();
+
+		$.ajax ({
+				type	: $form.attr ("method")
+			,	url		: $form.attr ("action")
+			,	data	: data
+			,	dataType: "json"
+			,	success	: function (data, status)
+				{
+					alert (data.msg);
+					location.reload ();
+				}
+			,	error	: function (xhr, status, errorThrown)
+				{
+					alert (xhr);
+				}
+			});
+
+		event.preventDefault();
+	}
+
 ,	path2id : function (str)
 	{
 		return str.replace (/\//g, "-");
@@ -113,6 +140,30 @@ var WUI =
 			});
 	}
 
+,	set_content_comment : function (node)
+	{
+		var wc		= $("#comments");
+		var ts		= "?_ts="+ new Date ().getTime ();
+		var link	= node.link.replace ("index.html", "comment.json");
+
+		$("#c_link").val (link);
+
+		wc.empty ();
+
+		$.getJSON (link + ts, function (data) {
+				$.each (data, function (idx, d) {
+					wc.append ("<div class='panel'>"
+								+"<div class='panel-body'>"
+								+"<strong>"
+									+ (d.author === "" ? "Anonymous" : d.author)
+								+", </strong>"
+								+ d.v
+								+"</div>"
+								+"</div>");
+				});
+			});
+	}
+
 ,	on_menu_click : function (e)
 	{
 		var id		= e.data.id;
@@ -145,6 +196,13 @@ var WUI =
 
 		if (true === load) {
 			WUI.set_content (e.data);
+
+			if (true === e.data.comment) {
+				$("#wui_comment_panel").removeClass ("hidden");
+				WUI.set_content_comment (e.data);
+			} else {
+				$("#wui_comment_panel").addClass ("hidden");
+			}
 		}
 	}
 
@@ -170,6 +228,7 @@ var WUI =
 			,	link	: m.link
 			,	load	: m.load
 			,	title	: m.title
+			,	comment	: m.comment
 			}, WUI.on_menu_click);
 
 			mi.append (a);
