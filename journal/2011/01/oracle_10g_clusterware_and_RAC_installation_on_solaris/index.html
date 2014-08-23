@@ -1,0 +1,181 @@
+<html>
+<head>
+<meta name="title" content="Oracle 10g Clusterware and RAC Installation on Solaris"/>
+<meta name="publish_date" content="2011.01.08 13:22:49"/>
+<meta name="author" content="ms@kilabit.info"/>
+</head>
+<body>
+<h1>Oracle 10g Clusterware &amp; RAC Installation on Solaris</h1>
+
+<pre>
+Notes:
+	o the &#39;#&#39; at first line mean is the command must be _run_ as root.
+	o the &#39;$&#39; at first line mean is the command must be run as user, in
+          this case user &#39;oracle&#39;.
+
+NODE 1: Solaris 5.10
+
+	o pcn0 (public net)	: 192.168.1.101 rac1-solaris
+	o pcn0:1 (virtual net)	: 192.168.1.111 rac1-vip
+	o pcn1 (private net)	: 192.168.2.201 rac1-priv
+
+NODE 2: Solaris 5.10
+
+	o pcn0 (public net)	: 192.168.1.102 rac2-solaris
+	o pcn1:1 (virtual net)	: 192.168.1.112 rac2-vip
+	o pcn1 (private net)	: 192.168.2.202 rac2-priv
+
+
+- FOR EACH NODE, install solaris an usual
+
+- FOR EACH NODE, configure networks; Usually IP address has been set in
+  install process.
+
+	o set &#39;/etc/hosts&#39; in all node.
+
+- FOR EACH NODE, turn on NTP client; or pick one node as NTP server.
+
+	@ see &#39;/etc/inet/ntp.client&#39;
+	@ see &#39;/etc/inet/ntp.server&#39;
+
+- FOR EACH NODE, set udp buffer.
+
+	# ( cat &lt;&lt;-EOF
+#!/usr/bin/bash
+
+case &quot;$1&quot; in
+&#39;start&#39;)
+        ndd -set /dev/udp udp_xmit_hiwat 65536
+        ndd -set /dev/udp udp_recv_hiwat 65536
+        ;;
+&#39;status&#39;)
+        ndd /dev/udp udp_xmit_hiwat
+        ndd /dev/udp udp_recv_hiwat
+        ;;
+*)
+        echo &quot;usage: $0 {start | status}&quot;
+        exit 1
+        ;;
+esac
+EOF
+) &gt; /etc/init.d/rac.udp.sh
+
+	# chmod +x /etc/init.d/rac.udp.sh
+	# ln -s /etc/init.d/rac.udp.sh /etc/rc3.d/S89rac.udp.sh
+
+- FOR EACH NODE, create group for oracle
+
+	# groupadd -g 200 oinstall
+	# groupadd -g 201 dba
+	# groupadd -g 202 oper
+
+- FOR EACH NODE, create user oracle
+
+	# mkdir /export/home/oracle
+	# chown oracle:dba /export/home/oracle
+	# useradd -u 200 -g oinstall -G dba,oper -d /export/home/oracle
+	# oracle
+	# passwd oracle
+
+- FOR EACH NODE, make sure nobody is exist
+
+	# id nodoby
+
+- FOR EACH NODE, configure solaris 10 projects attributes
+
+	# projadd group.dba
+	# projmod -sK &quot;project.max-shm-memory=(privileged,4294967295,deny)&quot;
+	# group.dba
+	# projmod -sK &quot;project.max-sem-ids=(privileged,100,deny)&quot; group.dba
+	# projmod -sK &quot;project.max-shm-ids=(privileged,100,deny)&quot; group.dba
+	# projmod -sK &quot;project.max-sem-nsems=(privileged,256,deny)&quot; group.dba
+	# echo &quot;oracle::::type=normal;project=group.dba&quot; &gt;&gt; /etc/user_attr
+
+	or/and add this to `/etc/system&#39;,
+
+	set noexec_user_stack=1
+	set semsys:seminfo_semmni=100
+	set semsys:seminfo_semmns=1024
+	set semsys:seminfo_semmsl=256
+	set semsys:seminfo_semvmx=32767
+	set shmsys:shminfo_shmmax=4294967295
+	set shmsys:shminfo_shmmin=1
+	set shmsys:shminfo_shmmni=100
+	set shmsys:shminfo_shmseg=10
+
+- FOR EACH NODE, create authorized keys for automatic login for oracle user
+
+	$ mkdir -p .ssh
+	$ chmod 700 .ssh
+	$ ssh-keygen -t rsa
+	$ ssh-keygen -t dsa
+
+- ONLY ON NODE 1, combine all public keys into one file
+
+	$ ssh rac1-solaris cat ~/.ssh/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys
+	$ ssh rac1-solaris cat ~/.ssh/id_dsa.pub &gt;&gt; ~/.ssh/authorized_keys
+	$ ssh rac2-solaris cat ~/.ssh/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys
+	$ ssh rac2-solaris cat ~/.ssh/id_dsa.pub &gt;&gt; ~/.ssh/authorized_keys
+
+- ONLY ON NODE 1, copy the &quot;~/.ssh/authorized_keys&quot; file to others Node
+
+	$ scp ~/.ssh/authorized_keys rac2:~/.ssh/
+
+- FOR EACH NODE, check software requirements
+
+	$ pkginfo -i SUNWarc SUNWbtool SUNWhea SUNWlibm SUNWlibms SUNWsprot \
+SUNWtoo SUNWi1of SUNWi1cs SUNWi15cs SUNWxwfnt
+
+	and install the missing packages, in this example from dvdrom
+
+	# pkgadd -d /cdrom/cdrom0/Solaris_10/Product/ SUNWi1cs
+	# pkgadd -d /cdrom/cdrom0/Solaris_10/Product/ SUNWi15cs
+
+	$ echo &quot;umask 022&quot; &gt; ~/.profile
+	$ echo &quot;export ORACLE_BASE=/export/home/oracle&quot; &gt;&gt; ~/.profile
+	$ . ~/.profile
+
+- ONLY ON NODE 1, install clusterware,
+
+	$ ./clusterware/runInstaller
+
+
+Appendix A: CVU
+---------------
+
+- checking cluster connectivity
+
+	$ ./runcluvfy.sh comp nodecon -n rac1-solaris,rac2-solaris -verbose
+
+- checking os dependencies
+
+	$ ./runcluvfy.sh stage -post hwos -n rac1,rac2 -verbose
+
+
+Appendix B: iscsi disk : initiator, target and client
+-----------------------------------------------------
+
+	example of disk layout:
+
+Part      Tag    Flag     Cylinders        Size            Blocks
+  0 unassigned    wm       0               0         (0/0/0)           0
+  1 unassigned    wm       0               0         (0/0/0)           0
+  2     backup    wu       0 - 1301        9.97GB    (1302/0/0) 20916630
+  3 unassigned    wm       2 -   12      101.98MB    (13/0/0)     208845
+  4 unassigned    wm       2 -   15       23.53MB    (3/0/0)       48195
+  5 unassigned    wm       2 - 1301        9.85GB    (1286/0/0) 20659590
+  6 unassigned    wm       0               0         (0/0/0)           0
+  7 unassigned    wm       0               0         (0/0/0)           0
+  8       boot    wu       0 -    0        7.84MB    (1/0/0)       16065
+  9 unassigned    wm       0               0         (0/0/0)           0
+
+
+	# iscsitadm create initiator --iqn iqn.rac1-solaris.dev.rdsk.c2t0d0
+	# asmvol00
+	# iscsitadm create target --type disk -b /dev/rdsk/c2t0d0s3 ocr
+	# iscsitadm create target --type disk -b /dev/rdsk/c2t0d0s4 vot
+	# iscsitadm create target --type disk -b /dev/rdsk/c2t0d0s5 asmdisk05
+</pre>
+
+</body>
+</html>
