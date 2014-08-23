@@ -13,6 +13,7 @@ try {
 	$c = [];
 	$c["author"] = "";
 	$c["email"] = "";
+	$c["time"] = time ();
 	$c["v"] = $c_content;
 
 	if (! file_exists ($c_link)) {

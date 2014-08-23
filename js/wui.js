@@ -41,10 +41,10 @@ var WUI =
 			,	url		: $form.attr ("action")
 			,	data	: data
 			,	dataType: "json"
-			,	success	: function (data, status)
+			,	success	: function (resp, status)
 				{
-					alert (data.msg);
-					location.reload ();
+					var l = data.c_link.replace ("comment.json", "");
+					window.open (l, "_self");
 				}
 			,	error	: function (xhr, status, errorThrown)
 				{
@@ -158,6 +158,9 @@ var WUI =
 									+ (d.author === "" ? "Anonymous" : d.author)
 								+", </strong>"
 								+ d.v
+									+"<span id='comment_time'> -- "
+									+ WUIFeed.date2string (new Date(d.time * 1000))
+									+"</span>"
 								+"</div>"
 								+"</div>");
 				});

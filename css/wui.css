@@ -50,6 +50,10 @@
 	margin			: 10px 0px 10px 0px;
 }
 
+#comment_time {
+	color			: silver;
+}
+
 .title {
 	font-family		: sans-serif;
 	font-size		: 24px;
