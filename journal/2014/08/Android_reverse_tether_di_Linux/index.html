@@ -41,19 +41,19 @@ iptables -P FORWARD ACCEPT</code></p>
 		<li>Reset IP dari perangkat 3G supaya data tidak terkirim lewat 3G,<br />
 		<br />
 		<code># ifconfig rmnet0 0.0.0.0</code><br />
-		<br/></li>
+		<br /></li>
 		<li>Setiap koneksi DNS alihkan ke Google DNS (8.8.8.8),<br />
 		<br />
 		<code># iptables -t nat -A output -p udp --dport 53 -j DNAT --to-destination 8.8.8.8:53</code><br />
-		<br/></li>
+		<br /></li>
 		<li>Hapus default gateway<code>,<br />
 		<br />
 		# ip r del default</code><br />
-		<br/></li>
+		<br /></li>
 		<li>Atur default gateway ke IP di laptop,<br />
 		<br />
 		<code># ip r add default via 192.168.43.181</code><br />
-		<br/></li>
+		<br /></li>
 		<li>Atur IP DNS ke publik DNS<code>,<br />
 		<br />
 		# setprop net.rmnet0.dns1 8.8.8.8<br />
