@@ -469,7 +469,6 @@
 					{
 						$("#e_node_parent").prop ("disabled", true);
 						alert (data.msg);
-						location.reload ();
 					}
 				,	error	: function (xhr, status, errorThrown)
 					{
