@@ -77,6 +77,7 @@ foreach ($findex as $k => $fin) {
 
 	// get link by cutting index path.
 	$link = $feed_url . ltrim ($fin["path"], $feed_src_cut);
+	$link = str_replace ("/index.html", "", $link);
 
 	// get update time.
 	$updated = date ("c", $fin["mtime"]);
@@ -95,8 +96,6 @@ foreach ($findex as $k => $fin) {
 
 	$content = ltrim ($html->body->asXML (), "<body>");
 	$content = rtrim ($content, "</body>");
-
-	
 
 	$entry->addChild ("id", $link);
 
