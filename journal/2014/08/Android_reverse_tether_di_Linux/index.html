@@ -13,13 +13,13 @@
 
 <p>Solusinya adalah dengan menggunakan metoda <em>reverse tethering.</em></p>
 
-<p>Untuk contoh implementasi disini perangkatnya adalah laptop dengan OS Linux yang terkoneksi ke internet lewat USB modem, dan terkoneksi ke tablet menggunakan nirkabel.</p>
+<p>Untuk contoh implementasi disini perangkatnya adalah laptop dengan OS Linux yang terkoneksi ke internet lewat USB modem, dan terkoneksi ke tablet Android menggunakan nirkabel (WI-FI).</p>
 
-<p>Kebutuhan untuk tablet adalah,</p>
+<p>Kebutuhan untuk tablet Android adalah,</p>
 
 <ul>
 	<li>sudah di <em>rooting</em>,</li>
-	<li>memiliki fitur WI-FI AP,</li>
+	<li>memiliki fitur WI-FI Access Pop,</li>
 	<li>sudah terpasang aplikasi terminal seperti <a href="https://play.google.com/store/apps/details?id=jackpal.androidterm" target="_blank">Android Terminal Emulator</a>.</li>
 </ul>
 
@@ -27,44 +27,57 @@
 
 <ul>
 	<li>Sambungkan laptop ke internet dengan USB modem.</li>
-	<li>Atur supaya laptop dapat meneruskan setiap data dari perangkat jaringan ke ppp0 menggunakan perintah iptables di bawah ini,</li>
+	<li>Atur supaya laptop dapat meneruskan setiap data dari perangkat jaringan ke <code>ppp0</code> (USB modem) menggunakan perintah <code>iptables</code> di bawah ini,</li>
 </ul>
 
-<p><code>iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE<br />
-iptables -P FORWARD ACCEPT</code></p>
+<pre>
+iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+iptables -P FORWARD ACCEPT</pre>
 
 <ul>
-	<li>Hidupkan WI-FI AP di perangkat Android.</li>
-	<li>Sambungkan WI-FI di laptop supaya terhubung ke WI-FI di Android. Catat alamat laptop yang terhubung ke Wifi tablet, misalnya <code>192.168.43.181</code>. Alamat ini nanti akan menjadi gateway nantinya bagi tablet Android.</li>
-	<li>Buka terminal di Android, jalankan perintah di bawah sebagai super user (root),
-	<ul>
-		<li>Reset IP dari perangkat 3G supaya data tidak terkirim lewat 3G,<br />
-		<br />
-		<code># ifconfig rmnet0 0.0.0.0</code><br />
-		<br /></li>
-		<li>Setiap koneksi DNS alihkan ke Google DNS (8.8.8.8),<br />
-		<br />
-		<code># iptables -t nat -A output -p udp --dport 53 -j DNAT --to-destination 8.8.8.8:53</code><br />
-		<br /></li>
-		<li>Hapus default gateway<code>,<br />
-		<br />
-		# ip r del default</code><br />
-		<br /></li>
-		<li>Atur default gateway ke IP di laptop,<br />
-		<br />
-		<code># ip r add default via 192.168.43.181</code><br />
-		<br /></li>
-		<li>Atur IP DNS ke publik DNS<code>,<br />
-		<br />
-		# setprop net.rmnet0.dns1 8.8.8.8<br />
-		# setprop net.rmnet0.dns2 8.8.4.4<br />
-		# setprop net.dns1 8.8.8.8<br />
-		# setprop net.dns2 8.8.4.4</code></li>
-	</ul>
+	<li>Hidupkan WI-FI AP di perangkat tablet Android.</li>
+	<li>Sambungkan WI-FI di laptop supaya terhubung ke WI-FI di tablet Android. Catat alamat laptop yang terhubung ke WI-FI tablet, misalnya <code>192.168.43.181</code>. Alamat ini nanti akan menjadi <em>gateway</em> nantinya bagi tablet Android.</li>
+	<li>Buka terminal di tablet Android, jalankan perintah di bawah sebagai super user (root),</li>
+	<li>Reset IP dari perangkat 3G supaya data tidak terkirim lewat 3G,</li>
+</ul>
+
+<pre>
+# ifconfig rmnet0 0.0.0.0</pre>
+
+<ul>
+	<li>
+	<p>Alihkan koneksi DNS ke publik DNS (8.8.8.8),</p>
 	</li>
 </ul>
 
-<p>Selesai.</p>
+<pre>
+# iptables -t nat -A output -p udp --dport 53 -j DNAT --to-destination 8.8.8.8:53</pre>
+
+<ul>
+	<li>Hapus default gateway,</li>
+</ul>
+
+<pre>
+# ip r del default</pre>
+
+<ul>
+	<li>Atur default gateway ke IP di laptop,</li>
+</ul>
+
+<pre>
+# ip r add default via 192.168.43.181</pre>
+
+<ul>
+	<li>Atur DNS ke publik DNS,</li>
+</ul>
+
+<pre>
+# setprop net.rmnet0.dns1 8.8.8.8
+# setprop net.rmnet0.dns2 8.8.4.4
+# setprop net.dns1 8.8.8.8
+# setprop net.dns2 8.8.4.4</pre>
+
+<p>Selesai. Sekarang anda sudah bisa browsing di smartphone/tablet Android anda menggunakan koneksi internet di laptop.</p>
 
 </body>
 </html>
