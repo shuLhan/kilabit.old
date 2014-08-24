@@ -1,6 +1,6 @@
 #!/bin/sh
 
-dir=${1-""}
+dir=${1-"."}
 
 echo $dir
 
