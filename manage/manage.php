@@ -34,7 +34,7 @@
 		<div class="row" id="content">
 			<!--{{{ tree -->
 			<div class="col-sm-3">
-				<div class="btn-group">
+				<div class="btn-group-sm">
 					<button
 						type="button"
 						class="btn btn-warning"
@@ -488,7 +488,7 @@
 		//{{{ form edit content -> preview
 		function form_edit_content_preview (event)
 		{
-			bootbox.alert (data.e_content);
+			bootbox.alert (CKEDITOR.instances.e_content.getData ());
 		}
 		//}}}
 		//{{{ document ready (main)
