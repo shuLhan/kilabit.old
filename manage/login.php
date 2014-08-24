@@ -34,6 +34,7 @@ if (! $go) {
 } else {
 	session_start ();
 	$_SESSION["you"] = $u;
+	$_SESSION["email"] = $w[2];
 	$extra = "manage.php";
 }
 

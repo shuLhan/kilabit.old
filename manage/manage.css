@@ -7,6 +7,10 @@ body {
 }
 
 #tree {
-	max-height		:500px;
+	max-height		:530px;
 	overflow-y		:scroll;
+}
+
+.padding-top {
+	padding-top : 10px;
 }

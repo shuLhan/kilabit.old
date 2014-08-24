@@ -31,7 +31,8 @@
 </head>
 <body>
 	<div class="container-fluid">
-		<div class="row">
+		<div class="row" id="content">
+			<!--{{{ tree -->
 			<div class="col-sm-3">
 				<div class="btn-group">
 					<button
@@ -67,12 +68,12 @@
 					</div>
 				</div>
 			</div>
-
-			<!-- journal editor begin -->
+			<!--}}}-->
+			<!--{{{ form content editor -->
 			<div class="col-sm-9">
 				<form
 					id="editor_form"
-					class="form-horizontal"
+					class=""
 					role="form"
 					action="content.php"
 					method="post"
@@ -137,19 +138,19 @@
 							>
 						</div>
 
-						<label for="e_author" class="col-sm-2 control-label">Author</label>
-						<div class="col-sm-4">
+						<label for="e_author" class="control-label hidden">Author</label>
+						<div class="">
 							<input
 								name="e_author"
 								type="text"
-								class="form-control input-sm"
+								class="form-control input-sm hidden"
 								id="e_author"
 								placeholder="you@domain.com"
+								value="<?=$_SESSION['email'] ?>"
 							>
 						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-sm-6">
+
+						<div class="col-sm-offset-2 col-sm-4">
 							<label class="checkbox-inline input-sm">
 								<input
 									name="e_comment"
@@ -159,8 +160,9 @@
 							</label>
 						</div>
 					</div>
+
 					<div class="form-group">
-						<div class="col-sm-12">
+						<div class="col-sm-12 padding-top">
 							<textarea
 								name="e_content"
 								id="e_content"
@@ -170,14 +172,14 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<div class="col-sm-12">
+						<div class="col-sm-12 padding-top">
 							<button type="submit" class="btn btn-primary"> Save </button>
 							<button type="button" class="btn btn-primary" id="node_form_preview"> Preview </button>
 						</div>
 					</div>
 				</form>
-				<!-- journal editor end -->
-				<!-- node editor begin -->
+				<!--}}} journal editor end -->
+				<!--{{{ form node editor -->
 				<form
 					id="node_form"
 					class="form-horizontal hidden"
@@ -246,16 +248,19 @@
 					</div>
 				</form>
 			</div>
-			<!-- node editor end -->
+			<!--}}} node editor end -->
 		</div>
 	</div>
+	<!--{{{ js -->
 	<script src="/js/wui_menu.js"></script>
 	<script src="/js/jquery.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/bootstrap-treeview.min.js"></script>
 	<script src="/js/bootbox.min.js"></script>
 	<script src="/js/ckeditor/ckeditor.js"></script>
+	<!--}}} -->
 	<script>
+		//{{{ replace node key name.
 		function replace_properties (nodes, old_key, new_key, child_key)
 		{
 			for (var i = 0; i < nodes.length; i++) {
@@ -274,7 +279,8 @@
 				}
 			}
 		}
-
+		//}}}
+		//{{{ 
 		function init_node_parent_selection (nodes, child_key, tabs)
 		{
 			var np_node = $("#node_parent");
@@ -293,7 +299,8 @@
 				}
 			}
 		}
-
+		//}}}
+		//{{{ form edit node -> show
 		function form_edit_node (node)
 		{
 			$("#editor_form").addClass ("hidden");
@@ -306,7 +313,8 @@
 			$("input#node_title").val (node.text);
 			$("#node_parent").val (node.pid);
 		}
-
+		//}}}
+		//{{{ form edit node -> reset
 		function form_edit_node_reset ()
 		{
 			$("#editor_form").addClass ("hidden");
@@ -318,7 +326,8 @@
 			$("input#node_name").val ("");
 			$("input#node_title").val ("");
 		}
-
+		//}}}
+		//{{{ form edit node -> submit
 		function form_edit_node_submit (event)
 		{
 			var $form = $(this);
@@ -338,7 +347,8 @@
 
 			event.preventDefault();
 		}
-
+		//}}}
+		//{{{ get current date in yyyy.mm.dd format.
 		function get_current_date ()
 		{
 			var today = new Date();
@@ -352,7 +362,8 @@
 
 			return today;
 		}
-
+		//}}}
+		//{{{ get current time in hh:mm:ss format.
 		function get_current_time ()
 		{
 			var t = new Date ();
@@ -366,7 +377,8 @@
 
 			return h +":"+ m +":"+ s;
 		}
-
+		//}}}
+		//{{{ form edit content -> reset
 		function form_edit_content_reset ()
 		{
 			$("#editor_form").removeClass ("hidden");
@@ -383,7 +395,8 @@
 			$("#e_comment").val ("off");
 			CKEDITOR.instances.e_content.setData ("");
 		}
-
+		//}}}
+		//{{{ form edit content -> show
 		function form_edit_content (node)
 		{
 			$("#editor_form").removeClass ("hidden");
@@ -437,7 +450,8 @@
 					CKEDITOR.instances.e_content.setData (body);
 				});
 		}
-
+		//}}}
+		//{{{ form edit content -> submit
 		function form_edit_content_submit (event)
 		{
 			var $form	= $(this);
@@ -470,12 +484,14 @@
 
 			event.preventDefault();
 		}
-
+		//}}}
+		//{{{ form edit content -> preview
 		function form_edit_content_preview (event)
 		{
 			bootbox.alert (data.e_content);
 		}
-
+		//}}}
+		//{{{ document ready (main)
 		$( document ).ready (function() {
 			// replace title with text
 			replace_properties (wui_menu, "submenu", "nodes", "submenu");
@@ -512,9 +528,11 @@
 			});
 
 			CKEDITOR.replace ("e_content", {
-					filebrowserUploadUrl: "upload.php"
-				,	height	:"280px"
-				,	toolbar	:
+					filebrowserUploadUrl:"upload.php"
+				,	height				:"350px"
+				,	fillEmptyBlocks		:false
+				,	tabSpaces			:0
+				,	toolbar				:
 					[{
 						name	:"document"
 					,	groups	:
@@ -593,6 +611,7 @@
 			$("#editor_form").on ("submit", form_edit_content_submit);
 			$("#node_form_preview").on ("click", form_edit_content_preview);
 		});
+		//}}}
 	</script>
 </body>
 </html>
