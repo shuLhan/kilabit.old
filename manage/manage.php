@@ -261,6 +261,7 @@
 	<script src="/js/jquery.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/bootstrap-treeview.min.js"></script>
+	<script src="/js/bootbox.min.js"></script>
 	<script src="/js/ckeditor/ckeditor.js"></script>
 	<script>
 		function replace_properties (nodes, old_key, new_key, child_key)
@@ -339,8 +340,7 @@
 				,	success	: function (data, status)
 					{
 						$("#node_parent").prop ("disabled", true);
-						alert ("Data has been saved");
-						location.reload ();
+						bootbox.alert ("Data has been saved");
 					}
 				});
 
@@ -468,11 +468,11 @@
 				,	success	: function (data, status)
 					{
 						$("#e_node_parent").prop ("disabled", true);
-						alert (data.msg);
+						bootbox.alert (data.msg);
 					}
 				,	error	: function (xhr, status, errorThrown)
 					{
-						alert (xhr);
+						bootbox.alert (xhr);
 					}
 				});
 
