@@ -171,11 +171,8 @@
 					</div>
 					<div class="form-group">
 						<div class="col-sm-12">
-							<div class="btn-group">
-								<button type="submit" class="btn btn-primary">
-								Save
-								</button>
-							</div>
+							<button type="submit" class="btn btn-primary"> Save </button>
+							<button type="button" class="btn btn-primary" id="node_form_preview"> Preview </button>
 						</div>
 					</div>
 				</form>
@@ -243,12 +240,7 @@
 					<div class="form-group center-block">
 						<div class="col-sm-12">
 							<div class="btn-group">
-								<button
-									type="submit"
-									class="btn btn-primary"
-									id="node_form_submit"
-								>Save
-								</button>
+								<button type="submit" class="btn btn-primary" id="node_form_submit"> Save </button>
 							</div>
 						</div>
 					</div>
@@ -479,6 +471,11 @@
 			event.preventDefault();
 		}
 
+		function form_edit_content_preview (event)
+		{
+			bootbox.alert (data.e_content);
+		}
+
 		$( document ).ready (function() {
 			// replace title with text
 			replace_properties (wui_menu, "submenu", "nodes", "submenu");
@@ -594,6 +591,7 @@
 
 			$("#node_form").on ("submit", form_edit_node_submit);
 			$("#editor_form").on ("submit", form_edit_content_submit);
+			$("#node_form_preview").on ("click", form_edit_content_preview);
 		});
 	</script>
 </body>
