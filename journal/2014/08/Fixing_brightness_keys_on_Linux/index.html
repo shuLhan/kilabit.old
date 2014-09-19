@@ -1,0 +1,54 @@
+<html>
+<head>
+<meta name="title" content="Fixing brightness keys on Linux"/>
+<meta name="publish_date" content="2014.08.24 20:44:17"/>
+<meta name="author" content=""/>
+</head>
+<body>
+<p>If you have graphics card like mine, Intel GMA 4500MHD, with unfunctioning brightness key (e.g., Fn-brightness key up/down) you can fix it by using acpid handler.</p>
+
+<p>First, install acpid package based on your GNU/Linux distribution. After installation, open journal log by executing</p>
+
+<pre>
+sudo journalctl -xf</pre>
+
+<p>Let it open and press your brightness key down or up, you will see in the log output something like this,</p>
+
+<pre>
+logger[30158]: ACPI group/action undefined: video/brightnessup / BRTUP
+logger[28965]: ACPI group/action undefined: video/brightnessdown / BRTDN</pre>
+
+<p>Now, to fix this edit file <code>/etc/acpi/handler.sh</code>, add script below,</p>
+
+<pre>
+    video/brightnessdown)
+    case &quot;$2&quot; in
+    BRTDN)
+        let x=`cat /sys/class/backlight/intel_backlight/actual_brightness`
+        let x=$x-500000
+        echo $x &gt; /sys/class/backlight/intel_backlight/brightness
+        logger &quot;Brigtness down $x&quot;
+        ;;
+    *)
+        logger &quot;ACPI action undefined: $2&quot;
+        ;;
+    esac
+    ;;
+    video/brightnessup)
+    case &quot;$2&quot; in
+    BRTUP)
+        let x=`cat /sys/class/backlight/intel_backlight/actual_brightness`
+        let x=$x+500000
+        echo $x &gt; /sys/class/backlight/intel_backlight/brightness
+        logger &quot;Brigtness up $x&quot;
+        ;;
+    *)
+        logger &quot;ACPI action undefined: $2&quot;
+        ;;
+    esac
+    ;;</pre>
+
+<p>What will do was increasing/decreasing brightness by change its value in file descriptor <code>/sys/class/backlight/intel_backlight/brightness</code>. If you have different card try to change <code>intel_brightness</code> with other value. See list of <code>/sys/class/blacklight</code> directory for further examination.</p>
+
+</body>
+</html>
