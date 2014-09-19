@@ -116,22 +116,22 @@ var WUI =
 
 		wc.load (link + ts, function (res, stat, xhr)
 			{
-				// fix image source
 				link = link.replace (/^\.\//, "/");
 				link = link.replace (/^\/\//, "/");
-				link = link.replace ("/index.html", "");
+				link = link.replace ("/index.html", "/");
 
 				// do not fix it on homepage
 //				if (WUI.homepage === link) {
 //					return;
 //				}
 
-				wc.find ("img").each (function (i)
-				{
-					var src = $(this).attr ("src");
-					src = src.replace (/^\.\//, "");
-					$(this).attr ("src", link +"/"+ src);
-				});
+				// fix image source
+//				wc.find ("img").each (function (i)
+//				{
+//					var src = $(this).attr ("src");
+//					src = src.replace (/^\.\//, "");
+//					$(this).attr ("src", link +"/"+ src);
+//				});
 
 				// add meta to content
 				WUI.set_content_meta (res, link);
