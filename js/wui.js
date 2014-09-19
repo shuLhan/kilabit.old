@@ -118,7 +118,7 @@ var WUI =
 			{
 				link = link.replace (/^\.\//, "/");
 				link = link.replace (/^\/\//, "/");
-				link = link.replace ("/index.html", "/");
+				link = link.replace ("/index.html", "");
 
 				// do not fix it on homepage
 //				if (WUI.homepage === link) {

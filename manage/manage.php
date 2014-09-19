@@ -260,6 +260,8 @@
 	<script src="/js/ckeditor/ckeditor.js"></script>
 	<!--}}} -->
 	<script>
+		var author = '<?= $_SESSION["email"] ?>';
+
 		//{{{ replace node key name.
 		function replace_properties (nodes, old_key, new_key, child_key)
 		{
@@ -391,7 +393,7 @@
 			$("#e_title").val ("");
 			$("#e_publish_date").val (get_current_date ());
 			$("#e_publish_time").val (get_current_time ());
-			$("#e_author").val ("");
+			$("#e_author").val (author);
 			$("#e_comment").val ("off");
 			CKEDITOR.instances.e_content.setData ("");
 		}
