@@ -106,6 +106,39 @@ var WUI =
 		twttr.widgets.load ();
 	}
 
+,	content_on_load : function (link)
+	{
+		return function (res, stat, xhr)
+		{
+			var wc = $("#wui_content");
+
+			link = link.replace (/^\.\//, "/");
+			link = link.replace (/^\/\//, "/");
+			link = link.replace ("/index.html", "");
+
+			// do not fix it on homepage
+//			if (WUI.homepage === link) {
+//				return;
+//			}
+
+			// fix script source
+			wc.find ("script").each (function (i)
+			{
+				var src = $(this).attr ("src");
+
+				if (undefined != src) {
+					src = src.replace (/^\.\//, "");
+					$(this).attr ("src", link +"/"+ src);
+				}
+			});
+
+			// add meta to content
+			WUI.set_content_meta (res, link);
+
+//			WUI.set_content_share (node);
+		}
+	}
+
 ,	set_content : function (node)
 	{
 		var link	= node.link;
@@ -114,30 +147,7 @@ var WUI =
 
 		wc.empty ();
 
-		wc.load (link + ts, function (res, stat, xhr)
-			{
-				link = link.replace (/^\.\//, "/");
-				link = link.replace (/^\/\//, "/");
-				link = link.replace ("/index.html", "");
-
-				// do not fix it on homepage
-//				if (WUI.homepage === link) {
-//					return;
-//				}
-
-				// fix image source
-//				wc.find ("img").each (function (i)
-//				{
-//					var src = $(this).attr ("src");
-//					src = src.replace (/^\.\//, "");
-//					$(this).attr ("src", link +"/"+ src);
-//				});
-
-				// add meta to content
-				WUI.set_content_meta (res, link);
-
-//				WUI.set_content_share (node);
-			});
+		wc.load (link + ts, {}, WUI.content_on_load (link));
 	}
 
 ,	set_content_comment : function (node)
