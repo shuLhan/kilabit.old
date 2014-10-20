@@ -137,9 +137,9 @@ function generate_menu ($dir)
 
 	$fmenu = fopen ($dir ."/js/wui_menu.js", "wb");
 
-	fwrite ($fmenu, "var wui_menu = ");
-	fwrite ($fmenu, json_encode ($menu, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
-	fwrite ($fmenu, ";");
+	fwrite ($fmenu, "var wui_menu = "
+					. json_encode ($menu, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT)
+					. ";");
 
 	fclose ($fmenu);
 }
