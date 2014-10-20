@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta name="title" content="Jumlah tindak pidana vs Persentase Penduduk Miskin per Provinsi, tahun 2010 "/>
+	<meta name="publish_date" content="2014.10.14 02:11:00"/>
+	<meta name="author" content="ms@kilabit.info"/>
+	<title>Jumlah tindak Pidana vs persentase penduduk miskin, 2010</title>
+	<style>
+		h3 {
+			text-align: center;
+		}
+		#chart {
+			height: 550px;
+		}
+	</style>
+</head>
+<body>
+	<h3> Jumlah tindak pidana vs Persentase Penduduk Miskin per Provinsi, tahun 2010 </h3>
+
+	<p>
+		<a href="/journal/2014/10/Jumlah_Tindak_Pidana_vs_Persentase_Penduduk_Miskin_per_Provinsi_2010">
+		Layar penuh.
+		</a>
+	</p>
+
+	<div id="chart">
+	</div>
+
+	<p>
+	Sumber data,
+		<ul>
+			<li><a href="http://bps.go.id/tab_sub/view.php?kat%3D1%26tabel%3D1%26daftar%3D1%26id_subyek%3D23%26notab%3D2">bps.go.id - Persentase Penduduk Miskin</a></li>
+			<li><a href="http://bps.go.id/tab_sub/view.php?kat%3D1%26tabel%3D1%26daftar%3D1%26id_subyek%3D34%26notab%3D1">bps.go.id - Jumlah Tindak Pidana</a></li>
+			<li><a href="http://bps.go.id/tab_sub/view.php?kat%3D1%26tabel%3D1%26daftar%3D1%26id_subyek%3D12%26notab%3D1">bps.go.id - Penduduk Indonesia menurut Provinsi</a></li>
+		</ul>
+	</p>
+<script src="/journal/2014/10/Jumlah_Tindak_Pidana_vs_Persentase_Penduduk_Miskin_per_Provinsi_2010/js/raphael.min.js"></script>
+<script src="/journal/2014/10/Jumlah_Tindak_Pidana_vs_Persentase_Penduduk_Miskin_per_Provinsi_2010/js/sea.min.js"></script>
+<script src="/journal/2014/10/Jumlah_Tindak_Pidana_vs_Persentase_Penduduk_Miskin_per_Provinsi_2010/data.js"></script>
+<script type="text/javascript">
+	;(function() {
+		seajs.use([ '/journal/2014/10/Jumlah_Tindak_Pidana_vs_Persentase_Penduduk_Miskin_per_Provinsi_2010/js/infoviz' ], function(InfoViz) {
+			InfoViz.chart(
+				'chart',
+				'bubblechart',
+				{
+					'vertical_axis_name': '% Penduduk Miskin',
+					'horizontal_axis_name': 'Jumlah Tindak Pidana',
+					'horizontal_field': 'jml_pidana',
+					'vertical_field': 'persen_miskin',
+					'size_field': 'jml_penduduk',
+					'label_field': 'propinsi',
+					'tooltip_title': '{propinsi}',
+					'tooltip_content': 'Jumlah Penduduk: {jml_penduduk}, % miskin: {persen_miskin}, Jumlah Tindak Pidana: {jml_pidana}',
+					'data': data
+				},
+				{
+					'layout':
+					{
+						'padding-left': 100
+					}
+				,	'bubblechart':
+					{
+						'padding-right': 230
+					,	'padding-left': 100
+					,	'label-color': '#000'
+					}
+				,	'legend':
+					{
+						'legend-position': 'top-right'
+					,	'margin-top': 2
+					,	'margin-right': 0
+					,	'label-size': 10
+					,	'indicator-size': 10
+					}
+				}
+			);
+		});
+	})();
+</script>
+</body>
+</html>
