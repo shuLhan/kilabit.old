@@ -6,7 +6,7 @@
 */
 	require_once "wui.php";
 
-	run ($wui);
+//	run ($wui);
 
 	if (isset ($_GET["open"])) {
 		$open = str_replace ("/index.html", "", $_GET["open"]);
@@ -116,14 +116,10 @@
 						<strong>Other sites</strong>
 						<ul>
 							<li><a	href="http://mup.kilabit.info"
-									target="_blank"
-								>Makanan untuk Pikiran</a></li>
-							<li><a	href="http://github.com/shuLhan"
-									target="_blank"
-								>Repositori Sumber Kode</a></li>
-							<li><a	href="http://id.linkedin.com/in/muhamadsulhan/"
-									target="_blank"
-								>Portofolio</a></li>
+									target="_blank">
+								Makanan untuk Pikiran
+								</a>
+							</li>
 						</ul>
 					</div>
 				</div>
