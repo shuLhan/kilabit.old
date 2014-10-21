@@ -54,13 +54,13 @@
 	color			: silver;
 }
 
-.title {
+#wui_title {
 	font-family		: sans-serif;
 	font-size		: 24px;
 	font-weight		: bold;
 }
 
-.subtitle {
+#wui_subtitle {
 	font-family		: monospace;
 	font-size		: 12px;
 }

@@ -7,6 +7,12 @@
 
 require_once "config.php";
 
+if (is_cli ()) {
+	run ($argv[1]);
+} else {
+	run ();
+}
+
 function is_cli()
 {
 	if (defined('STDIN'))
@@ -144,11 +150,7 @@ function generate_menu ($dir)
 	fclose ($fmenu);
 }
 
-function run ($wui)
+function run ($dir)
 {
-	if (is_cli ()) {
-		generate_menu ($argv[1]);
-	} else {
-		generate_menu ($wui["contents_dir"]);
-	}
+	generate_menu ($dir == null ? $wui["contents_dir"] : $dir);
 }

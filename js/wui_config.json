@@ -1,0 +1,25 @@
+{
+	"title"				: "kilabit.info"
+,	"subtitle"			: "Simple | Small | Stable | Secure"
+
+,	"homepage"			: "/home"
+,	"journal_dir"		: "/journal"
+,	"journal_name"		: "Journal"
+
+,	"contents_dir"		: "./"
+,	"contents_exclude"	:
+	[
+		"/doc"
+	,	"/projects/libvos/doc"
+	]
+
+,	"social_icon"		:
+	{
+		"facebook"			: ""
+	,	"github"			: "http://github.com/shuLhan"
+	,	"google_plus"		: "http://plus.google.com/+MhdSulhan"
+	,	"linked"			: "http://id.linkedin.com/in/muhamadsulhan/"
+	,	"twitter"			: "http://twitter.com/MhdSulhan"
+	,	"feed"				: "http://kilabit.info/feed/"
+	}
+}

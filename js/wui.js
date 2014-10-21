@@ -6,8 +6,8 @@
 var WUI =
 {
 	homepage : "contents"
-,	contents_exclude : []
-,	social_icon : {}
+	// loaded later
+,	config : {}
 ,	footer :
 	{
 		text		:new Date().getFullYear() +" - kilabit.info"
@@ -26,6 +26,17 @@ var WUI =
 		,	text		:"FLATICON"
 		,	url			:"http://flaticon.com"
 		}]
+	}
+
+,	set_title : function ()
+	{
+		$("#wui_title").append (WUI.config ["title"]);
+		document.title = WUI.config ["title"];
+	}
+
+,	set_subtitle : function ()
+	{
+		$("#wui_subtitle").append (WUI.config["subtitle"]);
 	}
 
 ,	wui_comment_on_submit : function (event)
@@ -286,8 +297,8 @@ var WUI =
 
 ,	process_exclude : function ()
 	{
-		for (var ex in WUI.contents_exclude) {
-			var id = WUI.path2id (WUI.contents_exclude[ex])
+		for (var ex in WUI.config.contents_exclude) {
+			var id = WUI.path2id (WUI.config.contents_exclude[ex])
 			var el = $("#wui_menu a[href='#"+ id +"']");
 
 			if (el) {
@@ -311,20 +322,20 @@ var WUI =
 		}
 	}
 
-,	generate_social_icon : function ()
+,	set_social_icon : function ()
 	{
 		var el = $("#wui_social_icon");
 
-		for (var k in WUI.social_icon) {
-			if (! WUI.social_icon.hasOwnProperty (k)) {
+		for (var k in WUI.config.social_icon) {
+			if (! WUI.config.social_icon.hasOwnProperty (k)) {
 				continue;
 			}
-			if ("" === WUI.social_icon[k]) {
+			if ("" === WUI.config.social_icon[k]) {
 				continue;
 			}
 
 			var a = $("<a/>", {
-					href 	: WUI.social_icon[k]
+					href 	: WUI.config.social_icon[k]
 				,	target	:"_blank"
 				});
 
@@ -374,17 +385,26 @@ var WUI =
 ,	run : function ()
 	{
 		$( document ).ready (function() {
-			// create top menu
-			WUI.create_top_menu ();
+			// load configuration.
+			$.getJSON ("/js/wui_config.json", function (data) {
+				WUI.config = data;
 
-			// hide menu based on contents_exclude in config.php.
-			WUI.process_exclude ();
+				// apply configuration
+				WUI.set_title ();
+				WUI.set_subtitle ();
 
-			// set front page defined in the config.php
-			WUI.set_frontpage ();
+				// set social icon
+				WUI.set_social_icon ();
 
-			// set social icon
-			WUI.generate_social_icon ();
+				// create top menu
+				WUI.create_top_menu ();
+
+				// hide menu based on contents_exclude in config.php.
+				WUI.process_exclude ();
+
+				// set front page defined in the config.php
+				WUI.set_frontpage ();
+			});
 
 			WUI.generate_footer ();
 

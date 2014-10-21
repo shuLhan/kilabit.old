@@ -4,9 +4,7 @@
 	Authors:
 		- mhd.sulhan (m.shulhan@gmail.com)
 */
-	require_once "wui.php";
-
-//	run ($wui);
+	require_once "config.php";
 
 	if (isset ($_GET["open"])) {
 		$open = str_replace ("/index.html", "", $_GET["open"]);
@@ -30,7 +28,7 @@
 	<link rel="stylesheet" href="/css/bootstrap.min.css"/>
 	<link rel="stylesheet" href="/css/wui.css"/>
 	<link rel="shortcut icon" href="favicon.ico"/>
-	<title><?= $wui["title"] ?></title>
+	<title></title>
 </head>
 
 <body>
@@ -39,8 +37,8 @@
 			<div id="wui_header" class="col-sm-12">
 				<div class="row">
 					<div id="wui_header_left" class="col-sm-6 text-left">
-						<div class="title"><?= $wui["title"] ?></div>
-						<div class="subtitle"><?= $wui["subtitle"] ?></div>
+						<div id="wui_title"></div>
+						<div id="wui_subtitle"></div>
 					</div>
 					<div id="wui_header_right" class="col-sm-6 text-right">
 						<div id="wui_social_icon">
@@ -126,9 +124,7 @@
 			</div>
 		</div>
 	</div>
-<!--
-	<script src="http://platform.twitter.com/widgets.js" type="text/javascript"></script>
--->
+
 	<script src="/js/jquery.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/wui_menu.js"></script>
@@ -136,14 +132,6 @@
 	<script>
 		$( document ).ready (function() {
 			WUI.homepage = "<?= $link ?>";
-			WUI.contents_exclude = <?php
-					echo json_encode ($wui["contents_exclude"]
-								, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
-				?>;
-			WUI.social_icon	= <?php
-					echo json_encode ($wui["social_icon"]
-								, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
-				?>;
 
 			$("#wui_comment_form").on ("submit", WUI.wui_comment_on_submit);
 
