@@ -4,9 +4,10 @@
 	Authors:
 		- mhd.sulhan (m.shulhan@gmail.com)
 */
-require_once ("../wui.php");
 
 define ("APP_PATH", realpath (dirname (__FILE__) ."/../"));
+
+require_once ("../generate_wui_menu.php");
 
 function create_node ($path, $title)
 {
@@ -138,7 +139,8 @@ EOF;
 
 	// reindex
 	$wui["contents_dir"] = "..";
-	run ($wui);
+
+	generate_menu ("..");
 
 	$r["success"] = true;
 	$r["msg"] = "Data has been saved.";

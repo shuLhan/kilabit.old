@@ -317,6 +317,7 @@ var WUI =
 			if ("" !== ida[i]) {
 				id += "-" + ida[i];
 				var hp_el = $("#wui_menu a[href='#"+ id +"']");
+
 				hp_el.trigger ("click");
 			}
 		}
@@ -404,9 +405,9 @@ var WUI =
 
 				// set front page defined in the config.php
 				WUI.set_frontpage ();
-			});
 
-			WUI.generate_footer ();
+				WUI.generate_footer ();
+			});
 
 			// jquery: disable auto scrolling to top
 			// credit: http://www.techiecorner.com/2768/jquery-disable-autoscrolling-to-top-when-click-on-anchor/

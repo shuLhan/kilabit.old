@@ -5,12 +5,14 @@
 		- mhd.sulhan (m.shulhan@gmail.com)
 */
 
-require_once "config.php";
+if (! defined ("APP_PATH")) {
+	define ("APP_PATH", realpath (dirname (__FILE__)));
+}
+
+require_once APP_PATH . "/config.php";
 
 if (is_cli ()) {
-	run ($argv[1]);
-} else {
-	run ();
+	generate_menu ($argv[1]);
 }
 
 function is_cli()
@@ -141,16 +143,11 @@ function generate_menu ($dir)
 
 	array_multisort ($menu);
 
-	$fmenu = fopen ($dir ."/js/wui_menu.js", "wb");
+	$fmenu = fopen ($dir. "/js/wui_menu.js", "wb");
 
 	fwrite ($fmenu, "var wui_menu = "
 					. json_encode ($menu, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT)
 					. ";");
 
 	fclose ($fmenu);
-}
-
-function run ($dir)
-{
-	generate_menu ($dir == null ? $wui["contents_dir"] : $dir);
 }

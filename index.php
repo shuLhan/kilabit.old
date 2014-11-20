@@ -4,16 +4,18 @@
 	Authors:
 		- mhd.sulhan (m.shulhan@gmail.com)
 */
+	define ("APP_PATH", realpath (dirname (__FILE__)));
+
 	require_once "config.php";
+
+	$open = null;
 
 	if (isset ($_GET["open"])) {
 		$open = str_replace ("/index.html", "", $_GET["open"]);
 		$open = rtrim ($open, "/");
-	} else {
-		$open = "";
 	}
 
-	if ("" === $open) {
+	if (null == $open) {
 		$link = $wui["homepage"];
 	} else {
 		$link = $open;
