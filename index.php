@@ -90,7 +90,7 @@
 
 							<div class="form-group">
 								<div class="col-sm-12">
-									<div class="btn-group navbar-right">
+									<div class="btn-group">
 										<button type="submit" class="btn btn-default" id="comment_submit">Submit</button>
 									</div>
 								</div>
