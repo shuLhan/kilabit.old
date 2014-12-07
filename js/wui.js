@@ -175,13 +175,14 @@ var WUI =
 				$.each (data, function (idx, d) {
 					wc.append ("<div class='panel'>"
 								+"<div class='panel-body'>"
-								+"<strong>"
-									+ (d.author === "" ? "Anonymous" : d.author)
-								+", </strong>"
-								+ d.v
-									+"<span id='comment_time'> -- "
+									+"<span id='comment_time'>"
 									+ WUIFeed.date2string (new Date(d.time * 1000))
-									+"</span>"
+									+" -- </span>"
+									+"<strong>"
+										+ (d.author === "" ? "Anonymous" : d.author)
+									+"</strong>"
+									+"<br/>"
+									+ d.v
 								+"</div>"
 								+"</div>");
 				});
@@ -242,7 +243,7 @@ var WUI =
 			var m	= menu[i];
 			var mi	= $("<li/>");
 			var a	= $("<a/>", {
-							href	: "#"+ m.id
+							href	: "#!"+ m.id
 						,	html	: m.title
 						});
 
@@ -274,7 +275,7 @@ var WUI =
 			var m	= wui_menu[i];
 			var mi	= $("<li/>");
 			var a	= $("<a/>", {
-						href	: "#"+ m.id
+						href	: "#!"+ m.id
 					,	html	: m.title
 					});
 
@@ -299,7 +300,7 @@ var WUI =
 	{
 		for (var ex in WUI.config.contents_exclude) {
 			var id = WUI.path2id (WUI.config.contents_exclude[ex])
-			var el = $("#wui_menu a[href='#"+ id +"']");
+			var el = $("#wui_menu a[href='#!"+ id +"']");
 
 			if (el) {
 				el.addClass ("hidden");
@@ -316,7 +317,7 @@ var WUI =
 		for (var i = 0; i < ida.length; i++) {
 			if ("" !== ida[i]) {
 				id += "-" + ida[i];
-				var hp_el = $("#wui_menu a[href='#"+ id +"']");
+				var hp_el = $("#wui_menu a[href='#!"+ id +"']");
 
 				hp_el.trigger ("click");
 			}
