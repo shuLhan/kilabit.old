@@ -20,6 +20,10 @@ try {
 		$comment = [];
 	} else {
 		$comment = json_decode (file_get_contents ($c_link));
+
+		if (null == $comment) {
+			$comment = [];
+		}
 	}
 
 	array_push ($comment, $c);
