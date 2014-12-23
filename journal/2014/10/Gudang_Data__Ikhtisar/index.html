@@ -3,6 +3,8 @@
 <meta name="title" content="Gudang Data: Ikhtisar"/>
 <meta name="publish_date" content="2014.10.20 15:24:12"/>
 <meta name="author" content="ms@kilabit.info"/>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 </head>
 <body>
 <h1>Gudang Data (GD - <em>Data Warehouse</em>)</h1>
@@ -14,24 +16,21 @@
 <ul>
 	<li>data pada gudang data terorganisasi berdasarkan subjek utama, seperti pelanggan, penjualan, atau produk;</li>
 	<li>difokuskan untuk pemodelan dan analisis data untuk pembuat keputusan, bukan untuk operasi sehari-hari atau pemrosesan transaksi; dan</li>
-	<li>menyediakan pandangan yang sederhana dan padat mengenai masalah subjek tertentu dengan mengindahkan data yang tidak berguna bagi proses mendukung keputusan.</li>
-	<li>Misalnya, pada tingkat <em>middle</em> dalam organisasi supermarket hanya ada manajer keuangan dan penjualan, maka data yang dikumpulkan dalam GD adalah data agregasi dari nilai transaksi pembelian dan penjualan dan jumlah barang dalam transaksi penjualan dan pembelian yang dibutuhkan oleh manajer keuangan dan penjualan.</li>
+	<li>menyediakan pandangan yang sederhana dan padat mengenai masalah subjek tertentu dengan mengindahkan data yang tidak berguna bagi proses mendukung keputusan. Misalnya, pada tingkat <em>middle</em> dalam organisasi supermarket hanya ada manajer keuangan dan penjualan, maka data yang dikumpulkan dalam GD adalah data agregasi dari nilai transaksi pembelian dan penjualan dan jumlah barang dalam transaksi penjualan dan pembelian yang dibutuhkan oleh manajer keuangan dan penjualan.</li>
 </ul>
 
 <p>Gudang data terintegrasi maksudnya adalah,</p>
 
 <ul>
 	<li>dibangun dengan mengintegrasikan berbagai sumber data yang heterogen menjadi satu;</li>
-	<li>teknik pembersihan data dan integrasi data digunakan -- saat data dipindahkan ke gudang data, data dikonversi dan penyamaan pada penamaan, struktur <em>encoding</em>, dan ukuran atribut dilakukan supaya konsisten.</li>
-	<li>Misalnya, pada contoh supermarket sebelumnya, bila ada lebih dari satu supermarket maka akan ada lebih dari satu basis data (diasumsikan jika supermarket tersebut tidak terhubung ke satu pusat basis data). Supaya analisis dan pelaporan dapat dilakukan untuk semua data supermarket tersebut maka semua basis data haruslah digabungkan menjadi satu, terintegrasi, ke dalam satu basis data di GD.</li>
+	<li>teknik pembersihan data dan integrasi data digunakan -- saat data dipindahkan ke gudang data, data dikonversi dan penyamaan pada penamaan, struktur <em>encoding</em>, dan ukuran atribut dilakukan supaya konsisten. Misalnya, pada contoh supermarket sebelumnya, bila ada lebih dari satu supermarket maka akan ada lebih dari satu basis data (diasumsikan jika supermarket tersebut tidak terhubung ke satu pusat basis data). Supaya analisis dan pelaporan dapat dilakukan untuk semua data supermarket tersebut maka semua basis data haruslah digabungkan menjadi satu, terintegrasi, ke dalam satu basis data di GD.</li>
 </ul>
 
 <p>Gudang data memiliki variasi waktu maksudnya adalah,</p>
 
 <ul>
-	<li>rentang waktu data lebih lama dari pada data di sistem operasional. Pada basis data operasional rentang waktunya dari data yang tersimpan yaitu pada masa sekarang dan beberapa minggu atau bulan sebelumnya, sementara pada gudang data informasi disediakan pada rentang waktu keseluruhan untuk memberikan perspektif secara historis (misalnya, sampai 10-15 tahun lalu).</li>
-	<li>Setiap struktur kunci pada gudang data memiliki elemen waktu, baik secara eksplisit maupun implisit. Pada basis data operasional bisa tidak memiliki elemen waktu.</li>
-	<li>Misalnya, untuk laporan keuangan bagi manajer keuangan bisa saja membutuhkan data perhari, perminggu, atau perbulan, maka data yang ada di dalam GD berisi data sejak awal sistem informasi berbasis data digunakan oleh sistem supermarket sampai sekarang.</li>
+	<li>rentang waktu data lebih lama dari pada data di sistem operasional. Pada basis data operasional rentang waktu dari data yang tersimpan yaitu pada masa sekarang dan beberapa minggu atau bulan sebelumnya, sementara pada gudang data informasi disediakan pada rentang waktu keseluruhan untuk memberikan perspektif secara historis (misalnya, sampai 10-15 tahun lalu, tergantung dari sejak kapan sistem informasi digunakan).</li>
+	<li>Setiap struktur kunci pada gudang data memiliki elemen waktu, baik secara eksplisit maupun implisit. Pada basis data operasional bisa atau bisa tidak memiliki elemen waktu. Misalnya, untuk laporan keuangan bagi manajer keuangan bisa saja membutuhkan data perhari, perminggu, atau perbulan, maka data yang ada di dalam GD berisi data sejak awal sistem informasi berbasis data digunakan oleh sistem supermarket sampai sekarang.</li>
 </ul>
 
 <p>Gudang data tidak berubah maksudnya adalah karena tempat penyimpanan fisik data pada gudang data terpisah dari data operasional, perubahan pada data tidak terjadi di gudang data tapi di basis data operasional. Operasi pada gudang data hanya pemuatan awal dan akses (<em>insert</em> dan <em>read</em>), tidak ada operasi update, delete, <em>recovery</em>, dan mekanisme kontrol konkuren. Hal ini untuk menjaga konsistensi antara data operasional dan GD. Oleh karena itu sebelum data masuk ke GD haruslah ada pemrosesan seperti pembersihan, penyaringan, dan validasi sebelumnya.</p>
@@ -164,12 +163,12 @@
 
 <p>Selain menggunakan pengukuran, tendensi central dan penyebaran data bisa dilihat dengan menggunakan grafik diantaranya yaitu grafik histogram, <em>quantile plots</em>, <em>q-q plots</em>, <em>scatter plots</em>, dan <em>loes curves</em>.</p>
 
-<p>Pembersihan Data (Data Cleaning)</p>
+<h2>Pembersihan Data (Data Cleaning)</h2>
 
 <p>Pembersihan data dilakukan untuk mengisi data yang kosong, membersihkan kekacauan dari data, dan memperbaiki ketidakkonsistenan dari data. Metode yang dilakukan untuk mengisi kekosongan data yaitu,</p>
 
 <ul>
-	<li>mengindahkan tuple;</li>
+	<li>mengindahkan tuple yang tidak diperlukan;</li>
 	<li>mengisi secara manual;</li>
 	<li>menggunakan konstanta global;</li>
 	<li>menggunakan nilai rata-rata;</li>
@@ -203,8 +202,8 @@
 <ul>
 	<li>Penghalusan, menghilangkan kekacauan pada data.</li>
 	<li>Agregasi, menghitungkan jumlah data per waktu.</li>
-	<li>Generalisasi, di mana kelompok yang lebih rendah diganti dengan kelompok yang lebih tinggi. Misalnya, jalan diganti kelompoknya menjadi kota.</li>
-	<li>Normalisasi, di mana data ditingkat supaya masuk ke dalam rentang yang kecil, misalnya dari 1.0 ke 1.0 atau 0.0 ke 1.0.</li>
+	<li>Generalisasi, di mana kelompok yang lebih rendah diganti dengan kelompok yang lebih tinggi. Misalnya, nama jalan diganti kelompoknya menjadi nama kota.</li>
+	<li>Normalisasi, di mana data diberi tingkatan supaya masuk ke dalam rentang yang kecil, misalnya dari 1.0 ke 1.0 atau 0.0 ke 1.0.</li>
 	<li>Konstruksi atribut, di mana atribut baru dibentuk dari sekumpulan atribut.</li>
 </ul>
 
