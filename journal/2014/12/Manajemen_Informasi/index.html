@@ -1,0 +1,112 @@
+<html>
+<head>
+<meta name="title" content="Manajemen Informasi"/>
+<meta name="publish_date" content="2014.12.08 17:47:34"/>
+<meta name="author" content="ms@kilabit.info"/>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+</head>
+<body>
+<h1>Manajemen Informasi</h1>
+
+<h2>Pengembangan Aplikasi Lanjut</h2>
+
+<p><strong>Performansi Konkurensi Pengurut</strong></p>
+
+<p>Pada umumnya, aplikasi perlu membuat angka yang berurutan untuk setiap transaksi (seperti kolom ID). Jika penghitung urutan di kunci dengan cara dua-fase, ia akan mengakibatkan penyumbatan (<em>bottleneck</em>) konkurensi. Hal ini disebabkan karena transaksi harus menunggu transaksi sebelumnya yang melakukan penguncian supaya kuncinya dilepas sebelum dapat melakukan pembacaan/pembaruan terhadap data. Jika transaksi mengunci terlalu lama, hal ini akan mempengaruhi performansi pada aplikasi secara keseluruhan.</p>
+
+<p>Penguncian dua-fase secara sederhana untuk memasukan data bentuknya seperti berikut,</p>
+
+<div style="margin-left: 40px;"><code>lock (data);</code></div>
+
+<div style="margin-left: 40px;"><code>naikan nilai pengurut;</code></div>
+
+<div style="margin-left: 40px;"><code>lakukan pemasukan data;</code></div>
+
+<div style="margin-left: 40px;"><code>unlock (data);</code></div>
+
+<p></p>
+
+<p>Oleh karena itu banyak sistem basisdata mendukung penghitung urutan yang tidak dikunci dengan cara dua-fase; saat transaksi membutuhkan angka terurut, penghitung dikunci, dinaikan dan dilepas kembali. Hal ini bisa memperbaiki konkurensi karena mengurangi waktu dalam penguncian-dan-pelepasan. Penguncian tidak dilakukan untuk semua proses, hanya pada saat mendapat nilai pengurut. Prosesnya seperti berikut,</p>
+
+<div style="margin-left: 40px;"><code>get_counter ()</code></div>
+
+<div style="margin-left: 40px;"><code>begin</code></div>
+
+<div style="margin-left: 80px;"><code>lock (data);</code></div>
+
+<div style="margin-left: 80px;"><code>naikan nilai pengurut;</code></div>
+
+<div style="margin-left: 80px;"><code>unlock (data);</code></div>
+
+<div style="margin-left: 40px;"><code>end</code></div>
+
+<div style="margin-left: 40px;"><code>id := get_counter ();</code></div>
+
+<div style="margin-left: 40px;"><code>lakukan pemasukan data (id, record);</code></div>
+
+<p>Dari proses di atas dapat dilihat bahwa pelepasan kunci pada penghitung langsung dilakukan setelah nilainya dinaikan. Kelemahan dari metode ini yaitu adanya &quot;ruang&quot; antara penghitung. Misalnya, nilai awal pengurut adalah 1000. Transaksi T1 menaikan nilai pengurut menjadi 1001, dan kemudian transaksi T2 menaikan nilai pengurut menjadi 1002 sebelum T1 selesai; jika T1 dibatalkan dan nilai pengurut dikembalikan, misalkan dengan mengembalikan ke nilai sebelumnya atau menguranginya, menjadi 1000, maka transaksi selanjutnya bisa saja menggunakan nilai urut yang sama dengan T2, yaitu 1002. Oleh karena itu, nilai pengurut tidak boleh diputar kembali jika transaksi dibatalkan.</p>
+
+<p><strong>Cluster</strong></p>
+
+<p>Diberikan relasi <em>r(a,b,c)</em>. Contoh situasi di mana performansi pencarian kesamaan pada atribut <em>a</em> dapat dipengaruhi dari bagaimana <em>r</em> dikelompokan (<em>clustered</em>) adalah bila atribut a memiliki nilai yang sama, misalnya,</p>
+
+<p>mahasiswa (angkatan, nim, jurusan)</p>
+
+<p>Atribut angkatan akan lebih mudah dicari bila terurut dan memiliki dense clustered indeks.</p>
+
+<p>Seandainya diinginkan <em>query</em> rentang pada atribut b, relasi tersebut dapat di-cluster pada atribut b dengan menggunakan <em>b+ tree</em>.</p>
+
+<p><strong>Performansi</strong></p>
+
+<p>Misalkan aplikasi basisdata tampak tidak memiliki satu pun penyumbatan; di mana, penggunaan CPU dan disk tinggi, dan semua antrian ke basisdata seimbang, apakah itu berarti aplikasi tidak bisa di-<em>tuning</em>?</p>
+
+<p>Hal pertama yang harus diperhatikan adalah tingginya penggunaan CPU dan disk, misalnya di atas 80%, adalah tanda bahwa adanya proses yang berjalan lama. Bisa jadi karena proses memang lama atau karena <em>paging</em>? Paging yaitu pada saat aplikasi harus menulis dan membaca dari memori ke disk, dan sebaliknya, karena kebutuhan memori dari pemrosesan terlalu besar sementara buffer dari aplikasi/database terlalu kecil.</p>
+
+<p>Jika proses dari aplikasi berjalan lama perhatikan pada modul bagian mana, apakah pada saat query ke database atau proses lain (misalnya konversi data).</p>
+
+<p>Misalkan sebuah sistem menjalankan tiga tipe transaksi. Transaksi tipe A dengan laju 50 per detik, transaksi B 100 per detik, dan transaksi C dengan laju 200 per detik. Misalkan dari semua transaksi memiliki transaksi A 25 persen, transaksi B 25 persen, dan transaksi C 50 persen.</p>
+
+<p>Dari data tersebut kita dapat menghitung kemampuan sistem, yaitu</p>
+
+<p>3 / ((1/50) + (1/100) + (1/200)) = 100 transaksi per detik</p>
+
+<p>Gangguan yang dapat menghambat ketiga transaksi tersebut misalnya adalah transaksi A dan B adalah bersifat update yang membutuhkan penguncian yang sering, sementara transaksi C adalah pembacaan. Seringnya penguncian pada transaksi A dan B dapat memperlambat transaksi C, atau sebaliknya.</p>
+
+<p>Tiga tingkat di mana sistem basisdata dapat disetel untuk meningkatkan performansi,</p>
+
+<ul>
+	<li>Hardware, contohnya,
+	<ul>
+		<li>penambahan disk jika penyumbatan terjadi pada I/O;</li>
+		<li>penambahan memori jika penyumbatan terjadi pada buffer disk;</li>
+		<li>atau upgrade processor jika penyumbatan terjadi pada pemrosesan.</li>
+	</ul>
+	</li>
+	<li>Parameter pada sistem basisdata, contohnya,
+	<ul>
+		<li>ukuran buffer,</li>
+		<li>rentang waktu commit (penyimpanan dari memory ke disk)</li>
+	</ul>
+	</li>
+	<li>Skema dan transaksi, contohnya,
+	<ul>
+		<li>pembuatan indeks,</li>
+		<li>perancangan ulang skema, pada beberapa kasus aplikasi, penyimpanan data berbasis column bisa meningkatkan performansi pada saat eksekusi transaksi</li>
+		<li>perancangan query yang lebih efisien pada aplikasi. Misalnya, daripada mengeksekusi <em> query insert</em> satu persatu, akan lebih cepat bila query di kelompokan menjadi multi-insert (per batch). Tentu saja hal ini bergantung kepada sistem basisdata yang digunakan, apakah mendukung operasi tersebut atau tidak.</li>
+	</ul>
+	</li>
+</ul>
+
+<p>Ketiga tingkat tersebut berkaitan satu sama lain. Bisa saja pada saat melakukan tuning pada tingkat skema akan menyebabkan penyumbatan pada tingkat <em>hardware</em>. Hal pertama yang harus dilakukan adalah melihat penyumbatannya dimana, jika penyumbatan terjadi pada tingkat perangkat keras, perhatikan query atau prosesnya apakah bisa diperbaiki untuk lebih baik atau tidak. Jika query sudah diperbaiki, maka lihat kembali hasilnya apakah masih tersendat pada tingkat <em>hardware</em> atau tidak.</p>
+
+<p><strong>Standar</strong></p>
+
+<p>Kelebihan anticipatory standard dibandingkan reactionary standard yaitu standar diterapkan di semua vendor sistem basisdata. Contohnya, perintah SQL untuk insert, update, dan delete adalah anticipatory standard yang sama disemua vendor sistem basisdata.</p>
+
+<p>Kekurangan anticipatory standard dibandingkan reactionary standard yaitu lambatnya perkembangan fitur-fitur standar baru yang dibutuhkan oleh sistem basisdata untuk membuat performansi database lebih bagus sehingga setiap vendor membuat fitur sendiri sehingga cara penggunaannya (dalam hal sintaks) berbeda dari vendor yang lain. Contohnya, yaitu perintah bulk insert atau multi-insert.</p>
+
+<p></p>
+
+</body>
+</html>
