@@ -368,6 +368,63 @@ var WUI =
 		}
 	}
 
+,	generate_subindex : function (parent_comp, menu)
+	{
+		var list = $("<ul/>");
+
+		parent_comp.append (list);
+
+		for (var i = 0; i < menu.length; i++) {
+			var m	= menu[i];
+			var mi	= $("<li/>");
+			var a	= $("<a/>", {
+							href	: m.link.replace ("/index.html", "")
+						,	target	: "_blank"
+						,	html	: m.title
+						});
+
+			mi.append (a);
+
+			list.append (mi);
+
+			if (m.submenu.length > 0) {
+				WUI.generate_subindex (mi, m.submenu);
+			}
+		}
+	}
+
+,	generate_index : function (id)
+	{
+		var c = $("#"+ id);
+
+		if (null == c) {
+			return;
+		}
+
+		// traverse through wui menu.
+		var list = $("<ul/>");
+
+		c.append (list);
+
+		for (var i = 0; i < wui_menu.length; i++) {
+			var m	= wui_menu[i];
+			var mi	= $("<li/>");
+			var a	= $("<a/>", {
+						href	: m.link.replace ("/index.html", "")
+					,	target	: "_blank"
+					,	html	: m.title
+					});
+
+			mi.append (a);
+
+			list.append (mi);
+
+			if (m.submenu.length > 0) {
+				WUI.generate_subindex (mi, m.submenu);
+			}
+		}
+	}
+
 ,	run : function ()
 	{
 		$( document ).ready (function() {
