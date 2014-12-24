@@ -84,7 +84,10 @@ var WUI =
 			var m_content = $(this).attr ("content");
 
 			if (undefined !== m_name) {
-				meta.append ("<tr><th>"+ m_name +":</th><td>"+ m_content +"</td></tr>");
+				meta.append ("<tr>"
+						+"<th>"+ m_name +":</th>"
+						+"<td>"+ m_content +"</td>"
+						+"</tr>");
 			}
 		});
 
@@ -96,25 +99,6 @@ var WUI =
 				+"</td>"
 			+"</tr>"
 		);
-	}
-
-,	set_content_share : function (node)
-	{
-		var link	= node.link.replace ("/index.html", "");
-		var share	= $("#wui_content_share");
-
-		share.empty ();
-
-		share.append ("<a href='https://twitter.com/share'"
-						+"class='twitter-share-button'"
-						+"data-lang='en'"
-						+"data-via='MhdSulhan'"
-						+"data-url='http://"+ window.location.hostname + link +"'"
-						+"data-text='"+ node.title +"'"
-						+">Tweet</a>"
-			);
-
-		twttr.widgets.load ();
 	}
 
 ,	content_on_load : function (link)
@@ -145,8 +129,6 @@ var WUI =
 
 			// add meta to content
 			WUI.set_content_meta (res, link);
-
-//			WUI.set_content_share (node);
 		}
 	}
 
@@ -173,18 +155,20 @@ var WUI =
 
 		$.getJSON (link + ts, function (data) {
 				$.each (data, function (idx, d) {
-					wc.append ("<div class='panel'>"
-								+"<div class='panel-body'>"
-									+"<span id='comment_time'>"
-									+ WUIFeed.date2string (new Date(d.time * 1000))
-									+" -- </span>"
-									+"<strong>"
-										+ (d.author === "" ? "Anonymous" : d.author)
-									+"</strong>"
-									+"<br/>"
-									+ d.v
-								+"</div>"
-								+"</div>");
+					wc.append (
+					"<div class='panel'>"
+						+"<div class='panel-body'>"
+							+"<span id='comment_time'>"
+							+ WUIFeed.date2string (new Date(d.time * 1000))
+							+" -- </span>"
+							+"<strong>"
+								+ (d.author === "" ? "Anonymous" : d.author)
+							+"</strong>"
+							+"<br/>"
+							+ d.v
+						+"</div>"
+					+"</div>"
+					);
 				});
 			});
 	}
@@ -412,7 +396,9 @@ var WUI =
 
 			// jquery: disable auto scrolling to top
 			// credit: http://www.techiecorner.com/2768/jquery-disable-autoscrolling-to-top-when-click-on-anchor/
-			$('body').on('click', '[href^=#]', function (e) { e.preventDefault() });
+			$('body').on ('click', '[href^=#]', function (e) {
+				e.preventDefault()
+			});
 		});
 	}
 };
