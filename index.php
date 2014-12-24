@@ -35,6 +35,7 @@
 
 <body>
 	<div class="container">
+		<!--{{{ HEADER -->
 		<div class="row">
 			<div id="wui_header" class="col-sm-12">
 				<div class="row">
@@ -49,7 +50,7 @@
 				</div>
 			</div>
 		</div>
-
+		<!--}}} -->
 		<div class="row">
 			<div id="wui_menu" class="col-sm-12">
 			</div>
@@ -57,50 +58,72 @@
 
 		<div class="row">
 			<div class="col-sm-12">
-				<div id="wui_content_share">
-				</div>
-
 				<div id="wui_content">
 				</div>
 
+				<!--{{{META-->
 				<div class="panel panel-default">
 					<div class="panel-heading"> Meta </div>
-					<table id="wui_content_meta" class="table table-condensed"></table>
+					<table id="wui_content_meta" class="table table-condensed">
+					</table>
 				</div>
-
+				<!--}}}-->
+				<!--{{{ COMMENT-->
 				<div id="wui_comment_panel" class="panel panel-default">
 					<div class="panel-heading"> Comments </div>
 					<div class="panel-body">
 						<div id="comments"></div>
 
-						<form id="wui_comment_form" class="form-horizontal" role="form" action="/comment.php" method="POST">
+						<form id="wui_comment_form" class="form-horizontal"
+							role="form"
+							action="/comment.php"
+							method="POST"
+						>
 							<div class="form-group hidden">
-								<label for="c_link" class="col-sm-2 control-label input-sm"> Link </label>
+								<label for="c_link"
+									class="col-sm-2 control-label input-sm"
+								>
+									Link
+								</label>
 								<div class="col-sm-10">
-									<input name="c_link" type="text" id="c_link" class="form-control input-sm" />
+									<input name="c_link" type="text"
+										id="c_link"
+										class="form-control input-sm"
+									/>
 								</div>
 							</div>
 
 							<div class="form-group">
 								<div class="col-sm-12">
-									<label for="c_content">Add new comment</label>
-									<textarea name="c_content" id="c_content" class="input-block-level form-control" ></textarea>
+									<label for="c_content"
+									>
+										Add new comment
+									</label>
+									<textarea name="c_content" id="c_content"
+										class="input-block-level form-control"
+									></textarea>
 								</div>
 							</div>
 
 							<div class="form-group">
 								<div class="col-sm-12">
 									<div class="btn-group">
-										<button type="submit" class="btn btn-default" id="comment_submit">Submit</button>
+										<button type="submit"
+											class="btn btn-default"
+											id="comment_submit"
+										>
+										Submit
+										</button>
 									</div>
 								</div>
 							</div>
 						</form>
 					</div>
 				</div>
+				<!--}}}-->
 			</div>
 		</div>
-
+		<!--{{{ FOOTER -->
 		<div class="row">
 			<div class="col-sm-12">
 				<div class="row">
@@ -125,6 +148,7 @@
 				</div>
 			</div>
 		</div>
+		<!--}}}-->
 	</div>
 
 	<script src="/js/jquery.min.js"></script>
