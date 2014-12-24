@@ -25,6 +25,7 @@
 	<link rel="stylesheet" href="/css/bootstrap.min.css"/>
 	<!-- summernote -->
 	<link rel="stylesheet" href="/css/font-awesome.min.css"/>
+	<link rel="stylesheet" href="/css/summernote.css"/>
 	<link rel="stylesheet" href="/manage/manage.css"/>
 	<link rel="shortcut icon" href="favicon.ico"/>
 	<title>Manage Wui!</title>
@@ -256,8 +257,8 @@
 	<script src="/js/jquery.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/bootstrap-treeview.min.js"></script>
+	<script src="/js/summernote.min.js"></script>
 	<script src="/js/bootbox.min.js"></script>
-	<script src="/js/ckeditor/ckeditor.js"></script>
 	<!--}}} -->
 	<script>
 		var author = '<?= $_SESSION["email"] ?>';
@@ -282,7 +283,7 @@
 			}
 		}
 		//}}}
-		//{{{ 
+		//{{{
 		function init_node_parent_selection (nodes, child_key, tabs)
 		{
 			var np_node = $("#node_parent");
@@ -395,7 +396,7 @@
 			$("#e_publish_time").val (get_current_time ());
 			$("#e_author").val (author);
 			$("#e_comment").val ("off");
-			CKEDITOR.instances.e_content.setData ("");
+			$("#e_content").code ("");
 		}
 		//}}}
 		//{{{ form edit content -> show
@@ -430,7 +431,7 @@
 					$("input#e_node_name").val (ids[ids.length - 1]);
 					$("#e_node_parent").val (node.pid);
 
-					// set field based on meta data					
+					// set field based on meta data
 					$xml.find ("html > head > meta").each (function () {
 							var m_name = $(this).attr ("name");
 							var m_content = $(this).attr ("content");
@@ -449,7 +450,7 @@
 
 					var body = $xml.find ("body").html ().trim ();
 
-					CKEDITOR.instances.e_content.setData (body);
+					$("#e_content").code (body);
 				});
 		}
 		//}}}
@@ -466,7 +467,7 @@
 			data.e_publish_time = $form.find ("#e_publish_time").val ();
 			data.e_author		= $form.find ("#e_author").val ();
 			data.e_comment		= $form.find ("#e_comment").prop ("checked");
-			data.e_content		= CKEDITOR.instances.e_content.getData ();
+			data.e_content		= $("#e_content").code ();
 
 			$.ajax ({
 					type	: $form.attr ("method")
@@ -490,7 +491,7 @@
 		//{{{ form edit content -> preview
 		function form_edit_content_preview (event)
 		{
-			bootbox.alert (CKEDITOR.instances.e_content.getData ());
+			bootbox.alert ($("#e_content").code ());
 		}
 		//}}}
 		//{{{ document ready (main)
@@ -529,85 +530,9 @@
 				}
 			});
 
-			CKEDITOR.replace ("e_content", {
-					filebrowserUploadUrl:"upload.php"
-				,	height				:"350px"
-				,	fillEmptyBlocks		:false
-				,	tabSpaces			:0
-				,	toolbar				:
-					[{
-						name	:"document"
-					,	groups	:
-						[
-							"mode"
-						,	"basicstyles"
-						,	"cleanup"
-						]
-					,	items	:
-						[
-							"Source"
-						,	"-"
-						,	"Bold"
-						,	"Italic"
-						,	"Underline"
-						,	"Strike"
-						,	"Subscript"
-						,	"Superscript"
-						,	"-"
-						,	"RemoveFormat"
-						]
-					},{
-						name	:"paragraph"
-					,	groups	:
-						[
-							"list"
-						,	"indent"
-						,	"blocks"
-						,	"align"
-						,	"bidi"
-						]
-					,	items	:
-						[
-						"NumberedList"
-						, "BulletedList"
-						, "-"
-						, "Outdent"
-						, "Indent"
-						, "-"
-						, "Blockquote"
-						, "CreateDiv"
-						, "-"
-						, "JustifyLeft"
-						, "JustifyCenter"
-						, "JustifyRight"
-						, "JustifyBlock"
-						, "-"
-						, "BidiLtr"
-						, "BidiRtl"
-						, "Language"
-						]
-					},{
-						name	: "links"
-					,	items	: [ "Link", "Unlink", "Anchor" ]
-					},{
-						name	: "insert"
-					,	items	:
-						[
-						  "CodeSnippet"
-						, "Image"
-						, "Flash"
-						, "Table"
-						, "HorizontalRule"
-						, "Smiley"
-						, "SpecialChar"
-						, "PageBreak"
-						, "Iframe"
-						]
-					},{
-						name	: "styles"
-					,	items	: [ "Styles", "Format", "Font", "FontSize" ]
-					}]
-				});
+			$('#e_content').summernote({
+				height: "350px"
+			});
 
 			$("#node_form").on ("submit", form_edit_node_submit);
 			$("#editor_form").on ("submit", form_edit_content_submit);
