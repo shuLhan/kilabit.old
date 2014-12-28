@@ -23,9 +23,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="/css/bootstrap.min.css"/>
-	<!-- summernote -->
-	<link rel="stylesheet" href="/css/font-awesome.min.css"/>
-	<link rel="stylesheet" href="/css/summernote.css"/>
 	<link rel="stylesheet" href="/manage/manage.css"/>
 	<link rel="shortcut icon" href="favicon.ico"/>
 	<title>Manage Wui!</title>
@@ -257,8 +254,8 @@
 	<script src="/js/jquery.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/bootstrap-treeview.min.js"></script>
-	<script src="/js/summernote.min.js"></script>
 	<script src="/js/bootbox.min.js"></script>
+	<script src="/js/ckeditor/ckeditor.js"></script>
 	<!--}}} -->
 	<script>
 		var author = '<?= $_SESSION["email"] ?>';
@@ -396,7 +393,7 @@
 			$("#e_publish_time").val (get_current_time ());
 			$("#e_author").val (author);
 			$("#e_comment").val ("off");
-			$("#e_content").code ("");
+			CKEDITOR.instances.e_content.setData ("");
 		}
 		//}}}
 		//{{{ form edit content -> show
@@ -451,7 +448,7 @@
 
 					var body = $(doc).find ("body");
 
-					$("#e_content").code (body.html ());
+					CKEDITOR.instances.e_content.setData (body.html ());
 				});
 		}
 		//}}}
@@ -468,7 +465,7 @@
 			data.e_publish_time = $form.find ("#e_publish_time").val ();
 			data.e_author		= $form.find ("#e_author").val ();
 			data.e_comment		= $form.find ("#e_comment").prop ("checked");
-			data.e_content		= $("#e_content").code ();
+			data.e_content		= CKEDITOR.instances.e_content.getData ();
 
 			$.ajax ({
 					type	: $form.attr ("method")
@@ -492,7 +489,7 @@
 		//{{{ form edit content -> preview
 		function form_edit_content_preview (event)
 		{
-			bootbox.alert ($("#e_content").code ());
+			bootbox.alert (CKEDITOR.instances.e_content.getData ());
 		}
 		//}}}
 		//{{{ document ready (main)
@@ -531,8 +528,9 @@
 				}
 			});
 
-			$('#e_content').summernote({
-				height: "350px"
+			CKEDITOR.replace ("e_content",{
+				height			:"350px"
+			,	extraPlugins	:"base64image"
 			});
 
 			$("#node_form").on ("submit", form_edit_node_submit);
