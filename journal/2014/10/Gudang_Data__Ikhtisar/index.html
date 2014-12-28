@@ -1,60 +1,46 @@
+<!DOCTYPE HTML>
 <html>
 <head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="title" content="Gudang Data: Ikhtisar"/>
 <meta name="publish_date" content="2014.10.20 15:24:12"/>
 <meta name="author" content="ms@kilabit.info"/>
-<meta charset="utf-8" />
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>Gudang Data: Ikhtisar</title>
 </head>
 <body>
 <h1>Gudang Data (GD - <em>Data Warehouse</em>)</h1>
-
-<p>Gudang data dapat didefinisikan sebagai suatu koleksi data yang berorientasi subjek, terintegrasi, memiliki varia<img alt="Basis data dan Dat a Warehouse dalam struktur organisasi" src="/journal/2014/10/Gudang_Data__Ikhtisar/Posisi_DBMS_dan_DW.png" style="float:right; height:194px; margin:6px; width:300px" />si waktu, dan tidak berubah, yang bertujuan untuk mendukung proses pembuatan keputusan manajemen; atau dengan kata lain, data pada GD hanya data statis hasil agregasi data dari satu atau beberapa basis data yang telah dibersihkan, disaring, digabung, dan/atau diformat ulang dengan tujuan untuk mempermudah dalam melakukan analisis dan pelaporan. Gudang data ditempatkan terpisah dari basis data operasional.</p>
-
+<img alt="Basis data dan Data Warehouse dalam struktur organisasi" src="/journal/2014/10/Gudang_Data__Ikhtisar/Posisi_DBMS_dan_DW.png" style="float:right; height:194px; margin:6px; width:300px"><p>Gudang data dapat didefinisikan sebagai suatu koleksi data yang berorientasi subjek, terintegrasi, memiliki variasi waktu, dan tidak berubah, yang bertujuan untuk mendukung proses pembuatan keputusan manajemen; atau dengan kata lain, data pada GD hanya data statis hasil agregasi data dari satu atau beberapa basis data yang telah dibersihkan, disaring, digabung, dan/atau diformat ulang dengan tujuan untuk mempermudah dalam melakukan analisis dan pelaporan. Gudang data ditempatkan terpisah dari basis data operasional.</p>
 <p>Gudang data berorientasi subjek maksudnya adalah,</p>
-
 <ul>
 	<li>data pada gudang data terorganisasi berdasarkan subjek utama, seperti pelanggan, penjualan, atau produk;</li>
 	<li>difokuskan untuk pemodelan dan analisis data untuk pembuat keputusan, bukan untuk operasi sehari-hari atau pemrosesan transaksi; dan</li>
 	<li>menyediakan pandangan yang sederhana dan padat mengenai masalah subjek tertentu dengan mengindahkan data yang tidak berguna bagi proses mendukung keputusan. Misalnya, pada tingkat <em>middle</em> dalam organisasi supermarket hanya ada manajer keuangan dan penjualan, maka data yang dikumpulkan dalam GD adalah data agregasi dari nilai transaksi pembelian dan penjualan dan jumlah barang dalam transaksi penjualan dan pembelian yang dibutuhkan oleh manajer keuangan dan penjualan.</li>
 </ul>
-
 <p>Gudang data terintegrasi maksudnya adalah,</p>
-
 <ul>
 	<li>dibangun dengan mengintegrasikan berbagai sumber data yang heterogen menjadi satu;</li>
 	<li>teknik pembersihan data dan integrasi data digunakan -- saat data dipindahkan ke gudang data, data dikonversi dan penyamaan pada penamaan, struktur <em>encoding</em>, dan ukuran atribut dilakukan supaya konsisten. Misalnya, pada contoh supermarket sebelumnya, bila ada lebih dari satu supermarket maka akan ada lebih dari satu basis data (diasumsikan jika supermarket tersebut tidak terhubung ke satu pusat basis data). Supaya analisis dan pelaporan dapat dilakukan untuk semua data supermarket tersebut maka semua basis data haruslah digabungkan menjadi satu, terintegrasi, ke dalam satu basis data di GD.</li>
 </ul>
-
 <p>Gudang data memiliki variasi waktu maksudnya adalah,</p>
-
 <ul>
 	<li>rentang waktu data lebih lama dari pada data di sistem operasional. Pada basis data operasional rentang waktu dari data yang tersimpan yaitu pada masa sekarang dan beberapa minggu atau bulan sebelumnya, sementara pada gudang data informasi disediakan pada rentang waktu keseluruhan untuk memberikan perspektif secara historis (misalnya, sampai 10-15 tahun lalu, tergantung dari sejak kapan sistem informasi digunakan).</li>
 	<li>Setiap struktur kunci pada gudang data memiliki elemen waktu, baik secara eksplisit maupun implisit. Pada basis data operasional bisa atau bisa tidak memiliki elemen waktu. Misalnya, untuk laporan keuangan bagi manajer keuangan bisa saja membutuhkan data perhari, perminggu, atau perbulan, maka data yang ada di dalam GD berisi data sejak awal sistem informasi berbasis data digunakan oleh sistem supermarket sampai sekarang.</li>
 </ul>
-
 <p>Gudang data tidak berubah maksudnya adalah karena tempat penyimpanan fisik data pada gudang data terpisah dari data operasional, perubahan pada data tidak terjadi di gudang data tapi di basis data operasional. Operasi pada gudang data hanya pemuatan awal dan akses (<em>insert</em> dan <em>read</em>), tidak ada operasi update, delete, <em>recovery</em>, dan mekanisme kontrol konkuren. Hal ini untuk menjaga konsistensi antara data operasional dan GD. Oleh karena itu sebelum data masuk ke GD haruslah ada pemrosesan seperti pembersihan, penyaringan, dan validasi sebelumnya.</p>
-
 <p>Transaksi pada GD dikenal juga dengan istilah <em>Online Analytical Processing</em> (OLAP).</p>
-
 <h2>Perbedaan Gudang Data dengan <em>Database Management System</em> (DBMS) Operasional</h2>
-
 <p><em>Database</em> atau basis data dalam bidang teknologi informasi yaitu ilmu yang mempelajari tentang teori penyimpanan data. Di dalam bidang bisnis, penggunaan basis data dipermudah oleh sebuah perangkat lunak yang secara khusus berinteraksi dengan pengguna atau aplikasi yang disebut dengan <em>Database Management System</em> (DBMS). DBMS digunakan untuk pemrosesan transaksi dengan mencatat dan menyimpan data yang diperlukan oleh pengguna atau dikenal juga dengan istilah <em>Online Transaction Processing</em> (OLTP).</p>
-
 <p>Pada basis data relasional data tersebut disimpan dalam bentuk tabel-tabel dalam basis data yang di-normalisasi untuk mengurangi redundansi data dan menghemat penggunaan media penyimpanan. Pemetaan objek dari dunia bisnis ke sistem aplikasi berbasis data menjadi tabel menggunakan teknik pemodelan <em>entity-relationship (ER)</em>, yaitu pemodelan yang berorientasi pada objek-pelaku dalam sistem beserta keterhubungan dan transaksi antara objek-pelaku.</p>
-
 <p>Penggunaan basis data dalam sistem operasional dioptimasi dan dirancang untuk pencatatan, sehingga apabila dibutuhkan analisis terhadap data maka performansi dari basis data akan berpengaruh yang bisa saja menyebabkan lambat atau lebih parahnya kegagalan proses pencatatan data pada saat proses analisis berjalan. Sebagai contohnya, pada sistem basis data supermarket dengan rata-rata transaksi perhari ratusan ribu penjualan. Untuk mendapatkan laporan penjualan bulan lalu maka pengguna harus mengakses sistem basis data yang sama, dengan beban transaksi yang sedang berjalan, sehingga tidak hanya mengganggu proses transaksi juga melambatkan proses pengeluaran laporan. Tentu saja hal ini bisa diatasi dengan melakukan pelaporan di luar jam kerja operasional, misalnya setelah supermarket ditutup, namun tidak akan efisien bila data supermarket yang dianalisis lebih dari satu basis data atau membutuhkan waktu yang lama pada saat memroses.</p>
-
-<table border="1" cellpadding="1" cellspacing="1" style="height:80px; width:800px">
-	<thead>
-		<tr>
+<table style="height:80px; width:800px" border="1" cellpadding="1" cellspacing="1">
+	<thead>		<tr>
 			<th scope="col">Fitur</th>
 			<th scope="col">OLTP</th>
 			<th scope="col">OLAP</th>
 		</tr>
 	</thead>
-	<caption>Perbedaan OLTP dan OLAP</caption>
-	<tbody>
+	<caption>Perbedaan OLTP dan OLAP</caption>	<tbody>
 		<tr>
 			<td>Orientasi Pengguna dan Sistem</td>
 			<td>Operasional - Pelanggan</td>
@@ -82,91 +68,53 @@
 		</tr>
 	</tbody>
 </table>
-
 <h2>Perbedaan Gudang Data dan DBMS Heterogen Tradisional</h2>
-
-<p><img alt="DBMS Heterogen" src="/journal/2014/10/Gudang_Data__Ikhtisar/Heterogen_DBMS.png" style="float:left; height:225px; margin:6px; width:300px" />DBMS Heterogen menggunakan sebuah program mediasi (mediator) atau pembungkus yang mengirim <em>query</em> dari pengguna ke setiap database yang dibutuhkan. Query dari user biasanya diterjemahkan terlebih dahulu kemudian mediator mengirim sub-sub query ke database yang dibutuhkan, yang kemudian hasilnya digabungkan kembali untuk ditampilkan ke pengguna.</p>
-
+<p><img alt="DBMS Heterogen" src="/journal/2014/10/Gudang_Data__Ikhtisar/Heterogen_DBMS.png" style="float:left; height:225px; margin:6px; width:300px">DBMS Heterogen menggunakan sebuah program mediasi (mediator) atau pembungkus yang mengirim <em>query</em> dari pengguna ke setiap database yang dibutuhkan. Query dari user biasanya diterjemahkan terlebih dahulu kemudian mediator mengirim sub-sub query ke database yang dibutuhkan, yang kemudian hasilnya digabungkan kembali untuk ditampilkan ke pengguna.</p>
 <p>Database pada DBMS heterogen bisa berada pada satu tempat atau di tempat yang berbeda-beda. Misalnya, DB X berada di kota Bandung, sementara DB Y berada di kota Jakarta. Program Mediasi mengatur koneksi dari semua availabilitas basis data tersebut.</p>
-
 <p></p>
-
 <p></p>
-
 <h1></h1>
-
 <h1>Perancangan Gudang Data</h1>
-
 <p>Pemodelan pada GD dikenal tiga istilah yaitu Subjek, tabel Dimensi, dan tabel Fakta.</p>
-
 <p>Subjek secara sederhananya yaitu bisnis proses, cara pandang untuk membagi bisnis nantinya ke dalam tabel dimensi dan fakta. Dua atau lebih subjek bisa saling berhimpitan.</p>
-
 <p>Tabel Dimensi yaitu tabel yang berisi data entitas-entitas yang stabil (jarang atau tidak berubah isinya), misalnya pelanggan, produk, lokasi, promosi pemasaran. Tabel dimensi biasanya memiliki dua tipe: <em>primary key</em> dan data tekstual/deskripsi.</p>
-
 <p>Tabel Fakta yaitu tabel yang berisi kumpulan kejadian dan memiliki atribut yang terukur (nilai numerik, memiliki nilai yang bisa dibandingkan dengan record yang lain) atau hasil observasi, yang dikumpulkan oleh semua proses pada sistem transaksi. Tabel Fakta biasanya memiliki dua tipe: <em>foreign key</em> ke tabel Dimensi dan nilai. Record pada tabel Fakta hanya berisi <u>jika dan hanya jika</u> suatu peristiwa terjadi.</p>
-
 <p>Proses dalam perancangan GD yaitu,</p>
-
 <ul>
 	<li>Tentukan bisnis proses (subjek) yang akan dimodelkan (misalnya, pemesanan)</li>
 	<li>Tentukan tingkat kedetilan dari bisnis proses yang akan dimodelkan.</li>
 	<li>Tentukan <em>Dimension</em> yang akan dipakai pada setiap tabel <em>Fact</em>.</li>
 	<li>Tentukan ukuran yang akan mengisi setiap tabel <em>Fact</em>.</li>
 </ul>
-
 <p>Kunci penting selama proses merancang GD yaitu,</p>
-
 <ul>
 	<li>Kebutuhan bisnis harus jelas,</li>
 	<li>kualitas data;</li>
 	<li>integrasi, penyesuaian, dan keamanan (dari data);</li>
 	<li>tentukan batas dari data mana saja yang akan disimpan ke dalam GD.</li>
 </ul>
-
 <h2>Contoh kasus</h2>
-
 <p>Subjek: Keselamatan dan Keamanan pada PT. Kereta Api Indonesia.</p>
-
-<p><img alt="Tabel Dimensi dan Fakta untuk Keselamatan dan Keamanan PT. KAI" src="/journal/2014/10/Gudang_Data__Ikhtisar/Safety_and_Security_Dimension_and_Fact_Tables.png" style="float:left; height:256px; margin:6px; width:400px" />Gambar di sebelah memperlihat enam tabel dimensi: DateTime (Waktu), Location (Lokasi), Accident Category (Kategori Kecelakaan), Terminal, Route (Rute), dan Train (Kereta).</p>
-
+<p><img alt="Tabel Dimensi dan Fakta untuk Keselamatan dan Keamanan PT. KAI" src="/journal/2014/10/Gudang_Data__Ikhtisar/Safety_and_Security_Dimension_and_Fact_Tables.png" style="float:left; height:256px; margin:6px; width:400px">Gambar di sebelah memperlihat enam tabel dimensi: DateTime (Waktu), Location (Lokasi), Accident Category (Kategori Kecelakaan), Terminal, Route (Rute), dan Train (Kereta).</p>
 <p>Tabel Faktanya yaitu Accident (peristiwa kecelakaan) yang berisi <em>foreign key</em> ke lima tabel dimensi, dan dua data terukur (jumlah kecelakaan, jumlah korban).</p>
-
 <p>Dari tabel fakta tersebut dapat dihitung jumlah kecelakaan berdasarkan tempat dan/atau waktu kejadian tertentu. Misalnya, menghitung jumlah kecelakaan pada malam hari dari tanggal X sampai tanggal Y untuk lokasi di kota B.</p>
-
 <p></p>
-
 <h2>Pra-Proses pada Data Mining</h2>
-
 <p>Pra-proses pada data mining dilakukan untuk meningkatkan kualitas dari data yang digali dan/atau meningkatkan waktu yang dibutuhkan saat penggalian data.</p>
-
 <p>Pra-proses dilakukan biasanya karena ada ketidaklengkapan, kekacauan, atau ketidak-konsistenan pada data.</p>
-
 <p>Ketidaklengkapan contohnya yaitu nilai atribut yang kosong atau atribut yang seharusnya ada tapi tidak ada. Kekacauan pada data contohnya yaitu nilai atribut yang tidak sesuai, biasanya disebabkan karena kesalahan operator pada saat input atau kesalahan pada mesin atau aplikasi. Ketidakkonsistenan pada data contohnya yaitu pada penamaan (misalnya, pada tabel penjualan kolom id_prod menunjuk pada id pada tabel produk, sementara pada tabel pembelian id untuk produk menggunakan nama id_product).</p>
-
 <p>Untuk mendeteksi kekacauan pada data digunakan teknik statistik yang disebut Sumarisasi Data Deskriptif (SDD - <em>Descriptive Data Summarization</em>). Teknik SDD dapat melihat penyebaran dan tendensi sentral dari data.</p>
-
 <h3>Tendensi Sentral</h3>
-
 <p>Tendensi Sentral dapat dilihat dengan menggunakan mean, median. mode, atau midrange.</p>
-
 <p>Mean atau rata-rata digunakan dengan menjumlahkan nilai kolom dan membaginya dengan jumlah baris. Kekurangan dari teknik ini yaitu sensitif terhadap nilai data yang ekstrim. Contohnya, nilai rata-rata gaji bisa saja naik karena sejumlah karyawan memiliki gaji yang lebih besar dari yang lainnya. Untuk mengatasi ini digunakan teknik pemotongan rata-rata (<em>trimmed mean</em>), yaitu dengan memotong nilai ekstrim paling tinggi dan paling rendah.</p>
-
 <p>Median atau nilai tengah digunakan untuk data asimetrik (data yang condong ke kiri atau ke kanan). Selain itu bisa digunakan teknik <em>mode</em> yaitu nilai yang sering muncul. Teknik lainnya yaitu <em>midrange</em> dilakukan dengan menghitung nilai rata-rata dari nilai tertinggi dan terendah.</p>
-
 <h3>Penyebaran Data (Data Dipersion)</h3>
-
 <p>Tingkat di mana data condong menyebar disebut dengan dispersi, atau variasi dari data. Cara pengukuran untuk penyebaran data yaitu <em>range</em>, <em>quartiles</em>, <em>interquartile range</em>, dan <em>standar deviasi</em>.</p>
-
 <p>Range yaitu perbedaan antara nilai tertinggi dan terendah.</p>
-
 <p>Quartile yaitu pembagian data menjadi tiga. Q1 dari set data yaitu percentile ke 25, median adalah percentile ke 50, Q3 yaitu percentile ke 75. Jarak antara Q3 dan Q1 disebut dengan <em>Interquartile range</em>.</p>
-
 <p>Selain menggunakan pengukuran, tendensi central dan penyebaran data bisa dilihat dengan menggunakan grafik diantaranya yaitu grafik histogram, <em>quantile plots</em>, <em>q-q plots</em>, <em>scatter plots</em>, dan <em>loes curves</em>.</p>
-
 <h2>Pembersihan Data (Data Cleaning)</h2>
-
 <p>Pembersihan data dilakukan untuk mengisi data yang kosong, membersihkan kekacauan dari data, dan memperbaiki ketidakkonsistenan dari data. Metode yang dilakukan untuk mengisi kekosongan data yaitu,</p>
-
 <ul>
 	<li>mengindahkan tuple yang tidak diperlukan;</li>
 	<li>mengisi secara manual;</li>
@@ -175,30 +123,22 @@
 	<li>menggunakan nilai rata-rata berdasarkan sample dari kelas yang sama pada tuple tersebut;</li>
 	<li>menggunakan nilai yang memungkinkan (misalnya, metoda Bayesian).</li>
 </ul>
-
 <p>Untuk membersihkan data yang kacau dilakukan dengan metode,</p>
-
 <ul>
 	<li>Binning, data diurut dan dibagi menjadi beberapa kelompok, setiap kelompok diambil nilai rata-ratanya sebagai nilai dari kelompok tersebut.</li>
 	<li>Regresi. Data dihaluskan dengan menggunakan fungsi, seperti fungsi regresi linear.</li>
-	<li>Clustering. Clustering membersihkan data yang asing (data diluar yang seharusnya) dengan mengelompokan nilai yang mirip menjadi &quot;cluster&quot;, sehingga nilai diluar cluster dianggap asing.</li>
+	<li>Clustering. Clustering membersihkan data yang asing (data diluar yang seharusnya) dengan mengelompokan nilai yang mirip menjadi "cluster", sehingga nilai diluar cluster dianggap asing.</li>
 </ul>
-
 <h3>Integrasi Data dan Transformasi Data</h3>
-
 <p>Integrasi data yaitu menggabung beberapa sumber data menjadi satu. Proses ini biasanya mengikutkan transformasi data.</p>
-
 <p>Permasalahan yang muncul pada saat integrasi data yaitu,</p>
-
 <ul>
 	<li>mengetahui apakah atribut pada basis data X sama dengan basis data B. Misalnya, apakah kolom id_pelanggan pada tabel pelanggan sama dengan kolom no_pelanggan pada basis data yang berbeda.</li>
 	<li>Redundansi. Sebuah atribut adalah redundan bila nilai dari atribut tersebut bisa diturunkan dari atribut lainnya.</li>
 	<li>Duplikasi.</li>
 	<li>Perbedaan nilai ukur. Pada basis data tertentu menggunakan ukuran meter untuk hitungan panjang sementara basis data lain menggunakan inci.</li>
 </ul>
-
 <p>Untuk mengatasi semua masalah yang muncul, maka data perlu di transformasi supaya sesuai untuk penggalian. Transformasi data bisa mengikutkan,</p>
-
 <ul>
 	<li>Penghalusan, menghilangkan kekacauan pada data.</li>
 	<li>Agregasi, menghitungkan jumlah data per waktu.</li>
@@ -206,11 +146,8 @@
 	<li>Normalisasi, di mana data diberi tingkatan supaya masuk ke dalam rentang yang kecil, misalnya dari 1.0 ke 1.0 atau 0.0 ke 1.0.</li>
 	<li>Konstruksi atribut, di mana atribut baru dibentuk dari sekumpulan atribut.</li>
 </ul>
-
 <h3>Reduksi Data</h3>
-
 <p>Teknik reduksi data digunakan bila jumlah data sangat besar sehingga mempersulit analisis dan penggalian data membutuhkan waktu lama. Strategi untuk reduksi data yaitu,</p>
-
 <ul>
 	<li>Agregasi data cube, operasi agregasi diterapkan pada data saat data cube dibangun.</li>
 	<li>Pemilihan subset atribut, di mana dimensi atau atribut yang redundan, tidak relevan, atau lemah keterkaitannya dihilangkan.</li>
@@ -218,14 +155,10 @@
 	<li>Reduksi <em>Numerosity</em>, di mana data diganti dengan representasi data yang lebih kecil, seperti kluster atau sample dari data.</li>
 	<li><em>Discretization</em> dan konsep generasi hirarki, di mana nilai data mentah diganti membagi rentang atribut menjadi interval. Label interval kemudian dijadikan nilai ganti.</li>
 </ul>
-
 <h2>Sumber</h2>
-
 <ul>
 	<li>Jiawei Han and Micheline Kamber. Data Mining Concepts and Techniques, Second edition. Morgan Kaufmann Publishers. 2006.</li>
 </ul>
-
 <p></p>
-
 </body>
 </html>
