@@ -528,9 +528,10 @@
 				}
 			});
 
-			CKEDITOR.replace ("e_content",{
+			CKEDITOR.replace ("e_content",
+			{
 				height			:"350px"
-			,	extraPlugins	:"base64image"
+			,	extraPlugins	: "base64image,image2"
 			});
 
 			$("#node_form").on ("submit", form_edit_node_submit);
