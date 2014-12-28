@@ -34,25 +34,32 @@ function is_cli()
 
 function get_meta (&$m, $p, $id)
 {
-	$xml	= simplexml_load_file ($p);
+	$doc	= new DOMDocument ();
 	$title	= null;
 	$perma	= null;
 	$body	= null;
 	$head	= null;
 
-	foreach ($xml->head[0]->meta as $meta) {
-		switch ((string) $meta["name"]) {
+	// load html file and suppress warning messages.
+	@$doc->loadHTMLFile ($p);
+
+	$metas = $doc->getElementsByTagName ("meta");
+
+	foreach ($metas as $meta) {
+		switch ($meta->getAttribute ("name")) {
 		case "title":
-			$title = (string) $meta["content"];
+			$title = $meta->getAttribute ("content");
 			break;
 		case "permalink":
-			$perma = (string) $meta["content"];
+			$perma = $meta->getAttribute ("content");
 			break;
 		}
 	}
 
 	// if body exist mark as loaded.
-	if (count ($xml->body) > 0) {
+	$body = $doc->getElementsByTagName ("body");
+
+	if ($body->length > 0) {
 		$m["load"] = true;
 	} else {
 		$m["load"] = false;
@@ -64,16 +71,21 @@ function get_meta (&$m, $p, $id)
 		$m["title"] = $title;
 	}
 
-	if (null === $xml->body) {
+	if (null === $body) {
 		$m["link"] = "";
 	} else {
 		$m["link"] = substr ($p, 2);
 	}
 
 	if (null === $perma) {
-		$meta = $xml->head->addChild ("meta");
-		$meta->addAttribute ("name", "permalink");
-		$meta->addAttribute ("content", $p);
+		$head = $doc->getElementsByTagName ("head")->item (0);
+
+		$meta = $doc->createElement ("meta");
+
+		$meta->setAttribute ("name", "permalink");
+		$meta->setAttribute ("content", $p);
+
+		$head->appendChild ($meta);
 	}
 }
 
