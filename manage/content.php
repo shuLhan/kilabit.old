@@ -103,13 +103,15 @@ try {
 	}
 
 	$contents = <<<EOF
+<!DOCTYPE HTML>
 <html>
 <head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="title" content="$e_title"/>
 <meta name="publish_date" content="$e_pub_date $e_pub_time"/>
 <meta name="author" content="$e_author"/>
-<meta charset="utf-8" />
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>$e_title</title>
 </head>
 <body>
 $e_content
