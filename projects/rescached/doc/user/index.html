@@ -1,197 +1,801 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-<title>rescached Documentation</title>
-<meta name="title"	content="Rescached-User-Documentation"/>
-<meta name="author"	content="Mhd Sulhan"/>
-<meta name="copyright"	content="kilabit.info"/>
-<meta name="keywords"	content="rescached,resolver,dns,cache"/>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.9" />
+<title>RESCACHED(1)</title>
 <style type="text/css">
+/* Shared CSS for AsciiDoc xhtml11 and html5 backends */
+
+/* Default font. */
 body {
-  width           : 800px;
-  margin          : 10px auto 10px auto;
-  padding	  : 8px;
-  border	  : solid black 1px;
+  font-family: Georgia,serif;
+}
+
+/* Title font. */
+h1, h2, h3, h4, h5, h6,
+div.title, caption.title,
+thead, p.table.header,
+#toctitle,
+#author, #revnumber, #revdate, #revremark,
+#footer {
+  font-family: Arial,Helvetica,sans-serif;
+}
+
+body {
+  margin: 1em 5% 1em 5%;
+}
+
+a {
+  color: blue;
+  text-decoration: underline;
+}
+a:visited {
+  color: fuchsia;
+}
+
+em {
+  font-style: italic;
+  color: navy;
+}
+
+strong {
+  font-weight: bold;
+  color: #083194;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #527bbd;
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+  line-height: 1.3;
+}
+
+h1, h2, h3 {
+  border-bottom: 2px solid silver;
 }
 h2 {
-  color		  : white;
-  background-color: black;
-  border-bottom	  : solid silver;
-  margin	  : 3em 0px 0px 0px;
-  padding	  : 16px 4px 4px 8px;
+  padding-top: 0.5em;
 }
 h3 {
-  background-color: silver;
-  border-bottom	  : solid grey;
-  margin	  : 2em 0px 0px 0px;
-  padding	  : 16px 4px 4px 8px;
+  float: left;
+}
+h3 + * {
+  clear: left;
+}
+h5 {
+  font-size: 1.0em;
+}
+
+div.sectionbody {
+  margin-left: 0;
+}
+
+hr {
+  border: 1px solid silver;
+}
+
+p {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+ul, ol, li > p {
+  margin-top: 0;
+}
+ul > li     { color: #aaa; }
+ul > li > * { color: black; }
+
+.monospaced, code, pre {
+  font-family: "Courier New", Courier, monospace;
+  font-size: inherit;
+  color: navy;
+  padding: 0;
+  margin: 0;
 }
 pre {
-  font-family	  : monospace;
-  color		  : white;
-  background-color: #032900;
-  padding	  : 4px 4px 4px 16px;
-  border-bottom	  : solid black;
+  white-space: pre-wrap;
 }
-table {
-  margin	  : 8px 0px 8px 0px;
-  border-collapse : collapse;
+
+#author {
+  color: #527bbd;
+  font-weight: bold;
+  font-size: 1.1em;
 }
-th {
-  background-color: silver;
-  text-align	  : left;
-  vertical-align  : text-top;
-  padding	  : 4px;
-  border	  : 1px solid grey;
+#email {
 }
-td {
-  padding	  : 4px;
-  border	  : 1px solid grey;
+#revnumber, #revdate, #revremark {
 }
-a {
-  text-decoration : none;
+
+#footer {
+  font-size: small;
+  border-top: 2px solid silver;
+  padding-top: 0.5em;
+  margin-top: 4.0em;
 }
-blockquote {
-  left		  : 50%;
-  text-align	  : right;
-  font-style	  : oblique;
-  margin-bottom	  : 2em;
+#footer-text {
+  float: left;
+  padding-bottom: 0.5em;
 }
-.toc {
-  border-top	  : 2px solid black;
-  border-bottom	  : 2px solid black;
-  padding	  : 8px;
+#footer-badges {
+  float: right;
+  padding-bottom: 0.5em;
 }
+
+#preamble {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+div.imageblock, div.exampleblock, div.verseblock,
+div.quoteblock, div.literalblock, div.listingblock, div.sidebarblock,
+div.admonitionblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+div.admonitionblock {
+  margin-top: 2.0em;
+  margin-bottom: 2.0em;
+  margin-right: 10%;
+  color: #606060;
+}
+
+div.content { /* Block element content. */
+  padding: 0;
+}
+
+/* Block element titles. */
+div.title, caption.title {
+  color: #527bbd;
+  font-weight: bold;
+  text-align: left;
+  margin-top: 1.0em;
+  margin-bottom: 0.5em;
+}
+div.title + * {
+  margin-top: 0;
+}
+
+td div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content + div.title {
+  margin-top: 0.0em;
+}
+
+div.sidebarblock > div.content {
+  background: #ffffee;
+  border: 1px solid #dddddd;
+  border-left: 4px solid #f0f0f0;
+  padding: 0.5em;
+}
+
+div.listingblock > div.content {
+  border: 1px solid #dddddd;
+  border-left: 5px solid #f0f0f0;
+  background: #f8f8f8;
+  padding: 0.5em;
+}
+
+div.quoteblock, div.verseblock {
+  padding-left: 1.0em;
+  margin-left: 1.0em;
+  margin-right: 10%;
+  border-left: 5px solid #f0f0f0;
+  color: #888;
+}
+
+div.quoteblock > div.attribution {
+  padding-top: 0.5em;
+  text-align: right;
+}
+
+div.verseblock > pre.content {
+  font-family: inherit;
+  font-size: inherit;
+}
+div.verseblock > div.attribution {
+  padding-top: 0.75em;
+  text-align: left;
+}
+/* DEPRECATED: Pre version 8.2.7 verse style literal block. */
+div.verseblock + div.attribution {
+  text-align: left;
+}
+
+div.admonitionblock .icon {
+  vertical-align: top;
+  font-size: 1.1em;
+  font-weight: bold;
+  text-decoration: underline;
+  color: #527bbd;
+  padding-right: 0.5em;
+}
+div.admonitionblock td.content {
+  padding-left: 0.5em;
+  border-left: 3px solid #dddddd;
+}
+
+div.exampleblock > div.content {
+  border-left: 3px solid #dddddd;
+  padding-left: 0.5em;
+}
+
+div.imageblock div.content { padding-left: 0; }
+span.image img { border-style: none; vertical-align: text-bottom; }
+a.image:visited { color: white; }
+
+dl {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+dt {
+  margin-top: 0.5em;
+  margin-bottom: 0;
+  font-style: normal;
+  color: navy;
+}
+dd > *:first-child {
+  margin-top: 0.1em;
+}
+
+ul, ol {
+    list-style-position: outside;
+}
+ol.arabic {
+  list-style-type: decimal;
+}
+ol.loweralpha {
+  list-style-type: lower-alpha;
+}
+ol.upperalpha {
+  list-style-type: upper-alpha;
+}
+ol.lowerroman {
+  list-style-type: lower-roman;
+}
+ol.upperroman {
+  list-style-type: upper-roman;
+}
+
+div.compact ul, div.compact ol,
+div.compact p, div.compact p,
+div.compact div, div.compact div {
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+}
+
+tfoot {
+  font-weight: bold;
+}
+td > div.verse {
+  white-space: pre;
+}
+
+div.hdlist {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+div.hdlist tr {
+  padding-bottom: 15px;
+}
+dt.hdlist1.strong, td.hdlist1.strong {
+  font-weight: bold;
+}
+td.hdlist1 {
+  vertical-align: top;
+  font-style: normal;
+  padding-right: 0.8em;
+  color: navy;
+}
+td.hdlist2 {
+  vertical-align: top;
+}
+div.hdlist.compact tr {
+  margin: 0;
+  padding-bottom: 0;
+}
+
+.comment {
+  background: yellow;
+}
+
+.footnote, .footnoteref {
+  font-size: 0.8em;
+}
+
+span.footnote, span.footnoteref {
+  vertical-align: super;
+}
+
+#footnotes {
+  margin: 20px 0 20px 0;
+  padding: 7px 0 0 0;
+}
+
+#footnotes div.footnote {
+  margin: 0 0 5px 0;
+}
+
+#footnotes hr {
+  border: none;
+  border-top: 1px solid silver;
+  height: 1px;
+  text-align: left;
+  margin-left: 0;
+  width: 20%;
+  min-width: 100px;
+}
+
+div.colist td {
+  padding-right: 0.5em;
+  padding-bottom: 0.3em;
+  vertical-align: top;
+}
+div.colist td img {
+  margin-top: 0.3em;
+}
+
+@media print {
+  #footer-badges { display: none; }
+}
+
+#toc {
+  margin-bottom: 2.5em;
+}
+
+#toctitle {
+  color: #527bbd;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-top: 1.0em;
+  margin-bottom: 0.1em;
+}
+
+div.toclevel0, div.toclevel1, div.toclevel2, div.toclevel3, div.toclevel4 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+div.toclevel2 {
+  margin-left: 2em;
+  font-size: 0.9em;
+}
+div.toclevel3 {
+  margin-left: 4em;
+  font-size: 0.9em;
+}
+div.toclevel4 {
+  margin-left: 6em;
+  font-size: 0.9em;
+}
+
+span.aqua { color: aqua; }
+span.black { color: black; }
+span.blue { color: blue; }
+span.fuchsia { color: fuchsia; }
+span.gray { color: gray; }
+span.green { color: green; }
+span.lime { color: lime; }
+span.maroon { color: maroon; }
+span.navy { color: navy; }
+span.olive { color: olive; }
+span.purple { color: purple; }
+span.red { color: red; }
+span.silver { color: silver; }
+span.teal { color: teal; }
+span.white { color: white; }
+span.yellow { color: yellow; }
+
+span.aqua-background { background: aqua; }
+span.black-background { background: black; }
+span.blue-background { background: blue; }
+span.fuchsia-background { background: fuchsia; }
+span.gray-background { background: gray; }
+span.green-background { background: green; }
+span.lime-background { background: lime; }
+span.maroon-background { background: maroon; }
+span.navy-background { background: navy; }
+span.olive-background { background: olive; }
+span.purple-background { background: purple; }
+span.red-background { background: red; }
+span.silver-background { background: silver; }
+span.teal-background { background: teal; }
+span.white-background { background: white; }
+span.yellow-background { background: yellow; }
+
+span.big { font-size: 2em; }
+span.small { font-size: 0.6em; }
+
+span.underline { text-decoration: underline; }
+span.overline { text-decoration: overline; }
+span.line-through { text-decoration: line-through; }
+
+div.unbreakable { page-break-inside: avoid; }
+
+
+/*
+ * xhtml11 specific
+ *
+ * */
+
+div.tableblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+div.tableblock > table {
+  border: 3px solid #527bbd;
+}
+thead, p.table.header {
+  font-weight: bold;
+  color: #527bbd;
+}
+p.table {
+  margin-top: 0;
+}
+/* Because the table frame attribute is overriden by CSS in most browsers. */
+div.tableblock > table[frame="void"] {
+  border-style: none;
+}
+div.tableblock > table[frame="hsides"] {
+  border-left-style: none;
+  border-right-style: none;
+}
+div.tableblock > table[frame="vsides"] {
+  border-top-style: none;
+  border-bottom-style: none;
+}
+
+
+/*
+ * html5 specific
+ *
+ * */
+
+table.tableblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+thead, p.tableblock.header {
+  font-weight: bold;
+  color: #527bbd;
+}
+p.tableblock {
+  margin-top: 0;
+}
+table.tableblock {
+  border-width: 3px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-color: #527bbd;
+  border-collapse: collapse;
+}
+th.tableblock, td.tableblock {
+  border-width: 1px;
+  padding: 4px;
+  border-style: solid;
+  border-color: #527bbd;
+}
+
+table.tableblock.frame-topbot {
+  border-left-style: hidden;
+  border-right-style: hidden;
+}
+table.tableblock.frame-sides {
+  border-top-style: hidden;
+  border-bottom-style: hidden;
+}
+table.tableblock.frame-none {
+  border-style: hidden;
+}
+
+th.tableblock.halign-left, td.tableblock.halign-left {
+  text-align: left;
+}
+th.tableblock.halign-center, td.tableblock.halign-center {
+  text-align: center;
+}
+th.tableblock.halign-right, td.tableblock.halign-right {
+  text-align: right;
+}
+
+th.tableblock.valign-top, td.tableblock.valign-top {
+  vertical-align: top;
+}
+th.tableblock.valign-middle, td.tableblock.valign-middle {
+  vertical-align: middle;
+}
+th.tableblock.valign-bottom, td.tableblock.valign-bottom {
+  vertical-align: bottom;
+}
+
+
+/*
+ * manpage specific
+ *
+ * */
+
+body.manpage h1 {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  border-top: 2px solid silver;
+  border-bottom: 2px solid silver;
+}
+body.manpage h2 {
+  border-style: none;
+}
+body.manpage div.sectionbody {
+  margin-left: 3em;
+}
+
+@media print {
+  body.manpage div#toc { display: none; }
+}
+
+
 </style>
+<script type="text/javascript">
+/*<![CDATA[*/
+var asciidoc = {  // Namespace.
+
+/////////////////////////////////////////////////////////////////////
+// Table Of Contents generator
+/////////////////////////////////////////////////////////////////////
+
+/* Author: Mihai Bazon, September 2002
+ * http://students.infoiasi.ro/~mishoo
+ *
+ * Table Of Content generator
+ * Version: 0.4
+ *
+ * Feel free to use this script under the terms of the GNU General Public
+ * License, as long as you do not remove or alter this notice.
+ */
+
+ /* modified by Troy D. Hanson, September 2006. License: GPL */
+ /* modified by Stuart Rackham, 2006, 2009. License: GPL */
+
+// toclevels = 1..4.
+toc: function (toclevels) {
+
+  function getText(el) {
+    var text = "";
+    for (var i = el.firstChild; i != null; i = i.nextSibling) {
+      if (i.nodeType == 3 /* Node.TEXT_NODE */) // IE doesn't speak constants.
+        text += i.data;
+      else if (i.firstChild != null)
+        text += getText(i);
+    }
+    return text;
+  }
+
+  function TocEntry(el, text, toclevel) {
+    this.element = el;
+    this.text = text;
+    this.toclevel = toclevel;
+  }
+
+  function tocEntries(el, toclevels) {
+    var result = new Array;
+    var re = new RegExp('[hH]([1-'+(toclevels+1)+'])');
+    // Function that scans the DOM tree for header elements (the DOM2
+    // nodeIterator API would be a better technique but not supported by all
+    // browsers).
+    var iterate = function (el) {
+      for (var i = el.firstChild; i != null; i = i.nextSibling) {
+        if (i.nodeType == 1 /* Node.ELEMENT_NODE */) {
+          var mo = re.exec(i.tagName);
+          if (mo && (i.getAttribute("class") || i.getAttribute("className")) != "float") {
+            result[result.length] = new TocEntry(i, getText(i), mo[1]-1);
+          }
+          iterate(i);
+        }
+      }
+    }
+    iterate(el);
+    return result;
+  }
+
+  var toc = document.getElementById("toc");
+  if (!toc) {
+    return;
+  }
+
+  // Delete existing TOC entries in case we're reloading the TOC.
+  var tocEntriesToRemove = [];
+  var i;
+  for (i = 0; i < toc.childNodes.length; i++) {
+    var entry = toc.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div'
+     && entry.getAttribute("class")
+     && entry.getAttribute("class").match(/^toclevel/))
+      tocEntriesToRemove.push(entry);
+  }
+  for (i = 0; i < tocEntriesToRemove.length; i++) {
+    toc.removeChild(tocEntriesToRemove[i]);
+  }
+
+  // Rebuild TOC entries.
+  var entries = tocEntries(document.getElementById("content"), toclevels);
+  for (var i = 0; i < entries.length; ++i) {
+    var entry = entries[i];
+    if (entry.element.id == "")
+      entry.element.id = "_toc_" + i;
+    var a = document.createElement("a");
+    a.href = "#" + entry.element.id;
+    a.appendChild(document.createTextNode(entry.text));
+    var div = document.createElement("div");
+    div.appendChild(a);
+    div.className = "toclevel" + entry.toclevel;
+    toc.appendChild(div);
+  }
+  if (entries.length == 0)
+    toc.parentNode.removeChild(toc);
+},
+
+
+/////////////////////////////////////////////////////////////////////
+// Footnotes generator
+/////////////////////////////////////////////////////////////////////
+
+/* Based on footnote generation code from:
+ * http://www.brandspankingnew.net/archive/2005/07/format_footnote.html
+ */
+
+footnotes: function () {
+  // Delete existing footnote entries in case we're reloading the footnodes.
+  var i;
+  var noteholder = document.getElementById("footnotes");
+  if (!noteholder) {
+    return;
+  }
+  var entriesToRemove = [];
+  for (i = 0; i < noteholder.childNodes.length; i++) {
+    var entry = noteholder.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div' && entry.getAttribute("class") == "footnote")
+      entriesToRemove.push(entry);
+  }
+  for (i = 0; i < entriesToRemove.length; i++) {
+    noteholder.removeChild(entriesToRemove[i]);
+  }
+
+  // Rebuild footnote entries.
+  var cont = document.getElementById("content");
+  var spans = cont.getElementsByTagName("span");
+  var refs = {};
+  var n = 0;
+  for (i=0; i<spans.length; i++) {
+    if (spans[i].className == "footnote") {
+      n++;
+      var note = spans[i].getAttribute("data-note");
+      if (!note) {
+        // Use [\s\S] in place of . so multi-line matches work.
+        // Because JavaScript has no s (dotall) regex flag.
+        note = spans[i].innerHTML.match(/\s*\[([\s\S]*)]\s*/)[1];
+        spans[i].innerHTML =
+          "[<a id='_footnoteref_" + n + "' href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+        spans[i].setAttribute("data-note", note);
+      }
+      noteholder.innerHTML +=
+        "<div class='footnote' id='_footnote_" + n + "'>" +
+        "<a href='#_footnoteref_" + n + "' title='Return to text'>" +
+        n + "</a>. " + note + "</div>";
+      var id =spans[i].getAttribute("id");
+      if (id != null) refs["#"+id] = n;
+    }
+  }
+  if (n == 0)
+    noteholder.parentNode.removeChild(noteholder);
+  else {
+    // Process footnoterefs.
+    for (i=0; i<spans.length; i++) {
+      if (spans[i].className == "footnoteref") {
+        var href = spans[i].getElementsByTagName("a")[0].getAttribute("href");
+        href = href.match(/#.*/)[0];  // Because IE return full URL.
+        n = refs[href];
+        spans[i].innerHTML =
+          "[<a href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+      }
+    }
+  }
+},
+
+install: function(toclevels) {
+  var timerId;
+
+  function reinstall() {
+    asciidoc.footnotes();
+    if (toclevels) {
+      asciidoc.toc(toclevels);
+    }
+  }
+
+  function reinstallAndRemoveTimer() {
+    clearInterval(timerId);
+    reinstall();
+  }
+
+  timerId = setInterval(reinstall, 500);
+  if (document.addEventListener)
+    document.addEventListener("DOMContentLoaded", reinstallAndRemoveTimer, false);
+  else
+    window.onload = reinstallAndRemoveTimer;
+}
+
+}
+asciidoc.install();
+/*]]>*/
+</script>
 </head>
-<body>
-
-<h1>rescached Documentation</h1>
-<a href="http://www.kilabit.info" target="_blank"> .:: kilabit.info ::. </a>
-<br />
-<br />
-August 2010
-<br />
-<br />
-<br />
-
-<div class="toc">
-<ul>
-<li><a href="#intro"> Introduction </a></li>
-  <li style="list-style: none">
-  <ul>
-  <li><a href="#intro_what_is_rescached"> What Is rescached ?</a></li>
-  <li><a href="#intro_feature_and_limit"> Features and Limitations </a></li>
-  <li><a href="#intro_behind_the_dns"> Behind The DNS </a></li>
-  <li><a href="#intro_how_cache_in_rescached_work"> How Cache In rescached Work </a></li>
-  </ul>
-  </li>
-<li><a href="#installation"> Installation </a></li>
-  <li style="list-style: none">
-  <ul>
-  <li><a href="#install_prerequisite"> Prerequisite </a></li>
-  <li><a href="#install_compile"> Compiling From Source </a></li>
-  <li><a href="#install"> Installation </a></li>
-  <li><a href="#install_post"> Post Installation Configuration </a></li>
-  </ul>
-  </li>
-<li><a href="#config"> Configuration </a></li>
-  <li style="list-style: none">
-  <ul>
-  <li><a href="#config_service"> Controlling rescached service </a></li>
-  <li><a href="#config_startup"> rescached Startup Option </a></li>
-  </ul>
-  </li>
-<li><a href="#dev_notes"> Developer Notes </a></li>
-</ul>
+<body class="manpage">
+<div id="header">
+<h1>
+RESCACHED(1) Manual Page
+</h1>
+<h2>NAME</h2>
+<div class="sectionbody">
+<p>rescached -
+   domain name service cache.
+</p>
 </div>
-
-<h2><a name="intro"> Introduction </a></h2>
-
-<h3><a name="intro_what_is_rescached"> What Is rescached ?</a></h3>
-
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_synopsis">SYNOPSIS</h2>
+<div class="sectionbody">
+<div class="paragraph"><p><code>rescached</code> <em>rescached.cfg</em></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_options">OPTIONS</h2>
+<div class="sectionbody">
+<div class="paragraph"><p><em>rescached.cfg</em> is rescached configuration, usually it reside in /etc/rescached/rescached.cfg.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_description">DESCRIPTION</h2>
+<div class="sectionbody">
+<div class="paragraph"><p><code>rescached</code> is a daemon that caching internet name and address on local memory when running and in local disk when not running.</p></div>
+<div class="paragraph"><p><code>rescached</code> is not a reimplementation of DNS server like BIND. <code>rescached</code> primary goal is only to caching DNS queries and answers, used by personal or small group of users, to minimize unneeded traffic to outside network.</p></div>
+<div class="sect2">
+<h3 id="_features">Features</h3>
+<div class="ulist"><ul>
+<li>
 <p>
-<tt>rescached</tt> is domain name service cache, it caching internet name and
-address on local memory when running and in local disk when not running.
+Enable to handle request from UDP and TCP connections.
 </p>
-
-<h3>
-<a name="intro_feature_and_limit">
-Features and Limitations.
-</a>
-</h3>
-
+</li>
+<li>
 <p>
-<tt>rescached</tt> is not a reimplementation of DNS server like BIND.
-<tt>rescached</tt>
-primary goal is only to caching DNS queries and answers, used by personal
-or small group of users, to minimize unneeded traffic to outside network.
+Saving/loading cache to/from disk
 </p>
-
-Features,
-
-<ul>
-  <li> Enable to handle UDP and TCP connections. </li>
-  <li> Saving/loading cache to/from disk </li>
-</ul>
-
-Limitations,
-
-<ul>
-  <li> Only know specific DNS record type,</li>
-  <li style="list-style: none">
-    <ul>
-    <li> A : a host address </li>
-    <li> NS : an authoritative name server </li>
-    <li> CNAME : a canonical name for an alias </li>
-    <li> MX : mail exchange </li>
-    </ul>
-  </li>
-  <li> Only run and tested in Unix system </li>
-</ul>
-
-<h3><a name="intro_behind_the_dns"> Behind The DNS </a></h3>
-
-<blockquote>
-A short story on how DNS work in your system.
-</blockquote>
-
+</li>
+<li>
 <p>
-When you opened some website, let say <i>www.reddit.com</i>, in a browser, the
-first thing that browser do is to translate name address <i>www.reddit.com</i>
-into an internet address (i.e.: 219.83.126.10) so browser can make a connection to
-<i>www.reddit.com</i> server.
+Load and serve addresses and hostnames in <code>/etc/hosts</code>
 </p>
-<p>
-How browser do that ? First, it will send query to one of DNS server listed in
-your system configuration (<tt>/etc/resolv.conf</tt> in Unix). Then, if your
-DNS server also "caching" the name that you requested, it will reply the
-answer (internet address) directly, if it is not then it will ask to their
-parent DNS server.
-</p>
-
-<pre>
-+----+      +----------------+      +------------------+
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_behind_the_dns">Behind The DNS</h3>
+<div class="paragraph"><p>When you open a website, let say <em>www.reddit.com</em>, in a browser, the first thing that browser do is to translate name address <em>www.reddit.com</em> into an internet address (i.e.: 219.83.126.10) so browser can make a connection to <em>www.reddit.com</em> server.</p></div>
+<div class="paragraph"><p>How browser do that ? First, it will send query to one of DNS server listed in your system configuration (<code>/etc/resolv.conf</code> in Linux). Then, if your DNS server also "caching" the name that you requested, it will reply the answer (internet address) directly, if it is not then it will ask their parent DNS server.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>+----+      +----------------+      +------------------+
 | PC | &lt;==&gt; | ISP DNS Server | &lt;==&gt; | Other DNS Server | &lt;==&gt; ...
-+----+      +----------------+      +------------------+
-</pre>
-
-<p>
-If you browsing frequently on the same site, hitting the refresh button,
-opening a page on the same website, etc.; this procedures will always
-repeated every times.
-</p>
-<p>
-To make this repetitive procedures less occurred, you can run
-<tt>rescached</tt> in your personal computer. The first time answer is
-received in your local computer, <tt>rescached</tt> will saved it in computer
-memory and any later request of the same address will be answered directly by
-<tt>rescached</tt>
-</p>
-
-<pre>
-+----+      +----------------+      +------------------+
++----+      +----------------+      +------------------+</code></pre>
+</div></div>
+<div class="paragraph"><p>If you browsing frequently on the same site, hitting the refresh button, opening another page on the same website, etc; this procedures will always repeated every times, not including all external links like ads, social media button, or javascripts from an other server.</p></div>
+<div class="paragraph"><p>To make this repetitive procedures less occurred, you can run <code>rescached</code> in your personal computer. The first time the answer is received in your local computer, <code>rescached</code> will saved it in computer memory and any later request of the same address will be answered directly by <code>rescached</code>.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>+----+      +----------------+      +------------------+
 | PC |      | ISP DNS Server | &lt;==&gt; | Other DNS Server | &lt;==&gt; ...
 +----+      +----------------+      +------------------+
   ^^             ^^
@@ -199,34 +803,16 @@ memory and any later request of the same address will be answered directly by
   vv             ||
 +-----------+    ||
 | rescached | &lt;==//
-+-----------+
-</pre>
-
-<p>
-The only request that send to your DNS server is the one that does not already
-exist in <tt>rescached</tt>.
-</p>
-
-
-<h3><a name="intro_how_cache_in_rescached_work">
-How Cache In rescached Work
-</a></h3>
-
-<blockquote>
-rescached in technical side of view.
-</blockquote>
-
-<p>
-Each of query and answer data in cache have a number of accessed field, which
-defined how the cache will be ordered in memory. The frequently queried
-host-name will be at the top of cache list, and less queried host-name will at
-the bottom of cache list. This, obviously, will make a cache list based on
-user habit (frequently accessed host-name), which effect on the search time
-on cache list: fast reply.
-</p>
-
-<pre>
-+-----+------------------+
++-----------+</code></pre>
+</div></div>
+<div class="paragraph"><p>The only request that will be send to your DNS server is the one that does not already exist in <code>rescached</code> cache.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_how_cache_in_code_rescached_code_works">How Cache in <code>rescached</code> Works</h3>
+<div class="paragraph"><p>Each of query and answer data in cache have a number of accessed field, which defined how the cache will be ordered in memory. The frequently queried host-name will be at the top of cache list, and less queried host-name will at the bottom of cache list. This, obviously, will make a cache list based on user habit (frequently accessed host-name), which effect on the search time on cache list: fast reply.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>+-----+------------------+
 | #   | host-name        |
 +-----+------------------+
 | 529 | www.reddit.com   |
@@ -236,553 +822,916 @@ on cache list: fast reply.
 | ... |        ...       |
 +-----+------------------+
 | 1   | www.kilabit.info |
-+-----+------------------+
-</pre>
-
++-----+------------------+</code></pre>
+</div></div>
+<div class="paragraph"><p>The number of cache that <code>rescached</code> can hold in memory is depend on the value of <a href="#cache.max">[cache.max]</a> in configuration file. When the number of cache in memory reached it <a href="#cache.max">[cache.max]</a> value, it will remove all cache data that has the number of frequently accessed less than <a href="#cache.threshold">[cache.threshold]</a>.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_installation">Installation</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_prerequisites">Prerequisites</h3>
+<div class="ulist"><ul>
+<li>
 <p>
-The number of cache that <tt>rescached</tt> can hold in memory is depend on
-the value of <a href="#cache.max"><tt>cache.max</tt></a> in configuration
-file.
-
-When the number of cache in memory reached it <tt>cache.max</tt> value, it
-will remove all cache data that has the number of frequently accessed less
-than <a href="#cache.threshold"><tt>cache.threshold</tt></a>.
+GNU C++ compiler.
 </p>
-
-
-<h2>
-<a name="installation">
-Installation
-</a>
-</h2>
-
-
-<h3>
-<a name="install_prerequisite">
-Prerequisite
-</a>
-</h3>
-
-<ul>
-<li> c++ compiler </li>
-<li> make tools </li>
-<li> git SCM </li>
-<li> system V init tool for service. </li>
-</ul>
-
-<h3>
-<a name="install_compile">
-Compiling From Source
-</a>
-</h3>
-
-<pre>
-$ git clone http://www.github.com/shuLhan/rescached.git rescached.git
-$ git clone http://www.github.com/shuLhan/libvos.git libvos.git
+</li>
+<li>
+<p>
+GNU make.
+</p>
+</li>
+<li>
+<p>
+git SCM.
+</p>
+</li>
+<li>
+<p>
+asciidoc, for generate manual page.
+</p>
+</li>
+<li>
+<p>
+systemd or system V init tool for service.
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_compiling_from_source">Compiling From Source</h3>
+<div class="paragraph"><p>To build <code>rescached</code> from the source, follow this procedures bellow,</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>$ git clone http://www.github.com/shuLhan/rescached.git rescached.git
 $ cd rescached.git/src
-$ ln -s ../../libvos.git lib
-$ make
-</pre>
-
-<h3><a name="install"> Installation </a></h3>
-
+$ git submodule init
+$ git submodule update
+$ make</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_installation_2">Installation</h3>
+<div class="paragraph"><p>After program successfully build, you can install it manually or using GNU <code>make</code> program.</p></div>
+<div class="sect3">
+<h4 id="_install_using_gnu_code_make_code_program">Install Using GNU <code>make</code> Program</h4>
+<div class="paragraph"><p>Installing using GNU <code>make</code> tool in Linux system using init.d use,</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>$ sudo make install-init</code></pre>
+</div></div>
+<div class="paragraph"><p>For Linux system with systemd use,</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>$ sudo make install</code></pre>
+</div></div>
+</div>
+<div class="sect3">
+<h4 id="_manual_installation">Manual Installation</h4>
+<div class="ulist"><ul>
+<li>
 <p>
-After program successfully build, you can install it manually or using make
-program.
+Copy rescached configuration to system directory. Assume that we use directory "/etc/rescached" as configuration directory, then
 </p>
-<h4> Install using make program </h4>
-<p>
-Installing using make in linux system using <tt>init.d</tt> (I.e. OpenSuSE) use,
-<pre>
-$ sudo make install
-</pre>
-</p>
-
-<p>
-For Arch linux, which use <tt>rc.d</tt>, use,
-<pre>
-$ sudo make install-arch
-</pre>
-</p>
-
-
-<h4> Manual Installation </h4>
-<ul>
-<li> Copy rescached configuration to system directory. <br/>
-<p>
-Assume that we use directory "<tt>/etc/rescached</tt>" as configuration
-directory, then
-<pre>
-$ sudo mkdir /etc/rescached
-$ sudo cp rescached.cfg /etc/rescached
-</pre>
-</p>
+<div class="literalblock">
+<div class="content">
+<pre><code>$ sudo mkdir -p /etc/rescached
+$ sudo cp rescached.cfg /etc/rescached</code></pre>
+</div></div>
 </li>
-
-<li> Create directory for cache file. <br/>
+<li>
 <p>
-In example we use "<tt>/var/cache/rescached</tt>" as cache directory,
+Create directory for cache file. In example we use "/var/cache/rescached" as cache directory,
 </p>
-<pre>
-$ sudo mkdir /var/cache/rescached
-</pre>
-<p>
-If you use different cache directory, do not forget to change the
-configuration option.
-</p>
+<div class="literalblock">
+<div class="content">
+<pre><code>$ sudo mkdir -p /var/cache/rescached</code></pre>
+</div></div>
+<div class="paragraph"><p>If you use different cache directory, do not forget to change the configuration option.</p></div>
 </li>
-
-<li> Copy rescached program to your system path. <br/>
-<pre>
-$ sudo cp build/rescached /usr/sbin
-</pre>
+<li>
+<p>
+Copy rescached program to your system path.
+</p>
+<div class="literalblock">
+<div class="content">
+<pre><code>$ sudo cp build/rescached /usr/sbin</code></pre>
+</div></div>
 </li>
-
-<li> Create system startup script. <br/>
+<li>
 <p>
-If you want your program running each time the system is up you can create a
-system startup script. You can see an example for openSuSE startup script in
-file <tt>scripts/rescached.run</tt>, or <tt>scripts/rescached.arch</tt> for
-Arch Linux system.
+Create system startup script.
 </p>
-<p>
-This step is really different between each system, consult your distribution
-forum or mailing-list for how to create system startup script.
-</p>
+<div class="paragraph"><p>If you want your program running each time the system is starting up you can create a system startup script (or system service). You can see an example for init.d startup script in file <code>scripts/rescached.run</code> or <code>scripts/rescached.arch</code>.</p></div>
+<div class="paragraph"><p>This step is really different between each system, consult your distribution wiki, forum or mailing-list for how to create system startup script.</p></div>
 </li>
-</ul>
-
-<h3>
-<a name="install_post">
-Post Installation Configuration
-</a>
-</h3>
-
-<ul>
-<li>Set your parent DNS server.</li>
-    <li style="list-style-type: none; list-style-image: none; list-style-position: outside;">
-    <p>
-    Edit rescached configuration, <tt>/etc/rescached/rescached.cfg</tt>,
-change the value of <a href="#server.parent"><tt>server.parent</tt></a> based
-on your preferred DNS server.
-    </p>
-    </li>
-<li> Set maximum caches. </li>
-    <li style="list-style-type: none; list-style-image: none; list-style-position: outside;">
-    <p>
-    Edit rescached configuration, <tt>/etc/rescached/rescached.cfg</tt>,
-change the value of <a href="#cache.max"><tt>cache.max</tt></a> and/or <a
-href="#cache.threshold"><tt>cache.threshold</tt></a> to match your needs.
-    </p>
-    </li>
-<li> Set your system DNS server to point to rescached </li>
-    <li style="list-style-type: none; list-style-image: none; list-style-position: outside;">
-    <p>
-    In Unix,
-    </p>
-    <pre>
-$ sudo mv /etc/resolv.conf /etc/resolv.conf.org
-$ sudo echo "nameserver 127.0.0.1" &gt; /etc/resolv.conf
-    </pre>
-    </li>
-</ul>
-
-
-<h2>
-<a name="config">
-Configuration
-</a>
-</h2>
-
-
-<h3>
-<a name="config_service">
-Controlling rescached Service
-</a>
-</h3>
-
+</ul></div>
+</div>
+<div class="sect3">
+<h4 id="_post_installation_configuration">Post Installation Configuration</h4>
+<div class="ulist"><ul>
+<li>
 <p>
-After <tt>rescached</tt> has been installed you can start, stop, and view
-status of <tt>rescached</tt> service using <tt>/sbin/rcrescached</tt>.
+Set your parent DNS server.
 </p>
-
-<ul>
-  <li> Starting rescached service. </li>
-  <li style="list-style-type: none;">
-  <pre>
-$ sudo /sbin/rcrescached start
-</pre>
-  <br/>
-  </li>
-
-  <li> Stopping rescached service. </li>
-  <li style="list-style-type: none;">
-  <pre>
-$ sudo /sbin/rcrescached stop
-</pre>
-  <br/>
-  </li>
-
-  <li> View status of service. </li>
-  <li style="list-style-type: none;">
-  <pre>
-$ sudo /sbin/rcrescached status
-</pre>
-  <br/>
-        <b>NOTE:</b> status option is not available in Arch Linux system.
-  </li>
-</ul>
-
-<h3>
-<a name="config_startup">
-rescached Startup Option
-</a>
-</h3>
-
+<div class="paragraph"><p>Edit rescached configuration, <code>/etc/rescached/rescached.cfg</code>, change the value of <code><a href="#server.parent">server.parent</a></code> based on your preferred DNS server.</p></div>
+</li>
+<li>
 <p>
-All <tt> rescached </tt> startup option located in file
-<tt>/etc/rescached/rescached.cfg</tt>. In this file you can see some comment for
-any option and some possible value.  This section will explain more about
-each option and how they effect <tt>rescached</tt>.
+Set maximum caches.
 </p>
-
-<ul>
-<li><tt><a name="file.data"> file.data </a></tt></li>
- 
-<li style="list-style-type: none; list-style-image: none; list-style-position: outside;">
-<table summary="rescached file.data option">
-<tr><th> Value </th>
-    <td> A path to a cache file. </td></tr>
-<tr><th> Format </th>
-    <td> /any/path/to/file </td></tr>
-<tr><th> Default </th>
-    <td> rescached.vos </td></tr>
-<tr><th> Description </th>
-    <td>
-This file contain all DNS answers that rescached collected while
-running. When rescached stopped it will saved all DNS answer in this
-file, so when rescached is started again it will load all data in this file to
-memory again.  If not set, then rescached will load/save the cache to the file
-named <tt>rescached.vos</tt> in current directory where user running rescached.
-</td></tr>
-</table>
+<div class="paragraph"><p>Edit rescached configuration, <code>/etc/rescached/rescached.cfg</code>, change the value of <a href="#cache.max">[cache.max]</a> and/or <a href="#cache.threshold">[cache.threshold]</a> to match your needs.</p></div>
+</li>
+<li>
+<p>
+Set your system DNS server to point to rescached.
+</p>
+<div class="paragraph"><p>In Linux,</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>$ sudo mv /etc/resolv.conf /etc/resolv.conf.org
+$ sudo echo "nameserver 127.0.0.1" &gt; /etc/resolv.conf</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+If you use systemd as service, run <code>rescached</code> service by invoking,
+</p>
+<div class="literalblock">
+<div class="content">
+<pre><code>$ sudo systemctl start rescached.service</code></pre>
+</div></div>
+<div class="paragraph"><p>or if you want <code>rescached</code> service run when system startup, enable it by invoking,</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>$ sudo systemctl enable rescached.service</code></pre>
+</div></div>
+</li>
+</ul></div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuration">CONFIGURATION</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>All rescached startup option located in file <code>/etc/rescached/rescached.cfg</code>. In this file you can see some comment for any option and some possible value. This section will explain more about each option and how they effect <code>rescached</code>.</p></div>
+<div class="sect2">
+<h3 id="file.data"><code>file.data</code></h3>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Value
+</dt>
+<dd>
+<p>
+A path to a cache file.
+</p>
+</dd>
+<dt class="hdlist1">
+Format
+</dt>
+<dd>
+<p>
+/any/path/to/file
+</p>
+</dd>
+<dt class="hdlist1">
+Default
+</dt>
+<dd>
+<p>
+rescached.vos
+</p>
+</dd>
+<dt class="hdlist1">
+Description
+</dt>
+<dd>
+<p>
+This file contain all DNS answers that rescached collected while running. When <code>rescached</code> stopped it will saved all DNS answer in this file, so when <code>rescached</code> is started again it will load all data in this file to memory again. If not set, then <code>rescached</code> will load/save the cache to the file named <code>rescached.vos</code> in current directory where user running <code>rescached</code>.
+</p>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="file.data.backup"><code>file.data.backup</code></h3>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Value
+</dt>
+<dd>
+<p>
+A name of of backup file, with or without path.
+</p>
+</dd>
+<dt class="hdlist1">
+Format
+</dt>
+<dd>
+<p>
+/any/path/to/file
+</p>
+</dd>
+<dt class="hdlist1">
+Default
+</dt>
+<dd>
+<p>
+<a href="#file.data">[file.data]</a> + ".bak"
+</p>
+</dd>
+<dt class="hdlist1">
+Description
+</dt>
+<dd>
+<p>
+This file is a backup of <code>file.data</code>, it will be created only if <code>rescached</code> program exit successfully without error. If not set then it will have the same name with the value in <code>file.data</code> but with additional suffix, <code>.bak</code>.
+</p>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="file.pid"><code>file.pid</code></h3>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Value
+</dt>
+<dd>
+<p>
+A path to process id file.
+</p>
+</dd>
+<dt class="hdlist1">
+Format
+</dt>
+<dd>
+<p>
+/any/path/to/file
+</p>
+</dd>
+<dt class="hdlist1">
+Default
+</dt>
+<dd>
+<p>
+rescached.pid
+</p>
+</dd>
+<dt class="hdlist1">
+Description
+</dt>
+<dd>
+<p>
+When <code>rescached</code> started, it will create this file as a mediator to any system service. Content of this file is the process ID (PID) of <code>rescached</code> in system. If not set then the default name will be used, and it will be saved in current directory where user running <code>rescached</code>.
+</p>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="file.log"><code>file.log</code></h3>
+<div class="hdlist"><table>
+<tr>
+<td class="hdlist1">
+Value
 <br />
-</li>
-
-<li><tt><a name="file.data.backup"> file.data.backup </a></tt></li>
-
-<li style="list-style-type: none; list-style-image: none; list-style-position: outside;">
-<table summary="rescached file.data.backup option">
-<tr><th> Value </th>
-    <td> A name of of backup file, with or without path. </td>
-    </tr>
-<tr><th> Format </th>
-    <td> /any/path/to/file </td>
-    </tr>
-<tr><th> Default </th>
-    <td> file.data + ".bak" </td>
-    </tr>
-<tr><th> Description </th>
-    <td>
-This file is a backup of <tt>file.data</tt>, it will be created only if
-rescached program exit successfully without error.
-
-If not set then it will have the same name with the value in
-<tt>file.data</tt> but with additional suffix, <i>.bak</i>. </td>
-    </tr>
-</table>
-<br />
-</li>
-
-
-<li><tt><a name="file.pid"> file.pid </a></tt></li>
-
-<li style="list-style-type: none; list-style-image: none; list-style-position: outside;">
-<table summary="rescached file.pid option">
-<tr><th> Value </th>
-    <td> A path to process id file. </td>
-    </tr>
-<tr><th> Format </th>
-    <td> /any/path/to/file </td>
-    </tr>
-<tr><th> Default </th>
-    <td> rescached.pid </td>
-    </tr>
-<tr><th> Description </th>
-    <td>
-When <tt>rescached</tt> program started, it will create this file as a
-mediator to any system service. Content of this file is process ID (PID) of
-rescached program in system.  If not set then the default name will be used,
-and it will be saved in current directory where user running rescached. </td>
-    </tr>
-</table>
-<br />
-</li>
-
-
-<li><tt><a name="file.log"> file.log </a></tt></li>
-
-<li style="list-style-type: none; list-style-image: none; list-style-position: outside;">
-<table summary="rescached file.log option">
-<tr><th> Value </th>
-    <td> A name of rescached log file. </td>
-    </tr>
-<tr><th> Format </th>
-    <td> /any/path/to/file </td>
-    </tr>
-<tr><th> Default </th>
-    <td> rescached.log </td>
-    </tr>
-<tr><th> Description </th>
-    <td>
-This file contain log of program when running. Verbosity of log output is
-depend on value of <a href="#debug"><tt>debug</tt></a> option.
-    </td>
-    </tr>
-</table>
-<br />
-</li>
-
-
-<li><tt><a name="server.parent"> server.parent </a></tt></li>
-
-<li style="list-style-type: none; list-style-image: none; list-style-position: outside;">
-<table summary="rescached server.parent option">
-<tr><th> Value </th>
-    <td> List of parent DNS servers, separated by commas. </td>
-    </tr>
-<tr><th> Format </th>
-    <td> IP-ADDRESS:PORT, IP-ADDRESS:PORT, ... </td>
-    </tr>
-<tr><th> Default </th>
-    <td><ul>
-        <li> Address : 8.8.8.8, 8.8.4.4 </li>
-        <li> Port    : 53 </li>
-        </ul>
-    </td>
-    </tr>
-<tr><th> Description </th>
-    <td>
-When <tt>rescached</tt> receive a query from client and when it does not have a cached
-address of query, it will pass the query to those parent server.
-<br />
-<tt>rescached</tt> use a Google DNS public server as a default parent address
-if not set. The reason for this is that Google DNS public server use a simple
-and small size of response/answer. Please, do not use OpenDNS server, because
-OpenDNS will reply with it own address, instead of replying with no answer, if
-certain host-name not found (i.e. typo in host-name), this will make
-<tt>rescached</tt> caching a false data.
-<br />
-To check if your parent server reply the unknown host-name with no answer, use
-<tt>dig</tt> tool.
 </td>
-    </tr>
-</table>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+A name of rescached log file.
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Format
 <br />
-</li>
-
-
-<li><tt><a name="server.listen"> server.listen </a></tt></li>
-
-<li style="list-style-type: none; list-style-image: none; list-style-position: outside;">
-<table summary="rescached server.listen option">
-<tr><th> Value </th>
-    <td> Local IP address that rescached will listening for client request. </td>
-    </tr>
-<tr><th> Format </th>
-    <td> &lt;IP-ADDRESS&gt; </td>
-    </tr>
-<tr><th> Default </th>
-    <td> 127.0.0.1 </td>
-    </tr>
-<tr><th> Description </th>
-    <td>
-Address in local network where <tt>rescached</tt> will listening for query
-from client. If you want <tt>rescached</tt> to serve a query from another host
-in your local network, change this value to <tt>0.0.0.0</tt>
-    </td>
-    </tr>
-</table>
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+/any/path/to/file
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Default
 <br />
-</li>
-
-
-<li><tt><a name="server.listen.port"> server.listen.port </a></tt></li>
-
-<li style="list-style-type: none; list-style-image: none; list-style-position: outside;">
-<table summary="rescached server.listen.port option">
-<tr><th> Value </th>
-    <td> Port for listening for client request </td>
-    </tr>
-<tr><th> Format </th>
-    <td> Any number between 1 to 65535 </td>
-    </tr>
-<tr><th> Default </th>
-    <td> 53 </td>
-    </tr>
-<tr><th> Description </th>
-    <td>
-Beside the <tt>server.listen</tt> address, <tt>rescached</tt> also need to
-known which port it will opening for receiving client queries. You should not
-change this value, because technically every client (browser, email client,
-etc.) will always send the query to port 53.
-    </td>
-    </tr>
-</table>
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+rescached.log
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Description
 <br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+This file contain log of program when running. Verbosity of log output is depend on value of <code>debug</code> option.
+</p>
+</td>
+</tr>
+</table></div>
+</div>
+<div class="sect2">
+<h3 id="server.parent"><code>server.parent</code></h3>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Value
+</dt>
+<dd>
+<p>
+List of parent DNS servers, separated by commas.
+</p>
+</dd>
+<dt class="hdlist1">
+Format
+</dt>
+<dd>
+<p>
+IP-ADDRESS:PORT, IP-ADDRESS:PORT, &#8230;
+</p>
+</dd>
+<dt class="hdlist1">
+Default
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+Address: 8.8.8.8, 8.8.4.4
+</p>
 </li>
-
-
-<li><tt><a name="server.timeout"> server.timeout </a></tt></li>
-
-<li style="list-style-type: none; list-style-image: none; list-style-position: outside;">
-<table summary="rescached server.timeout option">
-<tr><th> Value </th>
-    <td> Timeout value, in second, before cleaning queue.</td>
-    </tr>
-<tr><th> Format </th>
-    <td> Any number between 300 to 2147483647. </td>
-    </tr>
-<tr><th> Default </th>
-    <td> 300 </td>
-    </tr>
-<tr><th> Description </th>
-    <td>
-This option set the server timeout value. If time out is reached, all the
-old queries (that is older than <tt>server.timeout</tt>) in queue that does
-not receipt a reply from parent server will be removed.
-    </td>
-    </tr>
-</table>
+<li>
+<p>
+Port: 53
+</p>
+</li>
+</ul></div>
+</dd>
+<dt class="hdlist1">
+Description
+</dt>
+<dd>
+<p>
+When <code>rescached</code> receive a query from client and when it does not have a cached address of query, it will pass the query to those parent server. <code>rescached</code> use a Google DNS public server as a default parent address if not set. The reason for this is that Google DNS public server use a simple and small size of response/answer. Please, do not use OpenDNS server, because OpenDNS will reply with its own address, instead of replying with no answer, if certain host-name not found (i.e. typo in host-name), this will make <code>rescached</code> caching a false data.
+To check if your parent server reply the unknown host-name with no answer, use <code>dig</code> tool.
+</p>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="server.listen"><code>server.listen</code></h3>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Value
+</dt>
+<dd>
+<p>
+Local IP address that <code>rescached</code> will listening for client request.
+</p>
+</dd>
+<dt class="hdlist1">
+Format
+</dt>
+<dd>
+<p>
+&lt;IP-ADDRESS&gt;
+</p>
+</dd>
+<dt class="hdlist1">
+Default
+</dt>
+<dd>
+<p>
+127.0.0.1
+</p>
+</dd>
+<dt class="hdlist1">
+Description
+</dt>
+<dd>
+<p>
+Address in local network where <code>rescached</code> will listening for query from client. If you want rescached to serve a query from another host in your local network, change this value to <code>0.0.0.0</code>.
+</p>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="server.listen.port"><code>server.listen.port</code></h3>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Value
+</dt>
+<dd>
+<p>
+Port for listening for client request.
+</p>
+</dd>
+<dt class="hdlist1">
+Format
+</dt>
+<dd>
+<p>
+Any integer number between 1 to 65535.
+</p>
+</dd>
+<dt class="hdlist1">
+Default
+</dt>
+<dd>
+<p>
+53
+</p>
+</dd>
+<dt class="hdlist1">
+Description
+</dt>
+<dd>
+<p>
+Beside the <code>server.listen</code> address, <code>rescached</code> also need to known which port it will opening for receiving client queries. You should not change this value, because technically every client (browser, email client, etc.) will always send the query to port 53.
+</p>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="server.timeout"><code>server.timeout</code></h3>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Value
+</dt>
+<dd>
+<p>
+Timeout value, in second, before cleaning queue.
+</p>
+</dd>
+<dt class="hdlist1">
+Format
+</dt>
+<dd>
+<p>
+Any integer number between 300 to 2147483647.
+</p>
+</dd>
+<dt class="hdlist1">
+Default
+</dt>
+<dd>
+<p>
+300
+</p>
+</dd>
+<dt class="hdlist1">
+Description
+</dt>
+<dd>
+<p>
+This option set the server timeout value. If time out is reached, all the old queries (that is older than <code>server.timeout</code>) in queue that does not receipt a reply from parent server will be removed.
+</p>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="cache.max"><code>cache.max</code></h3>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Value
+</dt>
+<dd>
+<p>
+Maximum number of host-name and address that will keep in memory.
+</p>
+</dd>
+<dt class="hdlist1">
+Format
+</dt>
+<dd>
+<p>
+Any number between 1 and 2147483647.
+</p>
+</dd>
+<dt class="hdlist1">
+Default
+</dt>
+<dd>
+<p>
+100000
+</p>
+</dd>
+<dt class="hdlist1">
+Description
+</dt>
+<dd>
+<p>
+When <code>rescached</code> running it will keep all queries and answers in memory as much as <code>cache.max</code>. The bigger the <code>cache.max</code> value, then the more rescached will use memory.
+</p>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="cache.threshold"><code>cache.threshold</code></h3>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Value
+</dt>
+<dd>
+<p>
+Minimum value for cache status.
+</p>
+</dd>
+<dt class="hdlist1">
+Format
+</dt>
+<dd>
+<p>
+Any integer number between 1 and 2147483647.
+</p>
+</dd>
+<dt class="hdlist1">
+Default
+</dt>
+<dd>
+<p>
+1
+</p>
+</dd>
+<dt class="hdlist1">
+Description
+</dt>
+<dd>
+<p>
+When <code>rescached</code> cache all the queries and answers, until long enough it will reached its own maximum value (<code>cache.max</code>), when it happen <code>rescached</code> will remove all cache that has number-of-queried value is less than <code>cache.threshold</code>.
+</p>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="cache.mode"><code>cache.mode</code></h3>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Value
+</dt>
+<dd>
+<p>
+cache mode, affect how the cache will be saved in disk/memory.
+</p>
+</dd>
+<dt class="hdlist1">
+Format
+</dt>
+<dd>
+<p>
+Number (1 or 2).
+</p>
+</dd>
+<dt class="hdlist1">
+Default
+</dt>
+<dd>
+<p>
+2
+</p>
+</dd>
+<dt class="hdlist1">
+Description
+</dt>
+<dd>
+<p>
+If <code>cache.mode</code> is set to 1, all DNS record will be keep forever, no possible query or renewed of DNS record will happen until the specific DNS record removed from cache. If <code>cache.mode</code> is set to 2 (default), all DNS record will be keep only after the specific time, based on maximum TTL value in DNS record. If TTL is reached, hostname will be queried again to the DNS parent server, and old cache and TTL value will be replaced with a new one.
+</p>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="debug"><code>debug</code></h3>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Value
+</dt>
+<dd>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+0
+</dt>
+<dd>
+<p>
+log nothing.
+</p>
+</dd>
+<dt class="hdlist1">
+1
+</dt>
+<dd>
+<p>
+log startup, request, response, and exit status.
+</p>
+</dd>
+<dt class="hdlist1">
+2
+</dt>
+<dd>
+<p>
+log startup, request, response, caches, and exit status.
+</p>
+</dd>
+</dl></div>
+</dd>
+<dt class="hdlist1">
+Format
+</dt>
+<dd>
+<p>
+Number (0, 1, or 2).
+</p>
+</dd>
+<dt class="hdlist1">
+Default
+</dt>
+<dd>
+<p>
+0
+</p>
+</dd>
+<dt class="hdlist1">
+Description
+</dt>
+<dd>
+<p>
+This option only used by developer for debugging program or if user want to monitor what kind of traffic goes out, set this option to 1.
+</p>
+</dd>
+</dl></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_exit_status">EXIT STATUS</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Upon success, <code>rescached</code> will return 0, or not 0 if fail.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_environment">ENVIRONMENT</h2>
+<div class="sectionbody">
+<div class="dlist"><dl>
+<dt class="hdlist1">
+<em>LIBVOS_DEBUG</em>
+</dt>
+<dd>
+<p>
+If the value is set to non zero before running, <code>rescached</code> will print debug output to screen and log file. The output of debug is different from <a href="#debug">[debug]</a> option.
+</p>
+</dd>
+</dl></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_files">FILES</h2>
+<div class="sectionbody">
+<div class="dlist"><dl>
+<dt class="hdlist1">
+<em>/etc/rescached/rescached.cfg</em>
+</dt>
+<dd>
+<p>
+The <code>rescached</code> main configuration. This configuration will be read when program started.
+</p>
+</dd>
+<dt class="hdlist1">
+<em>/etc/rescached/hosts.ads</em>
+</dt>
+<dd>
+<p>
+List of ads server hostname that will blocked by the <code>rescached</code>. This configuration will be read when program started.
+</p>
+</dd>
+<dt class="hdlist1">
+<em>/etc/hosts</em>
+</dt>
+<dd>
+<p>
+System hostname to address mapping. This configuration will be read when program started.
+</p>
+</dd>
+<dt class="hdlist1">
+<em>/var/cache/rescached.vos</em>
+</dt>
+<dd>
+<p>
+The cache file. This file will be read when program started and written when program exit.
+</p>
+</dd>
+<dt class="hdlist1">
+<em>/var/cache/rescached.vos.bak</em>
+</dt>
+<dd>
+<p>
+Backup of cache file.
+</p>
+</dd>
+</dl></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_notes">NOTES</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>This program developed with reference to,</p></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+<em>RFC1034</em>
+</dt>
+<dd>
+<p>
+Domain Names - Concepts and Facilities.
+</p>
+</dd>
+<dt class="hdlist1">
+<em>RFC1035</em>
+</dt>
+<dd>
+<p>
+Domain Names - Implementation and Specification.
+</p>
+</dd>
+<dt class="hdlist1">
+<em>RFC1886</em>
+</dt>
+<dd>
+<p>
+DNS Extensions to support IP version 6.
+</p>
+</dd>
+<dt class="hdlist1">
+<em>RFC2782</em>
+</dt>
+<dd>
+<p>
+A DNS RR for specifying the location of services (DNS SRV)
+</p>
+</dd>
+</dl></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_bugs">BUGS</h2>
+<div class="sectionbody">
+<div class="ulist"><ul>
+<li>
+<p>
+<code>rescached</code> only know specific DNS record type,
+</p>
+<div class="hdlist"><table>
+<tr>
+<td class="hdlist1">
+A
 <br />
-</li>
-
-
-<li><tt><a name="cache.max"> cache.max </a></tt></li>
-
-<li style="list-style-type: none; list-style-image: none; list-style-position: outside;">
-<table summary="rescached cache.max option">
-<tr><th> Value </th>
-    <td> Maximum number of host-name and address that will keep in memory. </td>
-    </tr>
-<tr><th> Format </th>
-    <td> Any number between 1 and 2147483647. </td>
-    </tr>
-<tr><th> Default </th>
-    <td> 100000 </td>
-    </tr>
-<tr><th> Description </th>
-    <td>
-When <tt>rescached</tt> running it will keep all queries and answers in memory
-as much as <tt>cache.max</tt>.
-The bigger the <tt>cache.max</tt> value, then the more <tt>rescached</tt>
-will use memory.
-    </td>
-    </tr>
-</table>
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+a host address
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+NS
 <br />
-</li>
-
-
-<li><tt><a name="cache.threshold"> cache.threshold </a></tt></li>
-
-<li style="list-style-type: none; list-style-image: none; list-style-position: outside;">
-<table summary="rescached cache.threshold option">
-<tr><th> Value </th>
-    <td> Minimum value for cache status. </td>
-    </tr>
-<tr><th> Format </th>
-    <td> Any number between 1 and 2147483647. </td>
-    </tr>
-<tr><th> Default </th>
-    <td> 1 </td>
-    </tr>
-<tr><th> Description </th>
-    <td>
-When <tt>rescached</tt> cache all the queries and answers, until long enough
-it will reached it own maximum value (<tt>cache.max</tt>), when it happen
-<tt>rescached</tt> will remove all cache that their number-of-queried value
-is less than <tt>cache.threshold</tt>.
-    </td>
-    </tr>
-</table>
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+an authoritative name server
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+CNAME
 <br />
-</li>
-
-<li><tt><a name="cache.mode"> cache.mode </a></tt></li>
-
-<li style="list-style-type: none; list-style-image: none; list-style-position: outside;">
-<table summary="rescached cache.mode option">
-<tr><th> Value </th>
-    <td> cache mode, affect how the cache will be saved in disk/memory. </td>
-    </tr>
-<tr><th> Format </th>
-    <td> Number between 1 and 2. </td>
-    </tr>
-<tr><th> Default </th>
-    <td> 2 </td>
-    </tr>
-<tr><th> Description </th>
-    <td>
-If <tt>cache.mode</tt> is set to 1, all DNS record will be keep forever, no
-possible query or renewed DNS record happen until the specific DNS record
-removed from cache.
-<br/><br/>
-If <tt>cache.mode</tt> is set to 2 (default), all DNS record will be keep
-only after the specific time, based on maximum TTL value in DNS record. If
-TTL is reached, hostname will be queried again to the DNS parent server, and
-old cache and TTL value will be replaced with a new one.
-    </td>
-    </tr>
-</table>
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+a canonical name for an alias
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+SOA
 <br />
-</li>
-
-<li><tt><a name="debug"> debug </a></tt></li>
-
-<li style="list-style-type: none; list-style-image: none; list-style-position: outside;">
-<table summary="rescached debug option">
-<tr><th> Value </th>
-    <td><ul>
-    <li> 0 : log nothing. </li>
-    <li> 1 : log startup, request, response, and exit status. </li>
-    <li> 2 : log startup, request, response, caches, and exit status. </li>
-    </ul></td>
-    </tr>
-<tr><th> Format </th>
-    <td> Any number between 0 and 2. </td>
-    </tr>
-<tr><th> Default </th>
-    <td> 0 </td>
-    </tr>
-<tr><th> Description </th>
-    <td>
-This option only used by developer for debugging program.
-    </td>
-    </tr>
-</table>
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+zone authority
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+PTR
 <br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+a domain name pointer
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+HINFO
+<br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+host information
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+MX
+<br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+mail exchange
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+TXT
+<br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+text string
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+SRV
+<br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+location of services
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+AAAA
+<br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+a host address for IPv6
+</p>
+</td>
+</tr>
+</table></div>
 </li>
-
-
-<!-- rescached option template
-<li><tt> </tt></li>
-<table summary="rescached option">
-<tr><th> Value </th>
-    <td> </td>
-    </tr>
-<tr><th> Format </th>
-    <td> </td>
-    </tr>
-<tr><th> Default </th>
-    <td> </td>
-    </tr>
-<tr><th> Description </th>
-    <td> </td>
-    </tr>
-</table>
--->
-</ul>
-
+<li>
+<p>
+<code>rescached</code> only run and tested in Linux system. Technically, if it can compiled, it will run in any UNIX system.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>For request of features and/or bugs report please submitted through web at <a href="https://github.com/shuLhan/rescached/issues">https://github.com/shuLhan/rescached/issues</a>.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_author">AUTHOR</h2>
+<div class="sectionbody">
+<div class="paragraph"><p><code>rescached</code> is developed by Mhd Sulhan (<a href="mailto:ms@kilabit.info">ms@kilabit.info</a>).</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_credits">CREDITS</h2>
+<div class="sectionbody">
+<div class="paragraph"><p><em>pgl.yoyo.org</em> for ads server list for use with hosts files to block ads.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_see_also">SEE ALSO</h2>
+<div class="sectionbody">
+<div class="paragraph"><p><strong>pdnsd</strong>(1), <strong>djbdnsd</strong>(1)</p></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2014-12-20 17:57:07 WIB
+</div>
+</div>
 </body>
 </html>
