@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or http://ckeditor.com/license
  */
 
-CKEDITOR.dialog.add( 'myDialog', function() {
+CKEDITOR.dialog.add( 'myDialog', function( editor ) {
 	return {
 		title: 'My Dialog',
 		minWidth: 400,
