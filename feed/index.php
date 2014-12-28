@@ -19,13 +19,15 @@ foreach ($nodes as $name => $node) {
 	}
 
 	// check if index contain body.
-	$html = simplexml_load_file ($node->getPathname ());
+	$html = new DOMDocument ();
+	$s = $html->loadHTMLFile ($node->getPathname ());
 
-	if (! $html) {
+	if (! $s) {
 		continue;
 	}
 
-	if (count ($html->body) <= 0) {
+	$body = $html->getElementsByTagName ("body");
+	if ($body->length <= 0) {
 		continue;
 	}
 
@@ -55,24 +57,27 @@ $atom->addChild ("title","Kilabit | Journal");
 $atom->addChild ("link")->addAttribute ("href", $feed_url);
 $atom->addChild ("author")->addChild ("name", "Mhd Sulhan");
 
+$html = new DOMDocument ();
+
 foreach ($findex as $k => $fin) {
 	$entry = $atom->addChild ("entry");
 
-	$html = simplexml_load_file ($fin["path"]);
+	$html->loadHTMLFile ($fin["path"]);
+	$xpath = new DOMXPath ($html);
 
 	// get title from html meta,
-	$title = $html->xpath ("head/meta[@name='title']");
+	$titles = $xpath->query ("head/meta[@name='title']");
 
-	if (count ($title) <= 0) {
+	if ($titles->length <= 0) {
 		// or from html title tag,
-		$title = $html->title;
+		$title = $html->getElementsByTagName ("title");
 
-		if (count ($title) <= 0) {
+		if ($title->length <= 0) {
 			// or from index path
 			$title = $fin["path"];
 		}
 	} else {
-		$title = $title[0]["content"];
+		$title = $titles->item(0)->getAttribute ("content");
 	}
 
 	// get link by cutting index path.
@@ -88,14 +93,15 @@ foreach ($findex as $k => $fin) {
 	}
 
 	// fix image src in content.
-	$imgs = $html->body->xpath ("img");
+	$imgs = $xpath->query ("img");
 
-	foreach ($imgs as &$img) {
-		$img["src"]= rtrim ($link, "index.html") . ltrim ($img["src"], "./");
+	foreach ($imgs as $img) {
+		$img->setAttribute ("src", rtrim ($link, "index.html") . ltrim ($img["src"], "./"));
 	}
 
-	$content = ltrim ($html->body->asXML (), "<body>");
-	$content = rtrim ($content, "</body>");
+	$body = $html->getElementsByTagName ("body")->item (0);
+
+	$content = $html->saveHTML ($body);
 
 	$entry->addChild ("id", $link);
 
