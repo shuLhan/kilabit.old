@@ -424,7 +424,8 @@
 						$(this).attr ("src", link +"/../"+ src);
 					});
 
-					var $xml = $( $.parseXML (res) );
+					var doc = document.implementation.createHTMLDocument("content_edit");
+					doc.documentElement.innerHTML = res;
 
 					// set field node name
 					var ids = node.id.split ("-");
@@ -432,7 +433,7 @@
 					$("#e_node_parent").val (node.pid);
 
 					// set field based on meta data
-					$xml.find ("html > head > meta").each (function () {
+					$(doc).find ("html > head > meta").each (function () {
 							var m_name = $(this).attr ("name");
 							var m_content = $(this).attr ("content");
 
@@ -448,9 +449,9 @@
 
 					$("#e_comment").prop ("checked", node.comment);
 
-					var body = $xml.find ("body").html ().trim ();
+					var body = $(doc).find ("body");
 
-					$("#e_content").code (body);
+					$("#e_content").code (body.html ());
 				});
 		}
 		//}}}
