@@ -1,10 +1,12 @@
+<!DOCTYPE HTML>
 <html>
 <head>
-<meta name='title' content='O R A C L E'/>
-<meta name='author' content='ms@kilabit.org'/>
-<link rel='stylesheet' href='/wui.css' type='text/css'/>
+	<meta charset="utf-8" />
+	<meta name='title' content='O R A C L E'/>
+	<meta name='author' content='ms@kilabit.org'/>
+	<link rel='stylesheet' href='/wui.css' type='text/css'/>
+	<title>O R A C L E</title>
 </head>
-
 <body>
 <h1><a href='./index.html'> O R A C L E </a></h1>
 
@@ -52,7 +54,7 @@ SQL&gt; recover tablepace zzzz;
 
 <p>
 If table-space is SYSTEM table-space you must shutdown the database first.
-
+</p>
 <pre>
 SQL&gt; shutdown immediate
 
@@ -62,10 +64,10 @@ SQL&gt; startup mount
 SQL&gt; alter database rename file '/a' to '/b';
 SQL&gt; alter database open;
 </pre>
-</p>
 
 <p>
 Moving non-system table-spaces,
+</p>
 <pre>
 SQL&gt; select * from dba_temp_files;
 SQL&gt; select * from dba_data_files order by file_id;
@@ -78,7 +80,6 @@ SQL&gt; alter tablespace [ts-name] rename datafile '[old-ts-path]' to '[new-ts-p
 
 SQL&gt; alter tablespace [ts-name] online;
 </pre>
-</p>
 
 <h3> Session Management </h3>
 
@@ -97,12 +98,13 @@ alter system kill session '[sid], [serial]';
 
 <p>
 View number of cursor opened,
+</p>
 <pre>
 select * from v$open_cursor where USER_NAME != 'SYS';
 </pre>
-
+<p>
 or,
-
+</p>
 <pre>
 select   v.value as numopencursors ,s.machine ,s.osuser,s.username, s.program
 from     v$sesstat v, v$session s
@@ -116,7 +118,6 @@ from    v$sesstat v, v$session s
 where   v.statistic# = 3
 and     v.sid = s.sid;
 </pre>
-</p>
 
 
 <h3> misc </h3>

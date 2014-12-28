@@ -2,7 +2,8 @@ var nodes;
 
 function init ()
 {
-	var svg = d3.select ("svg");
+	var graph = d3.select ("#graph");
+	var svg = graph.append ("svg");
 	var diagonal = d3.svg.diagonal ()
 				.source (function (d)
 					{
