@@ -66,7 +66,9 @@ function get_meta (&$m, $p, $id)
 	}
 
 	if (null === $title) {
-		$m["title"] = $id;
+		// get title from title
+		$title = $doc->getElementsByTagName ("title");
+		$m["title"] = null === $title ? $id : $title->item(0)->nodeValue;
 	} else {
 		$m["title"] = $title;
 	}
