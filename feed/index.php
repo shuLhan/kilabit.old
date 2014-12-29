@@ -20,7 +20,7 @@ foreach ($nodes as $name => $node) {
 
 	// check if index contain body.
 	$html = new DOMDocument ();
-	$s = $html->loadHTMLFile ($node->getPathname ());
+	@$s = $html->loadHTMLFile ($node->getPathname ());
 
 	if (! $s) {
 		continue;
@@ -62,7 +62,7 @@ $html = new DOMDocument ();
 foreach ($findex as $k => $fin) {
 	$entry = $atom->addChild ("entry");
 
-	$html->loadHTMLFile ($fin["path"]);
+	@$html->loadHTMLFile ($fin["path"]);
 	$xpath = new DOMXPath ($html);
 
 	// get title from html meta,
