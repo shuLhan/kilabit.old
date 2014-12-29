@@ -30,6 +30,7 @@ $content = <<<EOF
 <html>
 <head>
 <meta name="title" content="$node_title"/>
+<title>$node_title</title>
 </head>
 </html>
 EOF;
