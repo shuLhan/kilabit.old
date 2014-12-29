@@ -73,13 +73,15 @@ var WUI =
 
 ,	set_content_meta : function (res, link)
 	{
-		var $xml = $( $.parseXML (res) );
+		var doc = document.implementation.createHTMLDocument("content_edit");
 		var meta = $("#wui_content_meta");
+
+		doc.documentElement.innerHTML = res;
 
 		meta.empty ();
 
 		// set field based on meta data
-		$xml.find ("html > head > meta").each (function () {
+		$(doc).find ("html > head > meta").each (function () {
 			var m_name = $(this).attr ("name");
 			var m_content = $(this).attr ("content");
 
