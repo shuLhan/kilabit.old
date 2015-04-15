@@ -142,7 +142,7 @@ var WUI =
 
 		wc.empty ();
 
-		wc.load (link + ts, {}, WUI.content_on_load (link));
+		wc.load (link + ts, null, WUI.content_on_load (link));
 	}
 
 ,	set_content_comment : function (node)
