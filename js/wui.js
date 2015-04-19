@@ -544,9 +544,18 @@ var WUIFeed =
 					break;
 				case "published":
 					entry["my_date"] = new Date(child.textContent);
-					/* no break */
+					break;
+				case "updated":
+					entry["my_date"] = new Date(child.textContent);
+					break;
 				default:
-					entry[child.nodeName] = child.textContent;
+					var type = child.getAttribute("type");
+
+					if (type == "xhtml") {
+						entry[child.nodeName] = child.innerHTML;
+					} else {
+						entry[child.nodeName] = child.textContent;
+					}
 				}
 			}
 
@@ -638,7 +647,10 @@ var WUIFeed =
 					+ WUIFeed.date2string(v.my_date)
 					+ "</span>"
 					+ "</div>"
-					+ v.content
+					+ (v.content != undefined
+						? v.content
+						: v.summary != undefined
+							? v.summary : "")
 					+ "</div>";
 				break;
 			case "rss20":
