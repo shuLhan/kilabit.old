@@ -466,12 +466,25 @@ var WUIFeed =
 {
 	_v : new Array ()
 ,	_o : ""
+,	_n : 0
+,	_state : null
+,	_pgbar : null
+,	_inprogress : 0
+,	_holder : null
 
 ,	init : function (feed_list)
 	{
+		WUIFeed._n			= feed_list.length * 3;
+		WUIFeed._inprogress	= 0;
+		WUIFeed._state		= $("#feed_status");
+		WUIFeed._pgbar		= $("#pgbar");
+		WUIFeed._holder		= $("#my_activity");
+
 		if (feed_list == undefined) {
 			return;
 		}
+
+		$("#feed_progress").removeClass ("hidden");
 
 		for (var i = 0; i < feed_list.length; i++) {
 			WUIFeed.get (feed_list[i]);
@@ -480,22 +493,28 @@ var WUIFeed =
 
 ,	load : function ()
 	{
+		WUIFeed._holder = $("#my_activity");
+
 		WUIFeed._v.sort (WUIFeed.sort);
 		WUIFeed._o = "";
 		WUIFeed.generate_output ();
 
-		$("#my_activity").empty ();
-		$("#my_activity").append ($.parseHTML (WUIFeed._o));
+		WUIFeed._holder.empty ();
+		WUIFeed._holder.append ($.parseHTML (WUIFeed._o));
 	}
 
 ,	get : function (uri)
 	{
+		WUIFeed.update_progress ("<p>Loading "+ uri +"</p>");
+
 		$.get ("/get_feed.php"
 		, { url : uri }
 		, function (req)
 		{
 			var xml		= $.parseXML (req);
 			var type	= xml.firstChild;
+
+			WUIFeed.update_progress ("<p>Parsing "+ uri +"</p>");
 
 			switch (type.nodeName) {
 			case "feed":
@@ -518,6 +537,7 @@ var WUIFeed =
 				return;
 			}
 
+			WUIFeed.update_progress ("<p>Generating "+ uri +"</p>");
 			WUIFeed.load ();
 		});
 	}
@@ -611,13 +631,19 @@ var WUIFeed =
 				if (child.nodeType != 1) {
 					continue;
 				}
-				if (child.nodeName === "pubDate") {
+
+				switch (child.nodeName) {
+				case "pubDate":
 					var pubdate = WUIFeed.rss20_str2date(child.textContent);
 
 					if (pubdate !== null) {
 						entry["my_date"] = pubdate;
 					}
-				} else {
+					break;
+				case "a10:updated":
+					entry["my_date"] = new Date(child.textContent);
+					break;
+				default:
 					entry[child.nodeName] = child.textContent;
 				}
 			}
@@ -686,6 +712,23 @@ var WUIFeed =
 
 		return (date.getUTCFullYear() +"."+ month +"."+ day +" "
 			+ hour +":"+ minute +":"+ second);
+	}
+
+,	update_progress : function (string)
+	{
+		WUIFeed._inprogress++;
+
+		var v = (WUIFeed._inprogress / 3) * 10;
+
+		WUIFeed._pgbar
+			.css('width', v+'%')
+			.attr ("aria-valuenow", v);
+
+		WUIFeed._state.prepend (string);
+
+		if (WUIFeed._inprogress == WUIFeed._n) {
+			$("#feed_progress").addClass ("hidden");
+		}
 	}
 };
 
