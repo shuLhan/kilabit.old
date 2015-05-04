@@ -2,9 +2,9 @@
 /*
  * Get data from other domains.
  */
-$xml = file_get_contents ($_GET["url"]);
+$xml = @file_get_contents ($_GET["url"]);
 
-if (! $xml) {
+if (FALSE === $xml) {
 	return "";
 }
 
