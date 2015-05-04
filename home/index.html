@@ -9,6 +9,8 @@
 	<meta name="feed_source" content="http://rss.imdb.com/user/ur24737018/ratings">
 	<meta name="feed_source" content="http://www.goodreads.com/review/list_rss/16887972?key%3dgPTSEwtR_sTVRjJqQ71Pq5bO--L8Jz6sOYkRU7ENP9xse9pk%26shelf%3dread">
 	<meta name="feed_source" content="http://kilabit.info/feed/">
+	<meta name="feed_source" content="http://www.comicsyndicate.org/Feed/Non%20Sequitur">
+	<meta name="feed_source" content="http://www.comicsyndicate.org/Feed/Calvin%20and%20Hobbes">
 	<title>Home</title>
 	<style>
 		.activity {
@@ -43,6 +45,19 @@
 
 <body>
 	<h2>Recent Activities</h2>
+	<div id="feed_progress" class="well alert alert-warning hidden" role="alert">
+		<div class="progress">
+			<div id="pgbar"
+				class="progress-bar progress-bar-warning progress-bar-striped active"
+				role="progressbar" aria-valuenow="0" aria-valuemin="0"
+				aria-valuemax="100" style="width: 0%"
+			>
+				<span class="sr-only"></span>
+			</div>
+		</div>
+		<div id="feed_status"></div>
+	</div>
+
 	<div id="my_activity">
 	</div>
 
@@ -55,6 +70,8 @@
 			,	"http://rss.imdb.com/user/ur24737018/ratings"
 			,	"http://kilabit.info/feed/"
 			,	"http://gitlab.com/u/Sulhan.atom?private_token=mtTM1nKsQ3UjSaL_i_w6"
+			,	"http://www.comicsyndicate.org/Feed/Non%20Sequitur"
+			,	"http://www.comicsyndicate.org/Feed/Calvin%20and%20Hobbes"
 //				"http://wui.app.localhost/feed/"
 			]);
 		} else {
