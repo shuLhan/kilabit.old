@@ -41,7 +41,9 @@
 				<div class="row">
 					<div id="wui_header_left" class="col-sm-6 text-left">
 						<div id="wui_title"></div>
-						<div id="wui_subtitle"></div>
+						<div id="wui_subtitle" title="Pick 2!"
+							data-toggle="tooltip" data-placement="bottom">
+						</div>
 					</div>
 					<div id="wui_header_right" class="col-sm-6 text-right">
 						<div id="wui_social_icon">
@@ -162,6 +164,9 @@
 			$("#wui_comment_form").on ("submit", WUI.wui_comment_on_submit);
 
 			WUI.run ();
+
+			// bootstraping
+			$('[data-toggle="tooltip"]').tooltip();
 		});
 	</script>
 </body>
