@@ -7,7 +7,7 @@
 // find all index.html in all directories
 $feed_src		= "../journal";
 $feed_src_cut	= ".";
-$feed_url		= "http://kilabit.info";
+$feed_url		= "http://kilabit.info/";
 
 $dir	= new RecursiveDirectoryIterator ($feed_src);
 $nodes	= new RecursiveIteratorIterator ($dir);
@@ -54,8 +54,16 @@ $atom = new SimpleXMLElement ("<feed xmlns=\"http://www.w3.org/2005/Atom\"></fee
 
 $atom->addChild ("id", $feed_url);
 $atom->addChild ("title","Kilabit | Journal");
-$atom->addChild ("link")->addAttribute ("href", $feed_url);
+$link = $atom->addChild ("link");
+$link->addAttribute ("type", "text/html");
+$link->addAttribute ("rel", "alternate");
+$link->addAttribute ("href", $feed_url);
+$link = $atom->addChild ("link");
+$link->addAttribute ("rel", "self");
+$link->addAttribute ("href", $feed_url."feed/");
+$link->addAttribute ("type", "application/atom+xml");
 $atom->addChild ("author")->addChild ("name", "Mhd Sulhan");
+$atom->addChild ("updated", date ("c", $mtime[0]));
 
 $html = new DOMDocument ();
 
@@ -87,11 +95,6 @@ foreach ($findex as $k => $fin) {
 	// get update time.
 	$updated = date ("c", $fin["mtime"]);
 
-	// use the first entry as the feed update time.
-	if ($k === 0) {
-		$atom->addChild ("updated", $updated);
-	}
-
 	// fix image src in content.
 	$imgs = $xpath->query ("img");
 
@@ -102,11 +105,12 @@ foreach ($findex as $k => $fin) {
 	$body = $html->getElementsByTagName ("body")->item (0);
 
 	$content = $html->saveHTML ($body);
+	$content = str_replace (["<body>","</body>"], "", $content);
 
 	$entry->addChild ("id", $link);
 
 	$entry_link = $entry->addChild ("link");
-	$entry_link->addAttribute ("ref", "alternate");
+	$entry_link->addAttribute ("rel", "alternate");
 	$entry_link->addAttribute ("href", $link);
 
 	$entry->addChild ("title", $title);
