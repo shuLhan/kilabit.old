@@ -566,7 +566,14 @@ var WUIFeed =
 					entry["my_date"] = new Date(child.textContent);
 					break;
 				case "updated":
-					entry["my_date"] = new Date(child.textContent);
+					var date_str = child.textContent;
+
+					entry["my_date"] = new Date(date_str);
+
+					if (isNaN (entry["my_date"])) {
+						date_str = date_str.replace ("UTC", "");
+						entry["my_date"] = new Date(date_str);
+					}
 					break;
 				default:
 					var type = child.getAttribute("type");
