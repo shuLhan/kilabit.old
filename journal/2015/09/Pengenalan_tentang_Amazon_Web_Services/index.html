@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="title" content="Pengenalan tentang Amazon Web Services">
+<meta name="publish_date" content="2015.09.22 14:06:22">
+<meta name="author" content="ms@kilabit.info">
+<title>Pengenalan tentang Amazon Web Services</title>
+</head>
+<body>
+<h1>Pengenalan tentang Amazon Web Services</h1>
+
+<p>Bagi yang baru mengenal tentang <a href="http://aws.amazon.com" target="_blank">Amazon Web Services</a> (AWS) biasanya akan kebingungan dengan jargon yang mereka gunakan pada produk dan jasa mereka, sampai anda membaca atau mendengar penjelasan yang lebih sederhana dari orang lain dan berujar &quot;Oh ... buat itu&quot;. Tulisan ini mencoba menjelaskan layanan yang terdapat di AWS menggunakan istilah umum yang biasa digunakan dalam teknologi informasi, berdasarkan pengetahuan yang saya dapat selama menggunakan layanan mereka dan sebagian lewat acara <em>AWSome Day</em>.</p>
+
+<p>&nbsp;</p>
+
+<p><img alt="Amazon Web Services" src="/journal/2015/09/Pengenalan_tentang_Amazon_Web_Services/amazon-web-services.png" style="height:245px; width:400px; float:right" /></p>
+
+<p>Bagi yang belum tahu, AWS adalah produk <em>cloud computing</em> yang disediakan oleh perusahaan Amazon. <em>Cloud computing</em> secara sederhananya adalah layanan komputer yang diatur baik melalui peramban maupun program (biasanya dalam bentuk program <em>console</em>) yang harus terhubung ke internet. Pengguna tidak perlu lagi memikirkan tentang perangkat keras, semuanya sudah diatur dan disiapkan oleh penyedia jasa tersebut, yang anda perlu ketahui hanya layanan yang disediakan oleh penyedia jasa, biasanya dalam bentuk paket atau jasa aplikasi yang dihitung per waktu atau jumlah pemakaian.</p>
+
+<p>Layanan AWS secara lengkap dapat dilihat di halaman <a href="https://aws.amazon.com/products/?nc1=f_cc" target="_blank">ini</a>. Saya hanya akan menjelaskan bagian &quot;Broad &amp; Deep Core Cloud Infrastructure Services&quot;, yang bisa dilihat memiliki lima kelompok yaitu &quot;Compute&quot;, &quot;Storage &amp; Content Delivery&quot;, &quot;Database&quot;, &quot;Networking&quot;, &quot;Security &amp; Identity&quot;.</p>
+
+<h2>Compute</h2>
+
+<p><strong>Amazon EC2: Virtual Servers in the Cloud</strong>. Sebutan lainnya adalah &quot;instance&quot;, nama kitanya &quot;server&quot;. EC2 adalah singkatan dari <em>Elastic Compute Cloud</em>. Seperti keterangannya, EC2 adalah virtual server. Kalau anda ingin membangun server dari dasar, dengan sistem operasi pilihan, besar ruang harddisk, beserta aplikasi dan pengaturan yang anda inginkan sendiri, gunakan EC2. Ada banyak lagi istilah dalam layanan ini, seperti &quot;Volumes&quot;, &quot;Instances&quot;, &quot;Security Groups&quot;, dll. yang perlu halaman tersendiri untuk menjelaskannya.</p>
+
+<p>EC2 dihitung pemakaiannya per jam.</p>
+
+<p><strong>Amazon EC2 Container Service: Scalable Container Management Service</strong>. Disebut juga dengan ECS. Bagi yang mengenal aplikasi <a href="http://docker.com/" target="_blank">Docker</a>, ECS dapat membantu mengatur dan menjalankan image dalam EC2 anda. Masalahnya anda harus tetap menggunakan EC2 karena <em>image</em> dan kapasitas <em>RAM</em> yang digunakan berdasarkan kapasitas dari EC2 tersebut.</p>
+
+<p>ECS tidak kena cas, tapi tetap anda perlu EC2 untuk menjalankannya.</p>
+
+<p><strong>AWS Elastic Beanstalk: Run and Manage Web Apps</strong>. Beanstalk adalah layanan yang menggabungkan EC2, ECS, EBS, Load Balancing, Amazon RDS, dll. dalam satu layanan tergantung pilihan saat pengaturan pertama. Anda tinggal unggah aplikasi web anda (biasanya dalam bentuk zip dengan berkas <em>metadata</em> tambahan) dan Beanstalk akan mengatur dibelakangnya dan aplikasi web akan siap jalan. Tampaknya sangat mudah, tapi bila anda tidak mengetahui cara kerja dibelakangnya akan ada dua kemungkinan: pertama, karena semuanya sudah diatur oleh Beanstalk, pada saat ada kerusakan dan anda tidak bisa memperbaikinya, anda akan kebingungan sendiri; kedua, jika tidak hati-hati tagihan anda akan bengkak karena beberapa layanan dipakai sekaligus, misalnya anda hanya ingin aplikasi web static tapi dibelakangnya anda tidak tahu bahwa <em>load balancing</em> digunakan padahal EC2 yang digunakan hanya satu instan.</p>
+
+<p>Beanstalk dihitung bergantung layanan yang anda gunakan, bisa EC2 saja, bisa EC2 dan ELB, dst.</p>
+
+<p><strong>AWS Lambda: Run Your Code in Response to Events</strong>. Saya belum pernah menggunakan layanan ini.</p>
+
+<p><strong>Auto Scaling: Automatic Elasticity</strong>. Layanan ini berfungsi membuat EC2 yang baru jika layanan EC2 anda pada suatu saat melebihi pemakaian, misalnya tingkat penggunaan CPU dan RAM yang tinggi. Anda bisa mengatur berapa persen ambang batas rendah/tingginya dan secara otomatis AWS akan menghapus/membuatkan instan yang baru buat anda. Sayangnya, instan yang baru ini kosong, seperti membuat EC2 yang baru.</p>
+
+<p>Bagi yang awam, seperti saya, <em>auto-scaling</em> disini saya kira dari CPU yang dialokasikan 1 kemudian bertambah menjadi 2, 3, dst. atau dari RAM yang 1 GigaByte (GB) kemudian bertambah menjadi 2, 3, 4 GB, dst. Ternyata bukan begitu. AWS akan membuat instan berdasarkan <em>image</em> yang anda pilih sebelumnya. Tetap saja, jika anda ingin melakukan <em>deployment</em> anda harus menyalin aplikasi anda ke instan yang baru, kecuali aplikasi tersebut sudah tersimpan di-<em>image</em> yang dibuat. Tapikan aplikasi bisa berubah? Tidak mungkin membuat <em>image</em> baru terus menerus setiap ada <em>deployment</em>.</p>
+
+<p><strong>Elastic Load Balancing: High Scale Load Balancing</strong>. Disingkat ELB, adalah layanan yang mengatur lalu lintas trafik masuk dari internet ke server anda. Jika anda punya lebih dari satu servis (misalnya, web server) anda bisa menggunakan ELB untuk memastikan bahwa trafik terbagi dengan &quot;rata&quot; antara server anda, sehingga membagi beban antara server.</p>
+
+<p>ELB menurut beberapa artikel menggunakan algoritma round-robin, baca dibagi dengan berputaran. Tidak ada pilihan untuk menggantinya dengan algoritma lain, jika misalnya diperlukan. ELB sudah mendukung penggunaan sertifikat (misalnya port 443 untuk web SSL).</p>
+
+<p>ELB dihitung pemakaiannya per jam.</p>
+
+<h2>Storage and Content Delivery</h2>
+
+<p><strong><img alt="" src="/journal/2015/09/Pengenalan_tentang_Amazon_Web_Services/amazon_web_cloud.jpg" style="height:200px; width:340px; float:right" />Amazon S3: Scalable Storage in the Cloud</strong>. S3 ini adalah layanan untuk menyimpan berkas anda di <em>cloud</em>. Bagi yang tahu NFS atau FTP, prinsip S3 kasarnya hampir mirip seperti itu. S3 ada istilah <em>bucket</em>, bayangkan saja seperti direktori. Setiap akun memiliki batas jumlah bucket yang dimiliki (seingat saya ~20 <em>bucket</em>), tapi di dalam satu <em>bucket</em> ini anda bisa menyimpan berkas yang tidak terbatas.</p>
+
+<p>Harga dihitung per-GB pemakaian.</p>
+
+<p><strong>Amazon EBS: EC2 Block Storage Volumes</strong>. EBS adalah harddisk (atau istilah Amazon, <em>volumes</em>). Satu EBS hanya bisa dipakai pada satu server.</p>
+
+<p>Harga dihitung per-GB pemakaian.</p>
+
+<p><strong>Amazon Elastic File System: Fully Managed File System for EC2</strong>. Disingkat EFS. Layanan ini baru, saya belum pernah menggunakannya. Tapi dari beberapa bacaan, EFS ini mengatasi kelemahan dari EBS yaitu berbagi harddisk antara server. Hal ini bisa sangat membantu untuk pengembangan beberapa server produksi (yang saat ini belum bisa dilakukan di AWS), yang mana anda memiliki dua atau lebih server dan cukup satu EFS saja. Jadi pada saat <em>deployment</em>, anda hanya tinggal simpan aplikasi yang baru di satu tempat, tidak perlu mem-<em>push</em> ke beberapa server lagi karena sudah di-<em>attach</em> di setiap server.</p>
+
+<p><strong>Amazon Glacier: Low-cost Archive Storage in the cloud</strong>. Kalau ini layanan untuk menyimpan data yang sudah jarang sekali dipakai, harganya tentu lebih murah dari S3 atau EBS, tapi dengan waktu pengambilan yang lebih lambat. Misalnya, jika data sudah disimpan di sini, perlu waktu berpuluh menit untuk meminta dan mengambilnya lagi.</p>
+
+<p><strong>AWS Storage Gateway: Hybrid Storage Integration</strong>. Saya belum pernah menggunakannya, tapi secara sekilas seperti layanan backup untuk harddisk anda.</p>
+
+<p><strong>Amazon CloudFront: Global Content Delivery Network</strong>. Saya belum pernah menggunakannya, tapi dari sekilas layanan ini seperti web server, bisa statis bisa dinamis.</p>
+
+<h2>Database</h2>
+
+<p><strong>Amazon RDS</strong>. RDS adalah singkatan dari <em>Relational Database System</em>. Anda tinggal pilih database yang mau anda jalankan, ada MySQL, Postgresql, dll. Layanan ini seperti EC2 tapi anda tidak perlu menginstal dari awal termasuk aplikasi database, semua sudah disiapkan.</p>
+
+<p>Harganya untuk paket t2.micro lebih mahal 0.005 sen dari EC2 dan dihitung per jam.</p>
+
+<p><strong>Amazon DynamoDB</strong>. Layanan ini mencoba menjawab kebutuhan NoSQL anda tapi menggunakan produk Amazon.</p>
+
+<p><strong>Amazon ElastiCache</strong>. Bagi yang mengenal Redis atau Memcached, layanan ini menggunakan salah satu dari kedua aplikasi tersebut untuk menjawab kebutuhan penggunaan <em>memory</em> sebagai <em>cache</em>. Bagi yang tidak tahu, secara sederhananya prinsipnya seperti ini, pada saat anda melakukan <em>query</em> ke web server dan dari aplikasi web ke database, hasil tersebut disimpan ke dalam <em>memory</em> untuk digunakan lagi nantinya sampai batas waktu atau kapasitas tertentu, sehingga jika ada <em>query</em> yang sama maka akan lebih cepat dikembalikan karena tidak perlu lagi mengakses ke <em>harddisk</em>.</p>
+
+<p><strong>Amazon Redshift</strong>. Menurut dokumentasinya, ini adalah layanan untuk menjawab kebutuhan aplikasi yang membutuhkan operasi pada data yang besar.</p>
+
+<h2>Networking</h2>
+
+<p><strong>Amazon VPC</strong><strong>: Isolated Cloud Resources.</strong> Inilah inti dari AWS yaitu pengaturan jaringan. Banyak pengguna awal yang tidak sadar, seperti saya, bahwa semua layanan di atas pasti menggunakan layanan ini untuk menghubungkan satu layanan dengan yang lainnya, baik secara langsung maupun tidak langsung (dengan kata lain sudah diatur oleh Amazon di belakangnya). Jika anda salah pengaturan di sini, bisa mengakibatkan layanan anda harus diatur ulang, membuat VPC baru, atau layanan anda tidak bekerja sama sekali. Selain pengaturan jaringan antar produk AWS, layanan ini menyediakan VPN untuk menghubungkan jaringan luar langsung ke AWS dengan aman.</p>
+
+<p>Harga hanya dihitung bila menggunakan VPN.</p>
+
+<p><strong>AWS Direct Connect: Dedicated Network Connection to AWS</strong>. Saya belum pernah menggunakannya, dari dokumennya dijelaskan bahwa jika anda punya <em>bandwidth</em> yang besar anda bisa menggunakan layanan ini untuk mengganti pemakaian <em>bandwidth</em> AWS. Jadi trafik server anda bukan langsung ke AWS tapi dari Internet ke jaringan anda baru ke AWS, sehingga AWS tidak perlu menagih trafik pemakaian lagi.</p>
+
+<p><strong>Amazon Route 53</strong>. DNS Server-nya AWS. Kalau mau membeli domain atau mengatur domain anda supaya merujuk pada layanan database di RDS, EC2 atau ELB, anda bisa menggunakan layanan ini.</p>
+
+<p><strong>Elastic Load Balancing: High Scale Load Balancing</strong>. Sudah dijelaskan di bagian &quot;Compute&quot;.</p>
+
+<h2>Security and Identity</h2>
+
+<p><strong>AWS Directory Service: Host and Manage Active Directory</strong>. Seperti keterangannya, Active Directory yang disimpan di AWS.</p>
+
+<p><strong>AWS Identity and Access Management: Manage User and Encryption Keys</strong>. Layanan ini berfungsi untuk mengatur hak akses kelompok, <em>role</em>, dan pengguna terhadap layanan AWS anda. Pada saat registrasi, akun yang anda miliki itu adalah akun utama atau disebutnya &quot;root&quot; oleh AWS. <em>Sangat</em> disarankan untuk membuat akun baru untuk memakai layanan AWS, karena ada informasi rahasia seperti kartu kredit anda, yang seharusnya tidak boleh dilihat oleh orang lain.</p>
+
+<p>Yang membingungkan di layanan ini adalah pada saat butuh menambah <em>policy</em>, karena tidak semua policy ditampilkan. Misalnya, pada saat menggunakan ECS, anda harus membaca dokumentasinya secara teliti, karena disana ada pembuatan <em>policy</em> baru yang harus dibuat secara manual sebelum layanan ECS dapat berjalan.</p>
+
+<p><strong>AWS CloudHSM: Hardware-based Key Storage for Regulatory Compliance</strong>. Saya belum pernah menggunakannya.</p>
+
+<p><strong>AWS Key Management Service: Managed Creation and Control of Encryption Keys.</strong> Saya belum pernah menggunakannya.</p>
+
+<p><strong>Trusted Advisor: Optimize Performance and Security.</strong> Saya belum pernah menggunakannya.</p>
+
+<p>&nbsp;</p>
+
+<p>Dibagian bawahnya, ada banyak lagi layanan yang diberikan oleh AWS yang belum pernah saya gunakan terutama di bagian &quot;Accelerate your Cloud Success with Rich Platform Services&quot;, sehingga saya tidak bisa menjelaskan juga.</p>
+
+<p>Intinya jika anda ingin menggunakan layanan AWS, pelajari satu per satu terlebih dahulu, baca dokumentasinya, jangan hanya <em>klak-klik</em> saja, karena semua itu berbayar. Memang untuk pengguna baru mendapat layanan gratis selama 12 bulan, sehingga bisa puas menggunakan dan mengeksplorasinya sampai anda ketergantungan dan pada bulan ke 13 anda baru mendapat tagihan yang lumayan buat membeli gorengan satu gerobak. Untuk membantu anda menghitung penggunaan layanan, AWS menyediakan aplikasi <a href="https://calculator.s3.amazonaws.com/index.html" target="_blank">kalkulator sendiri</a>.</p>
+
+<p>Jika sempat saya akan mencoba membahas dasar penggunaan jaringan di AWS, seperti VPC, subnet, security group, dll. di artikel berikutnya.</p>
+
+</body>
+</html>
