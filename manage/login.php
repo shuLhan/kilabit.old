@@ -1,15 +1,12 @@
 <?php
 /*
-	Copyright 2014 - Mhd Sulhan
-	Authors:
-		- mhd.sulhan (m.shulhan@gmail.com)
+	Copyright 2015 - Mhd Sulhan (ms@kilabit.info)
 */
 
 $u = $_POST["u"];
 $p = $_POST["p"];
 $go = false;
 
-// get contents of .netrc
 $shadow = ".login";
 
 $lines	= file ($shadow, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);

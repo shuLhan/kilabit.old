@@ -1,8 +1,6 @@
 <?php
 /*
-	Copyright 2014 - Mhd Sulhan
-	Authors:
-		- mhd.sulhan (m.shulhan@gmail.com)
+	Copyright 2015 - Mhd Sulhan (ms@kilabit.info)
 */
 	define ("APP_PATH", realpath (dirname (__FILE__)));
 
