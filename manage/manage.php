@@ -259,6 +259,17 @@
 	<!--}}} -->
 	<script>
 		var author = '<?= $_SESSION["email"] ?>';
+		var new_journal = false;
+		var new_journal_data = {
+				e_node_parent 	:""
+			,	e_node_name		:""
+			,	e_title			:""
+			,	e_publish_date	:get_current_date ()
+			,	e_publish_time	:get_current_time ()
+			,	e_author		:author
+			,	e_comment		:"off"
+			,	e_content		:""
+			};
 
 		//{{{ replace node key name.
 		function replace_properties (nodes, old_key, new_key, child_key)
@@ -280,7 +291,7 @@
 			}
 		}
 		//}}}
-		//{{{
+		//{{{ init node parent selection
 		function init_node_parent_selection (nodes, child_key, tabs)
 		{
 			var np_node = $("#node_parent");
@@ -386,14 +397,17 @@
 
 			$("#e_node_parent").removeAttr ("disabled");
 
-			$("#e_node_parent").val ("");
-			$("#e_node_name").val ("");
-			$("#e_title").val ("");
-			$("#e_publish_date").val (get_current_date ());
-			$("#e_publish_time").val (get_current_time ());
-			$("#e_author").val (author);
-			$("#e_comment").val ("off");
-			CKEDITOR.instances.e_content.setData ("");
+			// restore last journal data.
+			$("#e_node_parent").val (new_journal_data.e_node_parent);
+			$("#e_node_name").val (new_journal_data.e_node_name);
+			$("#e_title").val (new_journal_data.e_title);
+			$("#e_publish_date").val (new_journal_data.e_publish_date);
+			$("#e_publish_time").val (new_journal_data.e_publish_time);
+			$("#e_author").val (new_journal_data.e_author);
+			$("#e_comment").val (new_journal_data.e_comment);
+			CKEDITOR.instances.e_content.setData (new_journal_data.e_content);
+
+			new_journal = true;
 		}
 		//}}}
 		//{{{ form edit content -> show
@@ -520,6 +534,23 @@
 				data			: wui_menu
 			,	onNodeSelected	: function (event, node)
 				{
+					// If user leaving when writing new journal, save their
+					// data to temporary variable.
+					if (new_journal) {
+						$form = $("#editor_form");
+
+						new_journal_data.e_node_parent	= $form.find ("#e_node_parent").val ();
+						new_journal_data.e_node_name	= $form.find ("#e_node_name").val ();
+						new_journal_data.e_title		= $form.find ("#e_title").val ();
+						new_journal_data.e_publish_date = $form.find ("#e_publish_date").val ();
+						new_journal_data.e_publish_time = $form.find ("#e_publish_time").val ();
+						new_journal_data.e_author		= $form.find ("#e_author").val ();
+						new_journal_data.e_comment		= $form.find ("#e_comment").prop ("checked");
+						new_journal_data.e_content		= CKEDITOR.instances.e_content.getData ();
+
+						new_journal = false;
+					}
+
 					if (! node.load) {
 						form_edit_node (node);
 					} else {
