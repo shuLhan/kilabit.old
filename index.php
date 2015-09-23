@@ -6,6 +6,13 @@
 
 	require_once "config.php";
 
+	// generate index of menu if not exist.
+	if (! file_exists (APP_PATH ."/js/wui_menu.js")) {
+		require_once "generate_wui_menu.php";
+
+		generate_menu ("./");
+	}
+
 	$open = null;
 
 	if (isset ($_GET["open"])) {
