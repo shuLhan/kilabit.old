@@ -115,7 +115,10 @@ function list_dir ($dir, $pid)
 			continue;
 		}
 
-		if (in_array (substr ($p, 2), $wui["contents_exclude"])) {
+		// skip directory with .ignore file
+		$fignore = $p ."/.ignore";
+
+		if (file_exists ($fignore)) {
 			continue;
 		}
 

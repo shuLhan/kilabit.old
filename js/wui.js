@@ -282,18 +282,6 @@ var WUI =
 		}
 	}
 
-,	process_exclude : function ()
-	{
-		for (var ex in WUI.config.contents_exclude) {
-			var id = WUI.path2id (WUI.config.contents_exclude[ex])
-			var el = $("#wui_menu a[href='#!"+ id +"']");
-
-			if (el) {
-				el.addClass ("hidden");
-			}
-		}
-	}
-
 ,	set_frontpage : function ()
 	{
 		var ids		= WUI.path2id (WUI.homepage);
@@ -443,9 +431,6 @@ var WUI =
 
 				// create top menu
 				WUI.create_top_menu ();
-
-				// hide menu based on contents_exclude in config.php.
-				WUI.process_exclude ();
 
 				// set front page defined in the config.php
 				WUI.set_frontpage ();

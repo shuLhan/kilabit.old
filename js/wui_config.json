@@ -7,11 +7,6 @@
 ,	"journal_name"		: "Journal"
 
 ,	"contents_dir"		: "./"
-,	"contents_exclude"	:
-	[
-		"/doc"
-	,	"/projects/libvos/doc"
-	]
 
 ,	"social_icon"		:
 	{
