@@ -1,0 +1,124 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="title" content="Bahasa Pemrograman Go">
+<meta name="publish_date" content="2015.09.26 18:08:32">
+<meta name="author" content="ms@kilabit.info">
+<title>Bahasa Pemrograman Go</title>
+</head>
+<body>
+<p>Untuk mempelajari bahasa pemrograman Go, saya telah menerjemahkan Go Tour ke dalam Bahasa Indonesia, silahkan lihat di <a href="http://go-tour-id2.appspot.com" target="_blank">sini</a>.</p>
+
+<h2>Pemasangan</h2>
+
+<p>Artikel ini berisi catatan mengenai instalasi bahasa pemrograman <a href="http://golang.org" target="_blank">Go</a>.</p>
+
+<p>Go memberikan kemudahan instalasi lewat <a href="https://golang.org/dl/" target="_blank">binari</a>, tapi untuk instalasi dari sumber membutuhkan koneksi internet yang cukup cepat, karena semua sumber kode, dokumentasi, dan tutorial diunduh lewat git. Pada bagian ini saya akan menjelaskan bagaimana memasang Go toolkit dari sumber kode langsung, Go-doc untuk melihat dokumentasi secara lokal, dan Go-tour untuk tutorial belajar bahasa Go supaya dapat dibuka di lokal tanpa harus terhubung ke internet. Untuk artikel lebih lengkapnya bisa dilihat di <a href="https://golang.org/doc/install/source" target="_blank">sini</a> dalam bahasa Inggris.</p>
+
+<p>Sebelumnya pengenalan terhadap variabel environmen yang digunakan oleh Go.</p>
+
+<ul>
+	<li><strong>$GOROOT_BOOTSTRAP</strong>: tempat pemasangan binari Go toolkit hasil unduhan. Binari ini diperlukan untuk meng-compile Go dari sumber kode.</li>
+	<li><strong>$GOROOT</strong>: tempat sumber kode atau instalasi dari Go toolkit.</li>
+	<li><strong>$GOBIN</strong>: secara otomatis merujuk ke direktori &quot;bin&quot; di $GOROOT.</li>
+	<li><strong>$GOPATH</strong>: tempat kerja atau tempat Go mengunduh paketnya. Pada saat melakukan &quot;import&quot; di dalam kode, Go akan mencarinya paketnya di direktori yang ditunjuk oleh $GOROOT dan $GOPATH.</li>
+</ul>
+
+<h3>Pemasangan Go Toolkit dari Sumber</h3>
+
+<p>Berikut langkah untuk meng-<em>compile</em> dari sumber,</p>
+
+<ul>
+	<li>Unduh Go compiler di <a href="https://golang.org/dl/" target="_blank">sini</a></li>
+	<li>Ekstrak berkas tersebut, misalkan di $HOME/go-bootstrap</li>
+	<li>Set variabel <em>environment</em> GOROOT_BOOTSTRAP ke $HOME/go-bootstrap,
+	<pre>
+export GOROOT_BOOTSTRAP=$HOME/go-bootstrap</pre>
+	</li>
+	<li>Buat direktori tempat menyimpan sumber kode dari git, misalkan di $HOME/git</li>
+	<li>Set variabel environment GOROOT ke tempat sumber kode unduhan,
+	<pre>
+export GOROOT=$HOME/git/go</pre>
+	</li>
+	<li>Unduh sumber kode Go dari repository,
+	<pre>
+$ cd $HOME/git
+$ git clone https://go.googlesource.com/go</pre>
+	</li>
+	<li>Kompilasi sumber kode,
+	<pre>
+$ cd go/src
+$ ./all.bash
+</pre>
+	</li>
+	<li>Jika kompilasi berhasil, program go akan terpasang di $HOME/git/go/bin</li>
+	<li>Atur PATH anda supaya merujuk ke direktori tersebut untuk menjalankan,
+	<pre>
+$ export PATH=$GOROOT/bin:$PATH</pre>
+	</li>
+</ul>
+
+<p>Buat direktori untuk menyimpan paket unduhan dengan menyeting variabel $GOPATH, misalkan di $HOME/go,</p>
+
+<p>$ export GOPATH=$HOME/go</p>
+
+<h3>Pemasangan Dokumentasi Go (godoc)</h3>
+
+<p>Setelah <em>compiler</em> Go terpasang, selanjutnya memasang paket dokumentasinya, langkahnya adalah sebagai berikut,</p>
+
+<ul>
+	<li>Unduh Google AppEngine untuk Go di <a href="https://cloud.google.com/appengine/downloads#Google_App_Engine_SDK_for_Go" target="_blank">sini</a> sesuai dengan OS anda</li>
+	<li>Ekstrak berkas <em>app-engine</em> zip, misalkan di &quot;$HOME/Programs/AppEngine/&quot;, dan atur variabel untuk tempat <em>app-engine</em> berada,
+	<pre>
+$ export APPENGINE_SDK=$HOME/Programs/AppEngine/go_appengine
+</pre>
+	</li>
+	<li>Buat direktori untuk hasil pembuatan dokumentasi, misalkan di &quot;$HOME/go/godoc-app&quot;
+	<pre>
+$ mkdir -p $HOME/go/godoc-app
+$ export APPDIR=$HOME/go/godoc-app</pre>
+	</li>
+	<li>Unduh paket Go tools,
+	<pre>
+$ go get -d golang.org/x/tools</pre>
+	</li>
+	<li>Pindah ke direktori &quot;cmd/godoc&quot; dari paket tools,
+	<pre>
+$ cd $GOPATH/src/golang.org/x/tools/cmd/godoc</pre>
+	</li>
+	<li>Jalankan skrip &quot;setup-godoc-app.bash&quot;, yang ada di dalam direktori tersebut,
+	<pre>
+$ ./setup-godoc-app.bash
+
+GOROOT = /home/ms/git/go
+APPDIR = /home/ms/go/godoc-app
+*** Fetching godoc (if not already in GOPATH)
+*** make /home/ms/go/godoc-app/app.yaml
+*** make /home/ms/go/godoc-app/godoc.zip
+*** make /home/ms/go/godoc-app/godoc.index
+2015/09/26 20:30:37 initialize file systems
+2015/09/26 20:31:14 writing index file /home/ms/go/godoc-app/godoc.index
+2015/09/26 20:31:15 done
+*** split /home/ms/go/godoc-app/godoc.index
+*** make /home/ms/go/godoc-app/golang.org/x/tools/cmd/godoc/appconfig.go
+*** setup complete</pre>
+	</li>
+	<li>Program godoc akan terpasang di $GOBIN</li>
+	<li>Jalankan godoc dengan parameter index berdasarkan APPDIR sebelumnya,
+	<pre>
+$ godoc -http=:6060 -index -index_files=&quot;$HOME/go/godoc-app/godoc.index&quot;</pre>
+	</li>
+	<li>Buka peramban anda dengan URL <a href="http://127.0.0.1:6060" target="_blank">http://127.0.0.1:6060</a> untuk melihat hasilnya</li>
+</ul>
+
+<h3>Pemasangan Tutorial Go (gotour)</h3>
+
+<pre>
+$ go get golang.org/x/tour/gotour</pre>
+
+<p>Kemudian jalankan dengan perintah <code>gotour</code>, maka peramban akan terbuka secara otomatis sama seperti dengan membuka situs golang.org.</p>
+
+</body>
+</html>
