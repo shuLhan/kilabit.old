@@ -1,0 +1,172 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="title" content="Eksplorasi Alat Manajemen Konfigurasi">
+<meta name="publish_date" content="2015.10.06 13:59:31">
+<meta name="author" content="ms@kilabit.info">
+<title>Eksplorasi Alat Manajemen Konfigurasi</title>
+</head>
+<body>
+<h1>Eksplorasi Alat Manajemen Konfigurasi</h1>
+
+<p>Alat Manajemen Konfigurasi (<em>Configuration Management</em> -- CM) yaitu aplikasi yang membantu administrator atau DevOps untuk melakukan instalasi, konfigurasi dan mengatur mesin-mesin jarak jauh langsung dari sebuah komputer (workstation).</p>
+
+<figure class="image" style="float:right"><img alt="" src="/journal/2015/10/Eksplorasi_Alat_Manajemen_Konfigurasi/Chef.jpg" style="height:375px; width:300px" />
+<figcaption>Gambari dari <a href="http://themuppetmindset.blogspot.com/2012/01/muppetology-101-recasting-of-muppet.html">themuppetmindset.blogspot.com</a></figcaption>
+</figure>
+
+<p>Intinya yaitu membuat pengaturan semua mesin itu dapat ditelusuri dari awal sampai kondisi yang terakhir, karena setiap perubahan tercatat dalam skrip yang dapat disimpan dalam version control. Selain itu dengan konfigurasi yang sama, dapat dieksekusi juga terhadap mesin yang berbeda.</p>
+
+<p>Artikel ini tidak membahas perbandingan dalam cara menggunakan aplikasi CM, tapi bagaimana cara memasang tiga diantaranya yaitu Chef, SaltStack, dan Ansible.</p>
+
+<p>Aplikasi tersebut di pasang di laptop dengan sistem operasi Arch Linux sebagai master dengan klien menggunakan AWS dengan sistem operasi Amazon Linux. Saya sengaja memasang aplikasi dari sumber, bukan dari paket, untuk melihat seberapa aktif pengembangnya dan seberapa baik manajemen kode mereka. Sehingga bila ada kesalahan dan saya laporkan, pengembang dalam waktu tertentu akan memberikan solusi atau setidaknya menanggapi laporan tersebut. Jika tidak? cao.</p>
+
+<h2>Chef</h2>
+
+<h3>Memasang Chef DK</h3>
+
+<p>Bagian ini mengasumsikan pemasangan Chef DK di sistem Arch Linux dari sumber secara langsung.</p>
+
+<p>Kebutuhan paket,</p>
+
+<ul>
+	<li>Ruby</li>
+	<li>Git</li>
+	<li>Ruby bundler, dipasang lewat <tt>gem install bundler</tt></li>
+</ul>
+
+<pre>
+<code class="language-bash">$ mkdir -p ~/git
+$ cd ~/git
+$ git clone --depth=1 https://github.com/opscode/omnibus-chef.git
+$ cd omnibus-chef
+$ bundle install --without development
+$ sudo mkdir -p /opt/chef
+$ sudo chown $USER /opt/chef
+$ bundle exec omnibus build chef</code></pre>
+
+<p>Ulangi perintah terakhir bila terdapat pesan kesalahan seperti berikut,</p>
+
+<pre>
+<code>Verification for libedit failed due to a checksum mismatch:
+    expected: e50f6a7afb4de00c81650f7b1a0f5aea
+    actual:   89b15030c1334a93847bc1a21b8aaa7a</code></pre>
+
+<p>yang disebabkan unduhan yang tidak selesai dengan penuh.</p>
+
+<p>Setelah beberapa lama, akhirnya saya mendapatkan pesan berikut ini,</p>
+
+<pre>
+<code>The following shell command exited with status 2:
+
+    $ CFLAGS=-I/opt/chef/embedded/include CXXFLAGS=-I/opt/chef/embedded/include LDFLAGS=-Wl,-rpath,/opt/chef/embedded/lib -L/opt/chef/embedded/lib LD_RUN_PATH=/opt/chef/embedded/lib PATH=/opt/chef/bin:/
+opt/chef/embedded/bin:/home/ms/.gem/ruby/2.2.0/bin:/home/ms/Programs/AppEngine/go_appengine:/home/ms/go/work/bin:/home/ms/git/go/bin:/home/ms/texlive/bin/x86_64-linux:/home/ms/npm-global/bin:/home/ms/.c
+omposer/vendor/bin:/opt/oracle-sqldeveloper:/home/ms/Programs/extjs/Sencha/Cmd/default:/home/ms/.android-sdk/platform-tools:/home/ms/.android-sdk/tools:/home/ms/bin:/usr/local/sbin:/usr/local/bin:/usr/b
+in:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl PKG_CONFIG_PATH=/opt/chef/embedded/lib/pkgconfig make -j 1
+
+Output:
+
+    cd include &amp;&amp; make DESTDIR="" all
+make[1]: Memasuki direktori '/home/ms/git/omnibus-chef/local/src/ncurses-5.9/include'
+make[1]: Tidak ada yang harus dilakukan untuk 'all'.
+make[1]: Meninggalkan direktori '/home/ms/git/omnibus-chef/local/src/ncurses-5.9/include'
+cd ncurses &amp;&amp; make DESTDIR="" all
+make[1]: Memasuki direktori '/home/ms/git/omnibus-chef/local/src/ncurses-5.9/ncurses'
+linking ../lib/libtinfo.so.5.9
+gcc -I/opt/chef/embedded/include  --param max-inline-insns-single=1200 -shared -Wl,-soname,`basename ../lib/libtinfo.so.5.9 .5.9`.5,-stats,-lc -o ../lib/libtinfo.so.5.9 ../obj_s/access.o ../obj_s/add_tr
+ies.o ../obj_s/alloc_ttype.o ../obj_s/codes.o ../obj_s/comp_captab.o ../obj_s/comp_error.o ../obj_s/comp_hash.o ../obj_s/db_iterator.o ../obj_s/doalloc.o ../obj_s/entries.o ../obj_s/fallback.o ../obj_s/
+free_ttype.o ../obj_s/getenv_num.o ../obj_s/home_terminfo.o ../obj_s/init_keytry.o ../obj_s/lib_acs.o ../obj_s/lib_baudrate.o ../obj_s/lib_cur_term.o ../obj_s/lib_data.o ../obj_s/lib_has_cap.o ../obj_s/
+lib_kernel.o ../obj_s/lib_keyname.o ../obj_s/lib_longname.o ../obj_s/lib_napms.o ../obj_s/lib_options.o ../obj_s/lib_raw.o ../obj_s/lib_setup.o ../obj_s/lib_termcap.o ../obj_s/lib_termname.o ../obj_s/li
+b_tgoto.o ../obj_s/lib_ti.o ../obj_s/lib_tparm.o ../obj_s/lib_tputs.o ../obj_s/lib_trace.o ../obj_s/lib_ttyflags.o ../obj_s/lib_twait.o ../obj_s/name_match.o ../obj_s/names.o ../obj_s/read_entry.o ../ob
+j_s/read_termcap.o ../obj_s/setbuf.o ../obj_s/strings.o ../obj_s/tries.o ../obj_s/trim_sgr0.o ../obj_s/unctrl.o ../obj_s/visbuf.o ../obj_s/alloc_entry.o ../obj_s/captoinfo.o ../obj_s/comp_expand.o ../ob
+j_s/comp_parse.o ../obj_s/comp_scan.o ../obj_s/parse_entry.o ../obj_s/write_entry.o ../obj_s/define_key.o ../obj_s/hashed_db.o ../obj_s/key_defined.o ../obj_s/keybound.o ../obj_s/keyok.o ../obj_s/versio
+n.o -L../lib  -Wl,-rpath,/opt/chef/embedded/lib -L/opt/chef/embedded/lib  
+cd ../lib &amp;&amp; (ln -s -f libtinfo.so.5.9 libtinfo.so.5; ln -s -f libtinfo.so.5 libtinfo.so; )
+gcc -DHAVE_CONFIG_H -I../ncurses -I.  -D_GNU_SOURCE -DNDEBUG -I. -I../include -I/opt/chef/embedded/include -I/opt/chef/embedded/include  --param max-inline-insns-single=1200 -fPIC -c ../ncurses/lib_gen.
+c -o ../obj_s/lib_gen.o
+Makefile:1550: recipe for target '../obj_s/lib_gen.o' failed
+make[1]: Meninggalkan direktori '/home/ms/git/omnibus-chef/local/src/ncurses-5.9/ncurses'
+Makefile:109: recipe for target 'all' failed
+
+Error:
+
+    /usr/bin/ld: total waktu dalam link: 0.019999
+/usr/bin/ld: ukuran data 4784128
+In file included from ../ncurses/curses.priv.h:283:0,
+                 from ../ncurses/lib_gen.c:19:
+_1164.c:835:15: error: expected ‘)’ before ‘int’
+../include/curses.h:1594:56: catatan: in definition of macro ‘mouse_trafo’
+#define mouse_trafo(y,x,to_screen) wmouse_trafo(stdscr,y,x,to_screen)
+                                                        ^
+make[1]: *** [../obj_s/lib_gen.o] Error 1
+make: *** [all] Error 2</code></pre>
+
+<p>Galat tersebut disebabkan karena paket ncurses di-compile menggunakan GCC 5.2 sehingga ada beberapa macro yang &quot;dianggap&quot; salah oleh GCC.</p>
+
+<p>Saya telah melaporkan bug tersebut di halaman isu mereka, baik di repository <a href="https://github.com/chef/omnibus-chef/issues/524" target="_blank">omnibus-chef</a> maupun <a href="https://github.com/chef/chef/issues/4035" target="_blank">chef</a>, namun sampai sekarang (2015-10-08) belum ada jawaban.</p>
+
+<h2>SaltStack</h2>
+
+<p>Aplikasi Saltstack sudah ada di repositori Arch Linux dan CentOS 6.</p>
+
+<figure class="image" style="float:right"><img alt="http://www.shanedietresorts.com/wp-content/uploads/2013/01/salt.jpg" src="http://www.shanedietresorts.com/wp-content/uploads/2013/01/salt.jpg" style="height:168px; width:300px" />
+<figcaption>Gambar diambil dari www.shanedietresorts.com</figcaption>
+</figure>
+
+<p>Kelebihan Saltstack, katanya, yaitu pada penggunaan ZeroMQ sebagai protokol antara master dan slave dan kemudahan dari pengaturan dengan menggunakan format YAML.</p>
+
+<p>Permasalahannya, SaltStack membutuhkan agen (salt-minion) yang harus dipasang disetiap mesin, dan harus ada satu Salt Master dengan IP publik atau berada di jaringan yang sama dengan minion; kalau tidak minion tidak bisa tersambung dan perintah secara remote tidak bisa dieksekusi.</p>
+
+<p>Permasalahan Salt Master saya coba atasi dengan menggunakan aplikasi tunneling Ngrok.com.</p>
+
+<pre>
+<code>authtokens: xxx
+tunnels:
+  salt-master:
+    proto: tcp
+    addr: 4505
+  salt-response:
+    proto: tcp
+    addr: 4506</code></pre>
+
+<p>Laptop menjalankan aplikasi ngrok yang mengalirkan data dari ip publik 0.tcp.ngrok.io ke laptop saya. Master pada minion kemudian diset menggunakan subdomain dari Ngrok. Untuk inisialisasi awal, key dari minion dapat ditangkap oleh Master, namun pada saat mencoba menjalankan perintah seperti &quot;salt &#39;*&#39; test.ping&quot; koneksi seperti tidak tersambung padahal <em>firewall</em> sudah dimatikan.</p>
+
+<p>Solusi lain yaitu dengan menggunakan salt-ssh, yang mana eksekusi ke remote dilakukan lewat kanal SSH. Lalu apa bedanya dengan Ansible atau Chef?</p>
+
+<p>Solusi lain yaitu dengan memasangnya di salah satu mesin <em>development</em>, jadi setiap mau melakukan perubahan harus SSH dahulu ke mesin master dan melakukan suntingan. Masalahnya, pertama koneksi saya lambat, membuka editor, menyimpan dan menguji dalam koneksi SSH yang lambat itu sangat menyebalkan belum lagi bila koneksinya putus. Masalah kedua, bagaimana bila node master pindah atau ditambah? Perlu di konfigurasi lagi.</p>
+
+<h2>Ansible</h2>
+
+<p>Ini adalah alternatif terakhir. Mari kita coba. <img alt="http://www.socallinuxexpo.org/scale12x-supporting/default/files/logos/AnsibleLogo_transparent_web.png" src="http://www.socallinuxexpo.org/scale12x-supporting/default/files/logos/AnsibleLogo_transparent_web.png" style="height:237px; width:300px; float:right" /></p>
+
+<p>Pasang kebutuhan paket sebelumnya,</p>
+
+<pre>
+<code>$ pacman -S sshpass python2-yaml python2-httplib2 python2-six python2-jinja python2-paramiko python2-pip</code></pre>
+
+<p>Kemudian clone sumber kode langsung dari github,</p>
+
+<pre>
+<code class="language-bash">$ git clone --depth=1 git://github.com/ansible/ansible.git --recursive
+$ cd ansible
+$ source ./hacking/env-setup
+$ echo "127.0.0.1 ansible_python_interpreter=/usr/bin/python2" &gt; ~/ansible_hosts
+$ echo "export ANSIBLE_INVENTORY=$HOME/ansible_hosts" &gt;&gt; ~/.zshenv
+$ export ANSIBLE_INVENTORY=$HOME/ansible_hosts</code></pre>
+
+<p>Selain aplikasi, dokumentasi juga dapat diekstrak dan dijalankan di lokal, caranya pasang paket python2-sphinx kemudian di direktori sumber dari ansible,</p>
+
+<pre>
+<code>$ cd docsite
+$ make</code></pre>
+
+<p>Dokumentasi bisa dilihat di direktori htmlout sama seperti membuka versi <a href="http://docs.ansible.com/ansible/index.html" target="_blank">onlinenya</a>.</p>
+
+<h2>Kesimpulan</h2>
+
+<p>Chef and Ansible adalah CM tanpa agen (<em>agentless</em>), dengan melakukan koneksi ke node lewat SSH. SaltStack memerlukan pemasangan aplikasi di master dan setiap node, sehingga membutuhkan waktu untuk menyiapkan node. Artikel ini tidak sampai membandingkan bagaimana menjalankan ketiga aplikasi di atas karena tidak semuanya bisa dipasang dan bekerja sesuai dengan kebutuhan yang saya inginkan. Untuk artikel selanjutnya, akan kita lihat bagaimana Ansible bekerja.</p>
+
+</body>
+</html>
