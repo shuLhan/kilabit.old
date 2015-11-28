@@ -1,0 +1,246 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="title" content="Building Docker Image with Arch Linux">
+<meta name="publish_date" content="2015.11.23 00:57:36">
+<meta name="author" content="ms@kilabit.info">
+<title>Building Docker Image with Arch Linux</title>
+</head>
+<body>
+<h1>Building Docker Image with Arch Linux</h1>
+
+<p>If you happen to be a Archer fanatic, you may want everything run on Arch Linux instead of any other distro. That&#39;s including me.</p>
+
+<p>When creating your own docker image, there are two options. One, use existing docker image. Two, roll your own docker image.</p>
+
+<p>For the first option they are several base images that already exits in docker hub, you can try to search them in http://hub.docker.com.</p>
+
+<p>For the second option, you can create your own rootfs, either manually from scratch or using script which is already provided by package arch-install-script. I use option two, with some modification.</p>
+
+<p>My modification to pacstrap is,</p>
+
+<pre>
+--- /usr/bin/pacstrap   2015-02-16 03:10:54.000000000 +0700
++++ pacstrap.sh 2015-11-28 13:04:50.759971774 +0700
+@@ -354,6 +354,9 @@
+ mkdir -m 1777 -p &quot;$newroot&quot;/tmp
+ mkdir -m 0555 -p &quot;$newroot&quot;/{sys,proc}
+ 
++## copy pacman db from host to newroot
++cp -r /var/lib/pacman/sync &quot;$newroot&quot;/var/lib/pacman/
++
+ # mount API filesystems
+ chroot_setup &quot;$newroot&quot; || die &quot;failed to setup chroot %s&quot; &quot;$newroot&quot;
+</pre>
+
+<p>which can be seen in line beginning with &#39;+&#39;. What its do is copying pacman database from host to chroot fs to minimize network IO when building image.</p>
+
+<h2>Steps</h2>
+
+<p>In this process I use zsh for scripting because its easy when working with arrays. Here is the procedure to create rootfs using pacstrap,</p>
+
+<p>(1) List packages we want to install in a variable PKGS.</p>
+
+<pre>
+$ export PKGS=(coreutils sed gzip)</pre>
+
+<p>sed and gzip is used for generating locale, we can remove it later.</p>
+
+<p>(2) Create empty directory for rootfs, e.g. ROOTFS</p>
+
+<pre>
+$ export ROOTFS=arch-rootfs
+$ mkdir $ROOTFS
+</pre>
+
+<p>(2.1) mount it as tmpfs, for speeding up read/write operation.</p>
+
+<pre>
+$ mount -t tmpfs -o size=400MB tmpfs $ROOTFS</pre>
+
+<p>(3) Run pacstrap using ROOTFS and pass the PKGS as the parameters.</p>
+
+<pre>
+$ sudo pacstrap.sh -c -d $ROOTFS $PKGS</pre>
+
+<p>The &#39;-c&#39; option is mandatory its mean use package cache in host rather than in target.</p>
+
+<p>(4) Do something with ROOTFS (set hostname, locales, copying configuration files, cleaning, etc.)</p>
+
+<p>The following steps can be running inside the rootfs using &quot;arch-chroot $CHROOT&quot; or directly from host. We will use the first option.</p>
+
+<pre>
+$ arch-chroot $ROOTFS /bin/sh</pre>
+
+<p>(4.1) Set hostname</p>
+
+<pre>
+# echo ${HOSTNAME} &gt; /etc/hostname</pre>
+
+<p>(4.2) Set timezone</p>
+
+<pre>
+# cp /usr/share/zoneinfo/UTC /etc/localtime</pre>
+
+<p>(4.3) Set locales</p>
+
+<pre>
+# echo &quot;en_GB.UTF-8 UTF-8&quot; &gt; /etc/locale.gen
+# echo &quot;en_US.UTF-8 UTF-8&quot; &gt;&gt; /etc/locale.gen
+
+# /usr/bin/locale-gen
+
+# echo &quot;==&gt; set locale preferences ...&quot;
+# echo &quot;LANG=en_GB.UTF-8&quot;    &gt;  &quot;$rootfs&quot;/etc/locale.conf
+# echo &quot;LC_MESSAGES=C&quot;        &gt;&gt; &quot;$rootfs&quot;/etc/locale.conf</pre>
+
+<p>(5) Create the docker image.</p>
+
+<pre>
+sudo tar --numeric-owner --xattrs --acls -C &quot;$ROOTFS&quot; -c . |
+        docker import - yourname/yourimagename</pre>
+
+<p>Easy enough is not it? Well, here come the hardest part.</p>
+
+<h2>Cleaning the ROOTFS</h2>
+
+<p>Now, after you inspecting the resulting image you see their size is quite big:</p>
+
+<pre>
+ms 0 % sudo du -sch $ROOTFS
+200M    arch-rootfs
+200M    total</pre>
+
+<p>We see that most of space is take by &#39;/usr&#39; directory. Let see how the space spread in there,</p>
+
+<pre>
+ms 0 % sudo du -hd 1 $ROOTFS/usr | sort -h
+0       arch-rootfs/usr/local
+0       arch-rootfs/usr/src
+11M     arch-rootfs/usr/bin
+12M     arch-rootfs/usr/include
+82M     arch-rootfs/usr/share
+88M     arch-rootfs/usr/lib
+192M    arch-rootfs/usr</pre>
+
+<p>What should we do?</p>
+
+<p>First bin and lib directory. We will make sure that all binaries and libraries is stripped. Stripped binary/library will decrease their size.</p>
+
+<pre>
+$ sudo find $ROOTFS/usr/bin -type f \( -perm -0100 \) -print |
+        xargs file |
+        sed -n &#39;/executable .*not stripped/s/: TAB .*//p&#39; |
+        xargs -rt strip --strip-unneeded
+
+$ sudo find $ROOTFS/usr/lib -type f \( -perm -0100 \) -print |
+        xargs file |
+        sed -n &#39;/executable .*not stripped/s/: TAB .*//p&#39; |
+        xargs -rt strip --strip-unneeded</pre>
+
+<p>Second, include directory. If your future image does not need compilation, you can remove all of them. I repeat again. <em>If your future workflow does not need compilation</em>, you can remove content in the include directory.</p>
+
+<p>Third, the share directory. Let see their content,</p>
+
+<pre>
+ms 0 % sudo du -hd 1 $ROOTFS/usr/share | sort -h
+[sudo] password for ms:
+0       arch-rootfs/usr/share/misc
+4,0K    arch-rootfs/usr/share/makepkg-template
+16K     arch-rootfs/usr/share/tabset
+40K     arch-rootfs/usr/share/licenses
+80K     arch-rootfs/usr/share/readline
+1,7M    arch-rootfs/usr/share/info
+3,5M    arch-rootfs/usr/share/iana-etc
+3,7M    arch-rootfs/usr/share/doc
+4,5M    arch-rootfs/usr/share/zoneinfo
+6,6M    arch-rootfs/usr/share/terminfo
+9,7M    arch-rootfs/usr/share/i18n
+11M     arch-rootfs/usr/share/man
+16M     arch-rootfs/usr/share/locale
+26M     arch-rootfs/usr/share/perl5
+82M     arch-rootfs/usr/share</pre>
+
+<p>The doc, license, locale, man, info, zoneinfo, iana-etc, and readline is save to remove.</p>
+
+<p>The i18n is a bit tricky, you should only remove the file that you don&#39;t need for locale.</p>
+
+<p>Script to remove all charmaps except UTF-8.</p>
+
+<pre>
+# find $ROOTFS/usr/share/i18n/charmaps/ \! -name &quot;UTF-8.gz&quot; -delete</pre>
+
+<p>Script to remove all locales except en_GB and en_US.</p>
+
+<pre>
+find $ROOTFS/usr/share/i18n/locales/ \! -name &quot;en_GB&quot; \! -name &quot;en_US&quot; -delete</pre>
+
+<p>The last directory is terminfo. After a search and reading I found that not all terminfo is used, so we will remove all except common terminfo,</p>
+
+<pre>
+#  find $ROOTFS/usr/share/terminfo/ \
+        \! -name ansi \
+        \! -name cygwin \
+        \! -name linux \
+        \! -name screen-256color \
+        \! -name vt100 \
+        \! -name vt220 \
+        \! -name xterm \
+        -delete</pre>
+
+<p>After all of this cleaning we got the final image to,</p>
+
+<pre>
+~/Workspaces/docker/arch-test
+ms 0 % sudo du -sch arch-rootfs        
+144M    arch-rootfs
+144M    total</pre>
+
+<p>144MB, that was not bad at all but still big for rootfs. Here is the dependencies of all installed packages,</p>
+
+<pre>
+     linux-api-headers &lt;-\
+iana-etc &lt;- filesystem &lt;- glibc &lt;- ncurses &lt;- readline &lt;- bash &lt;- gmp &lt;- coreutils
+                       gcc-libs &lt;-/                  zlib &lt;- openssl &lt;-/
+                                         db, gdbm &lt;- perl &lt;-/
+                                                         attr &lt;- acl &lt;-/
+                                                              libcap &lt;-/
+</pre>
+
+<p>Want more extreme size? Force remove package less, sed, gzip, perl, db, and gdbm.</p>
+
+<pre>
+$ sudo pacman -r $ROOTFS -Rdd --noconfirm less sed gzip perl db gdbm</pre>
+
+<p>and we got,</p>
+
+<pre>
+ms 0 % sudo du -sch arch-rootfs
+87M     arch-rootfs
+87M     total</pre>
+
+<p>Small enough. We can compare it with latest Centos image [1] which is around 63 MB, we still left around 20 MB behind.</p>
+
+<h2>Conclusion</h2>
+
+<p>Finding and creating the smallest possible base docker image using Arch Linux is possible, with minimum size roughly around ~90 MB, and it depends on your use case or how do want the image to be used. You don&#39;t need Dockerfile to do it. In my use case I prefer not to installing pacman in image, if I want to create an image for another use case, I will just run pacstrap and install all the required packages. For example, here is image for postgresql, redis, nodejs:</p>
+
+<pre>
+REPOSITORY                 TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+sulhan/arch-base-sailsjs   latest              2eb953910b73        13 minutes ago      438.3 MB
+sulhan/arch-nodejs         latest              ac73cf5c1d36        17 minutes ago      351.6 MB
+sulhan/arch-redis          latest              a2de7d62a807        21 minutes ago      100.5 MB
+sulhan/arch-postgresql     latest              5568162e33a0        29 minutes ago      129.6 MB
+sulhan/arch-base           latest              2af8f94bb6b7        41 minutes ago      86.92 MB</pre>
+
+<p>If we want a better lightweight image while still using Arch, there is no other way than modified the original package, i.e. splitting between doc, devel, and locales; and minimize the dependencies between packages by splitting them into only more specific function. For example, sha*sum binaries could be split into openssl-tools, not as part of coreutils.</p>
+
+<p>The source code for all scripts is in github [2].</p>
+
+<p>[1] https://hub.docker.com/r/library/centos/tags/<br />
+[2] https://github.com/shuLhan/arch-docker</p>
+
+</body>
+</html>
