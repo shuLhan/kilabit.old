@@ -229,18 +229,24 @@ ms 0 % sudo du -sch arch-rootfs
 
 <pre>
 REPOSITORY                 TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
-sulhan/arch-base-sailsjs   latest              2eb953910b73        13 minutes ago      438.3 MB
+sulhan/arch-sailsjs        latest              2eb953910b73        13 minutes ago      438.3 MB
 sulhan/arch-nodejs         latest              ac73cf5c1d36        17 minutes ago      351.6 MB
 sulhan/arch-redis          latest              a2de7d62a807        21 minutes ago      100.5 MB
 sulhan/arch-postgresql     latest              5568162e33a0        29 minutes ago      129.6 MB
 sulhan/arch-base           latest              2af8f94bb6b7        41 minutes ago      86.92 MB</pre>
 
-<p>If we want a better lightweight image while still using Arch, there is no other way than modified the original package, i.e. splitting between doc, devel, and locales; and minimize the dependencies between packages by splitting them into only more specific function. For example, sha*sum binaries could be split into openssl-tools, not as part of coreutils.</p>
+<p>After pushing to my docker hub [3], I am a little bit surprise that the website said that for my arch-base the image size is 32 MB instead of 86 MB [4], and my arch-postgresql is only 49 MB not 128 MB. I have no idea why they were different.</p>
+
+<p>If we want a better lightweight image, not just in docker but in normal system, while still using Arch, there is no other way than modified the original package, i.e. splitting between doc, devel, and locales; and minimize the dependencies between packages by splitting them into only more specific function. For example, sha*sum binaries could be split into openssl-tools, not as part of coreutils. If only the Arch package maintainers care about size and function, this would be easy since the start, no manual cleaning and no force-remove packages.</p>
+
+<p>If you want a better lightweight image for your docker, there is no other way than stiching it by hand and create it manually using rootfs.</p>
 
 <p>The source code for all scripts is in github [2].</p>
 
 <p>[1] https://hub.docker.com/r/library/centos/tags/<br />
-[2] https://github.com/shuLhan/arch-docker</p>
+[2] https://github.com/shuLhan/arch-docker<br />
+[3] https://hub.docker.com/r/sulhan/<br />
+[4] https://hub.docker.com/r/sulhan/arch-base/tags/</p>
 
 </body>
 </html>
