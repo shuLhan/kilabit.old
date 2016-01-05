@@ -1,0 +1,205 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="title" content="Mari enkripsi dengan Letsencrypt">
+<meta name="publish_date" content="2016-01-04 14:47:45">
+<meta name="author" content="ms@kilabit.info">
+<title>Mari enkripsi dengan Letsencrypt</title>
+</head>
+<body>
+<p>&nbsp;</p>
+
+<p>Letsencrypt.org adalah organisasi non-profit yang menyediakan otoritas sertifikat (Certificate Authority, CA) untuk domain web secara gratis. Lama berlaku sertifikat dari Letsencrypt yaitu 90 hari, setelah itu harus diperbarui kembali.</p>
+
+<p>Ini adalah catatan dari pemasangan aplikasi kliennya, permintaan sertifikat secara manual, dan penggunaannya. Untuk dokumentasi lebih lanjut bisa dilihat di https://letsencrypt.readthedocs.org/.</p>
+
+<h2>Lingkungan</h2>
+
+<p>Instalasi dilakukan di sistem operasi Arch Linux, dengan kebutuhan paket yaitu git, python, dan openssl.</p>
+
+<h2>Pemasangan Letsencrypt</h2>
+
+<p>Arch Linux sebenarnya telah menyediakan paket untuk letsencrypt, namun dalam tulisan ini dibahas cara menggunakan dari sumber kode langsung.</p>
+
+<pre>
+$ mkdir ~/git
+$ cd ~/git
+$ git clone https://github.com/letsencrypt/letsencrypt
+$ cd letsencrpyt
+</pre>
+
+<p>Lakukan inisialisasi awal,</p>
+
+<pre>
+$ ./letsencrypt-auto --debug
+Bootstrapping dependencies for Archlinux...
+[sudo] password for ms:
+menyelesaikan ketergantungan...
+mencari paket paket yang tidak berkecocokan...
+
+Paket (2)                Versi baru  Perubahan Bersih  Ukuran Unduhan
+
+community/augeas         1.4.0-1             1,82 MiB        0,44 MiB
+extra/python-virtualenv  13.1.2-2            1,78 MiB        1,52 MiB
+
+Ukuran Unduhan Total:     1,95 MiB
+Total Ukuran Terpasang :  3,61 MiB
+...
+Creating virtual environment...
+Updating letsencrypt and virtual environment dependencies.....
+Requesting root privileges to run with virtualenv: sudo /home/ms/.local/share/letsencrypt/bin/letsencrypt --debug
+[sudo] password for ms:
+No installers are available on your OS yet; try running &quot;letsencrypt-auto certonly&quot; to get a cert you can install manually</pre>
+
+<p>&nbsp;</p>
+
+<p>Letsencrypt telah terpasang, selanjutnya adalah pembuatan sertifikat.</p>
+
+<h2>Pembuatan CSR</h2>
+
+<p>Langkah ini mengasumsikan kita sudah memiliki <em>private key</em> sendiri yang digunakan untuk menandai permintaan sertifikat, untuk memastikan bahwa sertifikat yang dibuat nantinya adalah benar dari yang mengajukannya.</p>
+
+<p>Letsencrypt mengharuskan format CSR dalam format DER (binary), dengan tambahan <em>subject alternative names</em> (SAN).</p>
+
+<p>Buat berkas konfigurasi &quot;openssl.cnf&quot; yang dibutuhkan untuk pembuatan CSR yang isinya seperti berikut,</p>
+
+<pre>
+RANDFILE               = $ENV::HOME/.rnd
+
+[ req ]
+default_bits           = 4096
+distinguished_name     = req_distinguished_name
+prompt                 = no
+req_extensions         = v3_req
+default_md             = sha256
+
+[ req_distinguished_name ]
+C                      = NamaNegaraAnda
+ST                     = NamaProvinsiAnda
+L                      = NamaKotaAnda
+O                      = NamaPerusahaaanAnda
+OU                     = NamaUnitdiPerusahaanAnda
+CN                     = NamaDomainAnada
+emailAddress           = EmailAnda
+
+[ v3_req ]
+# Extensions to add to a certificate request
+basicConstraints       = CA:FALSE
+keyUsage               = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName         = @alt_names
+
+[ alt_names ]
+DNS.1 = NamaAlternativeDariDomainAnda</pre>
+
+<p>Ganti nilai &quot;Nama*&quot; sesuai dengan informasi anda.</p>
+
+<p>Buat CSR dengan perintah berikut</p>
+
+<pre>
+openssl req -out domain.der \
+    -key id_rsa.nopass \
+    -new \
+    -outform DER \
+    -nodes \
+    -config openssl.cnf</pre>
+
+<p>Perintah diatas membuat berkas CSR dengan nama &quot;domain.der&quot;, dengan menggunakan private key &quot;id_rsa.nopass&quot;, dengan format DER, dan membaca konfigurasi dari berkas &quot;openssl.cnf&quot;.</p>
+
+<h2>Permintaan Sertifikat</h2>
+
+<p>Untuk mendapatkan sertifikat anda harus memiliki akses ke mesin di mana domain yang akan anda registrasi berada, karena nanti aplikasi server letsencrypt akan melakukan verifikasi pada path tertentu dari webserver anda.</p>
+
+<p>Sekarang lakukan permintaan sertifikat dengan perintah berikut,</p>
+
+<pre>
+. ~/git/letsencrypt/letsencrypt-auto -vvv -t \
+    certonly --csr domain.der \
+    --manual \
+    --email NamaEmailAnda</pre>
+
+<p>Jika perintah di atas berjalan dengan sukses, anda akan diminta untuk menambah sebuah file di webserver anda, contoh keluaran dari perintah di atas,</p>
+
+<pre>
+NOTE: The IP of this machine will be publicly logged as having requested this
+certificate. If you&#39;re running letsencrypt in manual mode on a machine that is
+not your server, please ensure you&#39;re okay with that.
+
+Are you OK with your IP being logged?
+-------------------------------------------------------------------------------
+(Y)es/(N)o: y
+Make sure your web server displays the following content at
+http://[domain]/.well-known/acme-challenge/NtGxEz0bdA-0Y0zIrIUsn4DkTkRcL-t71OGga1Swhnc before continuing:
+
+NtGxEz0bdA-0Y0zIrIUsn4DkTkRcL-t71OGga1Swhnc.fSeSxLp1jVFtH988RyKbq8xHgkYrP_P-OSobmio_3u8
+
+If you don&#39;t have HTTP server configured, you can run the following
+command on the target server (as root):
+
+mkdir -p /tmp/letsencrypt/public_html/.well-known/acme-challenge
+cd /tmp/letsencrypt/public_html
+printf &quot;%s&quot; NtGxEz0bdA-0Y0zIrIUsn4DkTkRcL-t71OGga1Swhnc.fSeSxLp1jVFtH988RyKbq8xHgkYrP_P-OSobmio_3u8 &gt; .well-known/acme-challenge/NtGxEz0bdA-0Y0zIrIUsn4DkTkRcL-t71OGga1Swhnc
+# run only once per server:
+$(command -v python2 || command -v python2.7 || command -v python2.6) -c \
+&quot;import BaseHTTPServer, SimpleHTTPServer; \
+s = BaseHTTPServer.HTTPServer((&#39;&#39;, 80), SimpleHTTPServer.SimpleHTTPRequestHandler); \
+s.serve_forever()&quot;
+Press ENTER to continue
+
+</pre>
+
+<p>Sekarang lakukan SSH ke webserver anda.</p>
+
+<p>Jika tidak menggunakan webserver (apache, nginx, dll) tapi menggunakan proxy (seperti HAProxy), atau ingin melakukan verifikasi dengan manual, berhentikan semua aplikasi yang menggunakan port 80 dan 443 kemudian buat berkas dengan nama &quot;verifikasi.sh&quot; yang isinya seperti informasi di atas,</p>
+
+<pre>
+#!/bin/sh
+
+mkdir -p /tmp/letsencrypt/public_html/.well-known/acme-challenge
+cd /tmp/letsencrypt/public_html
+printf &quot;%s&quot; NtGxEz0bdA-0Y0zIrIUsn4DkTkRcL-t71OGga1Swhnc.fSeSxLp1jVFtH988RyKbq8xHgkYrP_P-OSobmio_3u8 &gt; .well-known/acme-challenge/NtGxEz0bdA-0Y0zIrIUsn4DkTkRcL-t71OGga1Swhnc
+# run only once per server:
+$(command -v python2 || command -v python2.7 || command -v python2.6) -c \
+&quot;import BaseHTTPServer, SimpleHTTPServer; \
+s = BaseHTTPServer.HTTPServer((&#39;&#39;, 80), SimpleHTTPServer.SimpleHTTPRequestHandler); \
+s.serve_forever()&quot;</pre>
+
+<p>Jalankan skrip tersebut dengan akses root,</p>
+
+<pre>
+$ chmod +x verifikasi.sh
+$ sudo ./verifikasi.sh</pre>
+
+<p>Kembali ke klien di komputer, tekan Enter untuk melanjutkan verifikasi.</p>
+
+<p>Aplikasi letsencrypt akan melakukan verifikasi dengan melakukan request ke:</p>
+
+<pre>
+http://domain/.well-known/acme-challenge/NtGxEz0bdA-0Y0zIrIUsn4DkTkRcL-t71OGga1Swhnc</pre>
+
+<p>Jika sukses akan terlihat keluaran seperti berikut,</p>
+
+<pre>
+IMPORTANT NOTES:
+ - Congratulations! Your certificate and chain have been saved at
+   [dipotong]/0001_chain.pem.
+   Your cert will expire on 2016-04-04. To obtain a new version of the
+   certificate in the future, simply run Let&#39;s Encrypt again.
+ - If you like Let&#39;s Encrypt, please consider supporting our work by:
+
+   Donating to ISRG / Let&#39;s Encrypt:   https://letsencrypt.org/donate
+   Donating to EFF:                    https://eff.org/donate-le
+</pre>
+
+<p>Di direktori sekarang akan ada tiga berkas baru 0000_cert.pem yaitu berkas sertifikat, 0000_chain.pem yaitu CA dari letsencrypt, dan 0001_chain.pem yaitu berkas gabungan dari keduanya.</p>
+
+<p>Untuk dapat menggunakan sertifikat anda harus menggabungkan berkas private key anda dengan sertifikat,</p>
+
+<pre>
+$ cat id_rsa.nopass 0001_chain.pem &gt; domain.pem</pre>
+
+<p>Sekian, sertifikat anda sekarang sudah dapat dipasang di webserver anda.</p>
+
+</body>
+</html>
