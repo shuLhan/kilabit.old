@@ -459,7 +459,7 @@ var WUIFeed =
 
 ,	init : function (feed_list)
 	{
-		WUIFeed._n			= feed_list.length * 3;
+		WUIFeed._n			= feed_list.length * 2;
 		WUIFeed._inprogress	= 0;
 		WUIFeed._state		= $("#feed_status");
 		WUIFeed._pgbar		= $("#pgbar");
@@ -488,18 +488,18 @@ var WUIFeed =
 		WUIFeed._holder.append ($.parseHTML (WUIFeed._o));
 	}
 
-,	get : function (uri)
+,	get : function (feed)
 	{
-		WUIFeed.update_progress ("<p>Loading "+ uri +"</p>");
+		WUIFeed.update_progress ("<p>Loading "+ feed.name +"</p>");
 
 		$.get ("/get_feed.php"
-		, { url : uri }
+		, { url : feed.url }
 		, function (req)
 		{
 			var xml		= $.parseXML (req);
 			var type	= xml.firstChild;
 
-			WUIFeed.update_progress ("<p>Parsing "+ uri +"</p>");
+			WUIFeed.update_progress ("<p>Parsing "+ feed.name +"</p>");
 
 			switch (type.nodeName) {
 			case "feed":
@@ -522,8 +522,11 @@ var WUIFeed =
 				return;
 			}
 
-			WUIFeed.update_progress ("<p>Generating "+ uri +"</p>");
 			WUIFeed.load ();
+		})
+		.fail(function()
+		{
+			WUIFeed.update_progress("<p class='error'>Fail "+ feed.name +"</p>");
 		});
 	}
 
@@ -710,7 +713,7 @@ var WUIFeed =
 	{
 		WUIFeed._inprogress++;
 
-		var v = (WUIFeed._inprogress / 3) * 10;
+		var v = (WUIFeed._inprogress / 2) * 10;
 
 		WUIFeed._pgbar
 			.css('width', v+'%')

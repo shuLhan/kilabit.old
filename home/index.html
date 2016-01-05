@@ -40,6 +40,10 @@
 			color			: gray;
 			float			: right;
 		}
+
+		.error {
+			color: magenta;
+		}
 	</style>
 </head>
 
@@ -63,17 +67,31 @@
 
 	<script>
 		if (WUIFeed._o === "") {
-			WUIFeed.init ([
-				"http://github.com/shuLhan.atom"
-			,	"http://www.reddit.com/user/rv77ax/liked/.rss"
-			,	"http://www.goodreads.com/review/list_rss/16887972?key%3dgPTSEwtR_sTVRjJqQ71Pq5bO--L8Jz6sOYkRU7ENP9xse9pk%26shelf%3dread"
-			,	"http://rss.imdb.com/user/ur24737018/ratings"
-			,	"http://kilabit.info/feed/"
-			,	"http://gitlab.com/u/Sulhan.atom?private_token=mtTM1nKsQ3UjSaL_i_w6"
-			,	"http://www.comicsyndicate.org/Feed/Non%20Sequitur"
-			,	"http://www.comicsyndicate.org/Feed/Calvin%20and%20Hobbes"
-//				"http://wui.app.localhost/feed/"
-			]);
+			WUIFeed.init ([{
+				"name": "my Github activities"
+			,	"url" : "http://github.com/shuLhan.atom"
+			},{
+				"name": "my Reddit activities"
+			,	"url" : "http://www.reddit.com/user/rv77ax/liked/.rss"
+			},{
+				"name": "my Goodreads activities"
+			,	"url" : "https://www.goodreads.com/user/updates_rss/16887972?key=gPTSEwtR_sTVRjJqQ71Pq5bO--L8Jz6sOYkRU7ENP9xse9pk"
+			},{
+				"name": "my IMDB activities"
+			,	"url" : "http://rss.imdb.com/user/ur24737018/ratings"
+			},{
+				"name": "my journal"
+			,	"url" :	"http://kilabit.info/feed/"
+			},{
+				"name": "my Gitlab activities"
+			,	"url" : "http://gitlab.com/u/Sulhan.atom?private_token=mtTM1nKsQ3UjSaL_i_w6"
+			},{
+				"name": "Non Sequitur daily strip"
+			,	"url" : "http://www.comicsyndicate.org/Feed/Non%20Sequitur"
+			},{
+				"name": "Calvin and Hobbes daily strip"
+			,	"url" : "http://www.comicsyndicate.org/Feed/Calvin%20and%20Hobbes"
+			}]);
 		} else {
 			WUIFeed.load ();
 		}
