@@ -483,9 +483,6 @@ var WUIFeed =
 		WUIFeed._v.sort (WUIFeed.sort);
 		WUIFeed._o = "";
 		WUIFeed.generate_output ();
-
-		WUIFeed._holder.empty ();
-		WUIFeed._holder.append ($.parseHTML (WUIFeed._o));
 	}
 
 ,	get : function (feed)
@@ -723,6 +720,9 @@ var WUIFeed =
 
 		if (WUIFeed._inprogress == WUIFeed._n) {
 			$("#feed_progress").addClass ("hidden");
+
+			WUIFeed._holder.empty ();
+			WUIFeed._holder.append ($.parseHTML (WUIFeed._o));
 		}
 	}
 };
