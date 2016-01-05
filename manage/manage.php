@@ -369,7 +369,7 @@
 
 			if(dd<10){dd='0'+dd}
 			if(mm<10){mm='0'+mm}
-			today = yyyy+"."+mm+"."+dd;
+			today = yyyy+"-"+mm+"-"+dd;
 
 			return today;
 		}
@@ -554,6 +554,7 @@
 					if (! node.load) {
 						form_edit_node (node);
 					} else {
+						console.log(node)
 						form_edit_content (node);
 					}
 				}

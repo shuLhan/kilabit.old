@@ -48,7 +48,7 @@ function make_path ($date)
 	,	"12"	=> "Dec"
 	];
 
-	$d = explode (".", $date);
+	$d = explode ("-", $date);
 
 	$p = $wui["journal_dir"];
 	// create /journal
