@@ -270,7 +270,7 @@ var volcano_layer = L.geoJson (null, {
 
 function map_load_volcanoes ()
 {
-	$.get("/journal/2016/01/Visualisasi_Gempa_Bumi_Indonesia/volcanoes.kml", function (data) {
+	$.get("/journal/2016/01/Visualisasi_Gempa_Bumi_Indonesia/volcanoes.xml", function (data) {
 		omnivore.kml.parse (data, null, volcano_layer).addTo (map);
 	});
 }
@@ -320,8 +320,7 @@ $( document ).ready (function() {
 	});
 
 	map = L.map ('map', {
-			dragging	: false
-		,	layers		: [osm, mag_0, mag_1, mag_2, mag_3, mag_4, mag_5, mag_6, mag_7]
+			layers		: [osm, mag_0, mag_1, mag_2, mag_3, mag_4, mag_5, mag_6, mag_7]
 		}).setView ([-2.7993356,115.5632032], 4);
 
 	L.control.layers (null, mag_layers).addTo (map);
