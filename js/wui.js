@@ -496,8 +496,6 @@ var WUIFeed =
 			var xml		= $.parseXML (req);
 			var type	= xml.firstChild;
 
-			WUIFeed.update_progress ("<p>Parsing "+ feed.name +"</p>");
-
 			switch (type.nodeName) {
 			case "feed":
 				WUIFeed.atom_parsing (xml);
@@ -520,6 +518,8 @@ var WUIFeed =
 			}
 
 			WUIFeed.load ();
+
+			WUIFeed.update_progress ("<p>Parsed "+ feed.name +"</p>");
 		})
 		.fail(function()
 		{
@@ -718,11 +718,11 @@ var WUIFeed =
 
 		WUIFeed._state.prepend (string);
 
-		if (WUIFeed._inprogress == WUIFeed._n) {
+		if (WUIFeed._inprogress >= WUIFeed._n) {
 			$("#feed_progress").addClass ("hidden");
 
 			WUIFeed._holder.empty ();
-			WUIFeed._holder.append ($.parseHTML (WUIFeed._o));
+			WUIFeed._holder.append ($.parseHTML (WUIFeed._o, null, true));
 		}
 	}
 };
