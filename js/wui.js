@@ -479,10 +479,8 @@ var WUIFeed =
 ,	load : function ()
 	{
 		WUIFeed._holder = $("#my_activity");
-
-		WUIFeed._v.sort (WUIFeed.sort);
-		WUIFeed._o = "";
-		WUIFeed.generate_output ();
+		WUIFeed._holder.empty ();
+		WUIFeed._holder.append (WUIFeed._o);
 	}
 
 ,	get : function (feed)
@@ -517,7 +515,7 @@ var WUIFeed =
 				return;
 			}
 
-			WUIFeed.load ();
+			WUIFeed._v.sort (WUIFeed.sort);
 
 			WUIFeed.update_progress ("<p>Parsed "+ feed.name +"</p>");
 		})
@@ -721,8 +719,9 @@ var WUIFeed =
 		if (WUIFeed._inprogress >= WUIFeed._n) {
 			$("#feed_progress").addClass ("hidden");
 
+			WUIFeed.generate_output();
 			WUIFeed._holder.empty ();
-			WUIFeed._holder.append ($.parseHTML (WUIFeed._o, null, true));
+			WUIFeed._holder.append(WUIFeed._o);
 		}
 	}
 };

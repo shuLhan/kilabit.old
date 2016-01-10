@@ -299,7 +299,6 @@ function map_load_data ()
 }
 
 $( document ).ready (function() {
-	console.log("ready ...")
 	var mag_layers =
 	{
 		"Gunung Berapi": volcano_layer
