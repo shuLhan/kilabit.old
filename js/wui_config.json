@@ -12,10 +12,10 @@
 	{
 		"facebook"			: ""
 	,	"glider"			: "/"
-	,	"github"			: "http://github.com/shuLhan"
-	,	"google_plus"		: "http://plus.google.com/+MhdSulhan"
-	,	"linked"			: "http://id.linkedin.com/in/muhamadsulhan/"
-	,	"twitter"			: "http://twitter.com/MhdSulhan"
+	,	"github"			: "https://github.com/shuLhan"
+	,	"google_plus"		: "https://plus.google.com/+MhdSulhan"
+	,	"linked"			: "https://id.linkedin.com/in/muhamadsulhan/"
+	,	"twitter"			: "https://twitter.com/MhdSulhan"
 	,	"feed"				: "http://kilabit.info/feed/"
 	}
 }
