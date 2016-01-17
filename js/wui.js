@@ -491,7 +491,13 @@ var WUIFeed =
 		, { url : feed.url }
 		, function (req)
 		{
-			var xml		= $.parseXML (req);
+			var xml = $.parseXML (req);
+
+			if (xml === null) {
+				WUIFeed.update_progress ("<p>Error "+ feed.name +"</p>");
+				return
+			}
+
 			var type	= xml.firstChild;
 
 			switch (type.nodeName) {
