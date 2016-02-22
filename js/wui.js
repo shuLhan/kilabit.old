@@ -694,6 +694,9 @@ var WUIFeed =
 
 ,	date2string : function(date)
 	{
+		if (date == undefined) {
+			date = new Date()
+		}
 		var month	= date.getUTCMonth() + 1;
 		var day		= date.getUTCDate();
 		var hour	= date.getUTCHours();
