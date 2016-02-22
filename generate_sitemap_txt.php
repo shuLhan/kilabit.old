@@ -82,7 +82,8 @@ function list_dir($dir)
 			continue;
 		}
 
-		$findex = substr($findex, 2);
+		// remove "./"
+		$findex = substr($p."/", 2);
 
 		$indices[$idx] = $sitename . $findex;
 
