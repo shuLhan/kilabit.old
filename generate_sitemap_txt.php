@@ -62,6 +62,9 @@ function list_dir($dir)
 		if ($f === "..") {
 			continue;
 		}
+		if ($f == "home") {
+			continue;
+		}
 
 		$p = $dir."/".$f;
 
