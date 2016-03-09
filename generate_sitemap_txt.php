@@ -62,9 +62,10 @@ function list_dir($dir)
 		if ($f === "..") {
 			continue;
 		}
-		if ($f == "home") {
+		if ($f === "home") {
 			continue;
 		}
+
 
 		$p = $dir."/".$f;
 
@@ -94,7 +95,7 @@ function list_dir($dir)
 
 		$indices = array_merge($indices, $subdir);
 
-		$idx++;
+		$idx = sizeof($indices);
 	}
 
 	return $indices;
