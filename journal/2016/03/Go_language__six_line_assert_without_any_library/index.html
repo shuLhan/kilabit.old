@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="title" content="Go language: six line assert without any library">
+<meta name="publish_date" content="2016-03-09 13:06:35">
+<meta name="author" content="ms@kilabit.info">
+<title>Go language: six line assert without any library</title>
+</head>
+<body>
+<p>If you familiar with Go language (we will call it Golang), you knew that Golang does not have an assert function or library. Here is six line of code that you can use in your code to check if data is equal or not when testing.</p>
+
+<pre>
+<code>import (
+    "reflect"
+    "runtime/debug"
+    "testing"
+)
+
+func assert(t *testing.T, exp, got interface{}, equal bool) {
+    if reflect.DeepEqual(exp, got) != equal {
+        debug.PrintStack()
+        t.Fatalf("Expecting '%v' got '%v'\n", exp, got)
+    }
+}</code></pre>
+
+<p>Let see what the assert function do.</p>
+
+<p>The first parameter is pointer to testing object. The second parameter is your test expectation. The third parameter is a data returned from testing function. The fourth parameter is boolean, if its true that mean you want your expectation equal with test data, otherwise you want your expectation do not match with data.</p>
+
+<p>The recommended way to use this code is by adding it to your main package test. For example, if your package name is &quot;tekstus&quot; you should add it on file named &quot;tekstus_test.go&quot;, and the rest of &quot;*_test.go&quot; files will automatically use it.</p>
+
+<p>Here is some example on how to use it.</p>
+
+<pre>
+<code>func Test... (t *testing.T) {
+    input := []int{...}
+    exp := []int{...}
+
+    got := callFunctionToTest(input)
+
+    assert(t, exp, got, true)
+}</code></pre>
+
+<p>Happy testing :)</p>
+
+<p>Discussion on reddit: <a href="https://www.reddit.com/r/golang/comments/44hufh/six_line_assert_for_testing_without_any_library/">https://www.reddit.com/r/golang/comments/44hufh/six_line_assert_for_testing_without_any_library/</a></p>
+
+</body>
+</html>
