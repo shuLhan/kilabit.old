@@ -1,0 +1,144 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="title" content="Go language: Things That I Learned Writing dsv">
+<meta name="publish_date" content="2016-03-13 19:48:21">
+<meta name="author" content="ms@kilabit.info">
+<title>Go language: Things That I Learned Writing dsv</title>
+</head>
+<body>
+<p>This is my notes on learning Go language while developing <a href="https://github.com/shuLhan/dsv" target="_blank">dsv</a>. My background is C/C++ with a little Java.</p>
+
+<h2>Range is fast</h2>
+
+<p>The question is this: does accessing slice using element is slower than using index? Discussion on <a href="https://forum.golangbridge.org/t/the-obvious-little-benchmark-slice-access-efficiency/1741" target="_blank">Golangbridge forum</a>.</p>
+
+<p>What do I mean by accessing by element is this,</p>
+
+<pre>
+<code>slice := []int{0,1,2,3,4,5,6,7,8,9}
+
+for k,v := range slice {
+...
+}</code></pre>
+
+<p>v is an element of slice. While accessing by index, is like an usual array access `slice[i]`.</p>
+
+<p>Logically (if you are new and not Golang main developer) when accessing slice using range, a copy of slice element is passed to temporary variable `v`, subsequently assuming that a copy process will take some operations in the background. While accessing by index is just take the address at index `i`.</p>
+
+<p>Turn out, I was false.</p>
+
+<p>Here is the <a href="https://gist.github.com/shuLhan/116e8e526ea20af81f54" target="_blank">benchmark file</a>, and here is the output,</p>
+
+<pre>
+<code>BenchmarkSumByIndex10000-8         50000             29073 ns/op           81922 B/op          1 allocs/op
+BenchmarkSumByElm10000-8           50000             28527 ns/op           81921 B/op          1 allocs/op
+BenchmarkSumByIndex1000000-8        1000           2077027 ns/op         8003657 B/op          8 allocs/op
+BenchmarkSumByElm1000000-8          1000           2005368 ns/op         8003659 B/op          8 allocs/op</code></pre>
+
+<p>Accessing slice element with range is little bit faster than accessing by index.</p>
+
+<h2>Range is mutable</h2>
+
+<p>This is a rookie mistake.</p>
+
+<p>When using range on slice of struct, each element passed on range is mutable. Here is the <a href="http://play.golang.org/p/Y0Ck6J7TkV" target="_blank">Go playground</a>.</p>
+
+<h2>Do not embed struct if you want other to extend it</h2>
+
+<p>Or how to write generic in Golang.</p>
+
+<p>Coming from strong object oriented background, the way on how generic works in Golang give me a lot of rewriting on dsv package.</p>
+
+<p>Use case: You have struct reader and struct data to save content that the reader read from file, but you want another user to use their implementation, through data interface, to be used in your reader.</p>
+
+<p>Wrong way to do this is by embeding data in reader</p>
+
+<pre>
+<code>type Data struct {
+  v int
+}
+
+type Reader struct {
+  Data
+}</code></pre>
+
+<p>because you think that user can access methods in Data through reader easily.</p>
+
+<p>Right way to do this is using interface separating the job between reader and the data,</p>
+
+<pre>
+<code>type DataInterface interface {
+   // methods operate with data
+}
+
+type Data struct {
+   // fields of data
+}
+
+type Reader struct {
+  data interface{}
+}
+
+func NewReader(mydata interface{}) *Reader {
+  if mydata == nil {
+    mydata := &amp;Data{
+      // Set default data value.
+    }
+  }
+
+  return &amp;Reader{
+    data: mydata
+  }
+}
+
+func (reader *Reader) Data() interface{} {
+  return reader.data
+}</code></pre>
+
+<p>So, when you need the data in the reader use the DataInterface,</p>
+
+<pre>
+<code>func (reader *Reader) Read() {
+  di := reader.GetData().(DataInterface)
+}</code></pre>
+
+<p>&nbsp;</p>
+
+<h2>Interface should only contain methods that operate with fields</h2>
+
+<p>Given an generic object Car with two fields: model and max-speed, the methods that should included in `CarInterface` should only methods that operate on the fields (e.g. initialization, getter, setter, etc).</p>
+
+<pre>
+<code>type Car struct {
+  model string
+  maxSpeed int
+}
+
+type CarInterface interface {
+  Init()
+  Model() string
+  SetModel(string)
+  MaxSpeed() int
+  SetMaxSpeed(int)
+}</code></pre>
+
+<p>Everything else (features for car) should be written using parameter with CarInterface,</p>
+
+<pre>
+<code>func MoveSlowly(ci CarInterface) {
+  // make the car move slowly.
+}</code></pre>
+
+<p>Why? I will leave it to the reader to answer it.</p>
+
+<h2>Slice is struct</h2>
+
+<p>Most of the time, it does not matter wether you want to pass slice to function by references or values, both will change the content of slice. But ... if you have quite big number of element in slice, passing by pointer will make it faster.</p>
+
+<p>&nbsp;</p>
+
+</body>
+</html>
