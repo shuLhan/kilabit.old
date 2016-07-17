@@ -1,7 +1,7 @@
 #!/bin/sh
 
 node=${1-"."}
-url=sftp://sftp.kilabit.info/home/kilatinf/public_html/
+url=sftp://kilabit.info/home/kilabiti/public_html/
 
 if [ -d $node ]; then
 	echo "update directory $node"
