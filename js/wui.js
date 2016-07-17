@@ -523,9 +523,18 @@ var WUIFeed =
 		WUIFeed._holder.append (WUIFeed._o);
 	}
 
+,	parseUrl: function(url)
+	{
+		var el = document.createElement("a");
+		el.href = url;
+		return el;
+	}
+
 ,	get : function (feed)
 	{
 		WUIFeed.update_progress ("<p>Loading "+ feed.name +"</p>");
+
+		feed.a = WUIFeed.parseUrl(feed.url);
 
 		$.get ("/get_feed.php"
 		, { url : feed.url }
@@ -542,14 +551,14 @@ var WUIFeed =
 
 			switch (type.nodeName) {
 			case "feed":
-				WUIFeed.atom_parsing (xml);
+				WUIFeed.atom_parsing(feed, xml);
 				break;
 			case "rss":
 				var v = type.getAttribute ("version");
 
 				switch (v) {
 				case "2.0":
-					WUIFeed.rss20_parsing (xml);
+					WUIFeed.rss20_parsing(feed, xml);
 					break;
 				default:
 					console.warn ("Unknown RSS version:"+ v);
@@ -561,8 +570,6 @@ var WUIFeed =
 				return;
 			}
 
-			WUIFeed._v.sort (WUIFeed.sort);
-
 			WUIFeed.update_progress ("<p>Parsed "+ feed.name +"</p>");
 		})
 		.fail(function()
@@ -571,7 +578,26 @@ var WUIFeed =
 		});
 	}
 
-,	atom_parsing : function(xml)
+	// Cleaning up.
+	//
+	// (1) If href is mismatch, replace with original host.
+	//
+,	cleanup: function(feed, htmlstr)
+	{
+		var dom = $.parseHTML('<div>'+ htmlstr +'</div>', null)[0];
+
+		// (1)
+		var anchors = dom.getElementsByTagName('a')
+		for (var x = 0; x < anchors.length; x++) {
+			if (anchors[x].hostname !== feed.a.hostname) {
+				anchors[x].hostname = feed.a.hostname;
+			}
+		}
+
+		return dom.innerHTML;
+	}
+
+,	atom_parsing : function(feed, xml)
 	{
 		var entries = xml.getElementsByTagName("entry");
 
@@ -604,14 +630,24 @@ var WUIFeed =
 						entry["my_date"] = new Date(date_str);
 					}
 					break;
-				default:
-					var type = child.getAttribute("type");
 
-					if (type == "xhtml") {
-						entry[child.nodeName] = child.innerHTML;
+				case "summary":
+				case "content":
+					var type = child.getAttribute("type");
+					var htmlstr;
+
+					if (type === "xhtml") {
+						htmlstr = child.innerHTML;
 					} else {
-						entry[child.nodeName] = child.textContent;
+						htmlstr = child.textContent;
 					}
+
+					entry[child.nodeName] = WUIFeed.cleanup(feed, htmlstr);
+					break;
+
+				default:
+					entry[child.nodeName] = child.textContent;
+					break;
 				}
 			}
 
@@ -652,7 +688,7 @@ var WUIFeed =
 		return new Date(sdate);
 	}
 
-,	rss20_parsing : function(xml)
+,	rss20_parsing : function(feed, xml)
 	{
 		var entries = xml.getElementsByTagName("item");
 
@@ -680,7 +716,8 @@ var WUIFeed =
 					entry["my_date"] = new Date(child.textContent);
 					break;
 				default:
-					entry[child.nodeName] = child.textContent;
+					entry[child.nodeName] = WUIFeed.cleanup(feed
+						, child.textContent);
 				}
 			}
 
@@ -768,6 +805,7 @@ var WUIFeed =
 		if (WUIFeed._inprogress >= WUIFeed._n) {
 			$("#feed_progress").addClass ("hidden");
 
+			WUIFeed._v.sort (WUIFeed.sort);
 			WUIFeed.generate_output();
 			WUIFeed._holder.empty ();
 			WUIFeed._holder.append(WUIFeed._o);
