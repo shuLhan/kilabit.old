@@ -4,8 +4,8 @@
 	http://atomenabled.org/developers/syndication/
  */
 
-// find all index.html in all directories
-$feed_src		= "../journal";
+// find all content.html in all directories
+$feed_src		= "./journal";
 $feed_src_cut	= ".";
 $feed_url		= "http://kilabit.info/";
 
@@ -14,7 +14,7 @@ $nodes	= new RecursiveIteratorIterator ($dir);
 $findex	= [];
 
 foreach ($nodes as $name => $node) {
-	if ($node->getFilename() !== 'index.html') {
+	if ($node->getFilename() !== 'content.html') {
 		continue;
 	}
 
@@ -90,7 +90,7 @@ foreach ($findex as $k => $fin) {
 
 	// get link by cutting index path.
 	$link = $feed_url . ltrim ($fin["path"], $feed_src_cut);
-	$link = str_replace ("/index.html", "", $link);
+	$link = str_replace ("/content.html", "", $link);
 
 	// get update time.
 	$updated = date ("c", $fin["mtime"]);
@@ -99,7 +99,7 @@ foreach ($findex as $k => $fin) {
 	$imgs = $xpath->query ("img");
 
 	foreach ($imgs as $img) {
-		$img->setAttribute ("src", rtrim ($link, "index.html") . ltrim ($img["src"], "./"));
+		$img->setAttribute ("src", rtrim ($link, "content.html") . ltrim ($img["src"], "./"));
 	}
 
 	$body = $html->getElementsByTagName ("body")->item (0);
@@ -119,5 +119,8 @@ foreach ($findex as $k => $fin) {
 	$entry->addChild ("content", $content)->addAttribute ("type", "html");
 }
 
-header ("Content-type: application/atom+xml");
-echo $atom->asXML ();
+$fatom = fopen("feed.atom", "wb");
+
+fwrite($fatom, $atom->asXML());
+
+fclose($fatom);

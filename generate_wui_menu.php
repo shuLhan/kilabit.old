@@ -9,10 +9,8 @@ if (! defined ("APP_PATH")) {
 	define ("APP_PATH", realpath (dirname (__FILE__)));
 }
 
-require_once APP_PATH . "/config.php";
-
 if (is_cli ()) {
-	generate_menu ($argv[1]);
+	generate_menu ("./");
 }
 
 function is_cli()
@@ -32,7 +30,7 @@ function is_cli()
 	return false;
 }
 
-function get_meta (&$m, $p, $id)
+function get_meta (&$m, $base, $p, $id)
 {
 	$doc	= new DOMDocument ();
 	$title	= null;
@@ -74,8 +72,10 @@ function get_meta (&$m, $p, $id)
 	}
 
 	if (null === $body) {
+		$m["base"] = "";
 		$m["link"] = "";
 	} else {
+		$m["base"] = substr ($base, 2);
 		$m["link"] = substr ($p, 2);
 	}
 
@@ -99,7 +99,6 @@ function list_dir ($dir, $pid)
 	$idx	= 0;
 	$menu	= [];
 	$files	= scandir ($dir);
-	global $wui;
 
 	foreach ($files as $f) {
 		if ($f === ".") {
@@ -122,7 +121,7 @@ function list_dir ($dir, $pid)
 			continue;
 		}
 
-		$findex = $p."/index.html";
+		$findex = $p."/content.html";
 
 		if (! file_exists ($findex)) {
 			continue;
@@ -142,7 +141,7 @@ function list_dir ($dir, $pid)
 			$menu[$idx]["comment"] = false;
 		}
 
-		get_meta ($menu[$idx], $findex, $id);
+		get_meta ($menu[$idx], $p, $findex, $id);
 
 		$submenu = list_dir ($p, $id);
 

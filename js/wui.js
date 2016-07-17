@@ -1,13 +1,30 @@
 /*
-	Copyright 2014 - Mhd Sulhan
-	Authors:
-		- mhd.sulhan (m.shulhan@gmail.com)
+	Copyright 2014-2016 Mhd Sulhan (ms@kilabit.info)
 */
 var WUI =
 {
-	homepage : "contents"
-	// loaded later
-,	config : {}
+	homepage : "/home"
+,	location: "/"
+,	config : {
+		"title"				: "kilabit.info"
+	,	"subtitle"			: "Simple | Small | Stable | Secure"
+
+	,	"journal_dir"		: "/journal"
+	,	"journal_name"		: "Journal"
+
+	,	"contents_dir"		: "./"
+
+	,	"social_icon"		:
+		{
+			"facebook"			: ""
+		,	"glider"			: "/"
+		,	"github"			: "https://github.com/shuLhan"
+		,	"google_plus"		: "https://plus.google.com/+MhdSulhan"
+		,	"linked"			: "https://id.linkedin.com/in/muhamadsulhan/"
+		,	"twitter"			: "https://twitter.com/MhdSulhan"
+		,	"feed"				: "http://kilabit.info/feed.atom"
+		}
+	}
 ,	footer :
 	{
 		text		:new Date().getFullYear() +" - kilabit.info"
@@ -26,6 +43,13 @@ var WUI =
 		,	text		:"FLATICON"
 		,	url			:"http://flaticon.com"
 		}]
+	}
+
+	// DOM element for wui content
+,	el: {
+		content: null
+	,	meta: null
+	,	comment: null
 	}
 
 ,	set_title : function ()
@@ -74,11 +98,10 @@ var WUI =
 ,	set_content_meta : function (res, link)
 	{
 		var doc = document.implementation.createHTMLDocument("content_edit");
-		var meta = $("#wui_content_meta");
 
 		doc.documentElement.innerHTML = res;
 
-		meta.empty ();
+		WUI.el.meta.empty ();
 
 		// set field based on meta data
 		$(doc).find ("html > head > meta").each (function () {
@@ -86,14 +109,14 @@ var WUI =
 			var m_content = $(this).attr ("content");
 
 			if (undefined !== m_name) {
-				meta.append ("<tr>"
+				WUI.el.meta.append ("<tr>"
 						+"<th>"+ m_name +":</th>"
 						+"<td>"+ m_content +"</td>"
 						+"</tr>");
 			}
 		});
 
-		meta.append (
+		WUI.el.meta.append (
 			"<tr>"
 				+"<th>permalink:</th>"
 				+"<td>"
@@ -107,19 +130,12 @@ var WUI =
 	{
 		return function (res, stat, xhr)
 		{
-			var wc = $("#wui_content");
-
 			link = link.replace (/^\.\//, "/");
 			link = link.replace (/^\/\//, "/");
-			link = link.replace ("/index.html", "");
-
-			// do not fix it on homepage
-//			if (WUI.homepage === link) {
-//				return;
-//			}
+			link = link.replace ("/content.html", "");
 
 			// fix script source
-			wc.find ("script").each (function (i)
+			WUI.el.content.find ("script").each (function (i)
 			{
 				var src = $(this).attr ("src");
 
@@ -134,15 +150,20 @@ var WUI =
 		}
 	}
 
+,	content_reset: function()
+	{
+		WUI.el.content.empty();
+		WUI.el.meta.empty();
+	}
+
 ,	set_content : function (node)
 	{
 		var link	= node.link;
-		var wc		= $("#wui_content");
 		var ts		= "?_ts="+ new Date ().getTime ();
 
-		wc.empty ();
+		WUI.content_reset();
 
-		wc.load (link + ts, null, WUI.content_on_load (link));
+		WUI.el.content.load (link + ts, null, WUI.content_on_load (link));
 	}
 
 ,	set_content_comment : function (node)
@@ -214,7 +235,11 @@ var WUI =
 			} else {
 				$("#wui_comment_panel").addClass ("hidden");
 			}
+		} else {
+			WUI.content_reset();
 		}
+
+		window.history.pushState("", "", e.data.base);
 	}
 
 ,	create_submenu : function (id, menu)
@@ -229,13 +254,14 @@ var WUI =
 			var m	= menu[i];
 			var mi	= $("<li/>");
 			var a	= $("<a/>", {
-							href	: "#!"+ m.id
+							href	: "#"+ m.base
 						,	html	: m.title
 						});
 
 			a.on ("click", {
 				id		: m.id
 			,	pid		: m.pid
+			,	base	: m.base
 			,	link	: m.link
 			,	load	: m.load
 			,	title	: m.title
@@ -261,13 +287,14 @@ var WUI =
 			var m	= wui_menu[i];
 			var mi	= $("<li/>");
 			var a	= $("<a/>", {
-						href	: "#!"+ m.id
+						href	: "#"+ m.base
 					,	html	: m.title
 					});
 
 			a.on ("click", {
 				id		: m.id
 			,	pid		: m.pid
+			,	base	: m.base
 			,	link	: m.link
 			,	load	: m.load
 			}, WUI.on_menu_click);
@@ -282,16 +309,16 @@ var WUI =
 		}
 	}
 
-,	set_frontpage : function ()
+,	set_location: function ()
 	{
-		var ids		= WUI.path2id (WUI.homepage);
+		var ids		= WUI.path2id (WUI.location);
 		var ida		= ids.split ("-");
 		var id		= "";
 
 		for (var i = 0; i < ida.length; i++) {
 			if ("" !== ida[i]) {
-				id += "-" + ida[i];
-				var hp_el = $("#wui_menu a[href='#!"+ id +"']");
+				id += "/" + ida[i];
+				var hp_el = $("#wui_menu a[href='#"+ id +"']");
 
 				hp_el.trigger ("click");
 			}
@@ -368,7 +395,7 @@ var WUI =
 			var m	= menu[i];
 			var mi	= $("<li/>");
 			var a	= $("<a/>", {
-							href	: m.link.replace ("/index.html", "")
+							href	: m.base
 						,	target	: "_blank"
 						,	html	: m.title
 						});
@@ -400,7 +427,7 @@ var WUI =
 			var m	= wui_menu[i];
 			var mi	= $("<li/>");
 			var a	= $("<a/>", {
-						href	: m.link.replace ("/index.html", "")
+						href	: m.base
 					,	target	: "_blank"
 					,	html	: m.title
 					});
@@ -417,26 +444,39 @@ var WUI =
 
 ,	run : function ()
 	{
-		$( document ).ready (function() {
-			// load configuration.
-			$.getJSON ("/js/wui_config.json", function (data) {
-				WUI.config = data;
+		// Listen to back button.
+		window.onpopstate = function(ev)
+		{
+			WUI.location = document.location.pathname;
+			WUI.set_location();
+		};
 
-				// apply configuration
-				WUI.set_title ();
-				WUI.set_subtitle ();
+		$( document ).ready (function()
+		{
+			// Get DOM element for fast modification.
+			WUI.el.content = $("#wui_content");
+			WUI.el.meta = $("#wui_content_meta");
 
-				// set social icon
-				WUI.set_social_icon ();
+			WUI.location = location.pathname;
 
-				// create top menu
-				WUI.create_top_menu ();
+			if (WUI.location === '/') {
+				WUI.location = WUI.homepage;
+			}
 
-				// set front page defined in the config.php
-				WUI.set_frontpage ();
+			// apply configuration
+			WUI.set_title ();
+			WUI.set_subtitle ();
 
-				WUI.generate_footer ();
-			});
+			// set social icon
+			WUI.set_social_icon ();
+
+			// create top menu
+			WUI.create_top_menu ();
+
+			// set front page
+			WUI.set_location();
+
+			WUI.generate_footer ();
 
 			// jquery: disable auto scrolling to top
 			// credit: http://www.techiecorner.com/2768/jquery-disable-autoscrolling-to-top-when-click-on-anchor/

@@ -1,31 +1,3 @@
-<?php
-/*
-	Copyright 2015 - Mhd Sulhan (ms@kilabit.info)
-*/
-	define ("APP_PATH", realpath (dirname (__FILE__)));
-
-	require_once "config.php";
-
-	// generate index of menu if not exist.
-	if (! file_exists (APP_PATH ."/js/wui_menu.js")) {
-		require_once "generate_wui_menu.php";
-
-		generate_menu ("./");
-	}
-
-	$open = null;
-
-	if (isset ($_GET["open"])) {
-		$open = str_replace ("/index.html", "", $_GET["open"]);
-		$open = rtrim ($open, "/");
-	}
-
-	if (null == $open) {
-		$link = $wui["homepage"];
-	} else {
-		$link = $open;
-	}
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -165,9 +137,8 @@
 	<script src="/js/wui_menu.js"></script>
 	<script src="/js/wui.js"></script>
 	<script>
-		$( document ).ready (function() {
-			WUI.homepage = "<?= $link ?>";
-
+		$( document ).ready (function()
+		{
 			$("#wui_comment_form").on ("submit", WUI.wui_comment_on_submit);
 
 			WUI.run ();
@@ -178,3 +149,4 @@
 	</script>
 </body>
 </html>
+<!-- vim: set ts=4 sw=4: -->
