@@ -1,8 +1,6 @@
 <?php
 /*
-	Copyright 2014 - Mhd Sulhan
-	Authors:
-		- mhd.sulhan (m.shulhan@gmail.com)
+	Copyright 2014-2016, Mhd Sulhan (ms@kilabit.info)
 */
 	session_start ();
 
