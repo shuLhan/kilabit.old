@@ -1,8 +1,12 @@
 /*
-	Copyright 2014 - Mhd Sulhan
-	Authors:
-		- mhd.sulhan (m.shulhan@gmail.com)
+	Copyright 2014-2016, Mhd Sulhan (ms@kilabit.info)
 */
+body {
+	font-family: 'Roboto', sans-serif;
+	font-size: 160%;
+	padding-bottom: 1em;
+}
+
 /* Bootstrap */
 .container {
 	max-width	: 800px;
@@ -25,6 +29,10 @@
 
 #wui_menu {
 	margin-top		: 10px;
+}
+
+#wui_content {
+	padding: 1em;
 }
 
 #wui_content_meta {
