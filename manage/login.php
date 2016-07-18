@@ -1,6 +1,6 @@
 <?php
 /*
-	Copyright 2015 - Mhd Sulhan (ms@kilabit.info)
+	Copyright 2015-2016, Mhd Sulhan (ms@kilabit.info)
 */
 
 $u = $_POST["u"];
@@ -27,7 +27,7 @@ $uri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
 
 if (! $go) {
 	// if no user matched, go back to index
-	$extra	= "index.php";
+	$extra	= "index.html";
 } else {
 	session_start ();
 	$_SESSION["you"] = $u;

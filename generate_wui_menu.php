@@ -10,7 +10,7 @@ if (! defined ("APP_PATH")) {
 }
 
 if (is_cli ()) {
-	generate_menu ("./");
+	generate_menu ($argv[1]);
 }
 
 function is_cli()

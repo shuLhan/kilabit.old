@@ -1,13 +1,25 @@
 <?php
 /*
-	Copyright 2014 - Mhd Sulhan
-	Authors:
-		- mhd.sulhan (m.shulhan@gmail.com)
+	Copyright 2014-2016, Mhd Sulhan (ms@kilabit.info)
 */
+
+session_start ();
+
+if (! isset ($_SESSION["you"])) {
+	$host = $_SERVER["HTTP_HOST"];
+	$uri = rtrim(dirname($_SERVER["PHP_SELF"]), "/\\");
+	$extra	= "index.php";
+
+	header ("Location: http://$host$uri/$extra");
+	exit;
+}
 
 define ("APP_PATH", realpath (dirname (__FILE__) ."/../"));
 
 require_once ("../generate_wui_menu.php");
+
+$wui["journal_dir"] = "journal";
+$wui["journal_name"] = "Journal";
 
 function create_node ($path, $title)
 {
@@ -18,14 +30,10 @@ function create_node ($path, $title)
 	mkdir ($path);
 
 	$contents = <<<EOF
-<html>
-<head>
 <meta name="title" content="$title"/>
-</head>
-</html>
 EOF;
 
-	file_put_contents ($path."/index.html", $contents);
+	file_put_contents ($path."/content.html", $contents);
 }
 
 // create path
@@ -51,11 +59,14 @@ function make_path ($date)
 	$d = explode ("-", $date);
 
 	$p = $wui["journal_dir"];
+
 	// create /journal
-	create_node (APP_PATH . $p, $wui["journal_name"]);
+	create_node (APP_PATH ."/". $p, $wui["journal_name"]);
+
 	// create /journal/year
 	$p .= "/". $d[0];
 	create_node (APP_PATH . $p, $d[0]);
+
 	// create /journal/year/month
 	$p .= "/". $d[1];
 	create_node (APP_PATH . $p, $months[$d[1]]);
@@ -103,23 +114,13 @@ try {
 	}
 
 	$contents = <<<EOF
-<!DOCTYPE HTML>
-<html>
-<head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="title" content="$e_title">
 <meta name="publish_date" content="$e_pub_date $e_pub_time">
 <meta name="author" content="$e_author">
-<title>$e_title</title>
-</head>
-<body>
 $e_content
-</body>
-</html>
 EOF;
 
-	file_put_contents ($node ."/index.html", $contents);
+	file_put_contents ($node ."/content.html", $contents);
 
 	// check for comments
 	$fcomment = $node ."/comment.json";

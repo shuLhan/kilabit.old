@@ -1,32 +1,47 @@
 body {
-	margin	:10px;
+	margin: 10px;
+	font-family: 'Roboto', sans-serif;
+	font-size: 160%;
+	overflow-x: scroll;
+	width: 2150px;
 }
 
 .tree {
-	margin	: 10px 0px 10px 0px;
+	width: 300px;
+	float: left !important;
 }
 
-#tree {
-	max-height	:530px;
-	overflow-y	:scroll;
-	font-size	:10pt;
+.tree div.row {
+	margin-bottom: 10px;
 }
 
-#tree.panel-body {
-	padding		:0px;
+.tree div.row .panel-body {
+	height: 600px;
+	overflow: scroll;
+	padding: 0px;
 }
 
-.padding-top {
-	padding-top : 10px;
+.box {
+	border: 1px solid silver;
+	margin: 0px 10px;
+	padding-top: 10px;
 }
 
-.modal-dialog {
-	width		:700px;
+.form-vertical {
+	width: 300px;
+	float: left !important;
 }
 
-.bootbox-body {
-	width			:680px;
-	height			:500px;
-	overflow-y		:scroll;
-	padding-right	:10px;
+#editor {
+	float: left !important;
+}
+
+.editor {
+	width: 700px;
+	float: left !important;
+}
+
+#preview {
+	width: 800px;
+	float: left !important;
 }

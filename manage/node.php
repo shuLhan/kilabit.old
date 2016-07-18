@@ -1,12 +1,22 @@
 <?php
 /*
-	Copyright 2014 - Mhd Sulhan
-	Authors:
-		- mhd.sulhan (m.shulhan@gmail.com)
+	Copyright 2014-2016, Mhd Sulhan (ms@kilabit.info)
 */
-require_once "../wui.php";
+
+session_start ();
+
+if (! isset ($_SESSION["you"])) {
+	$host = $_SERVER["HTTP_HOST"];
+	$uri = rtrim(dirname($_SERVER["PHP_SELF"]), "/\\");
+	$extra	= "index.html";
+
+	header ("Location: http://$host$uri/$extra");
+	exit;
+}
 
 define ("APP_PATH", realpath (dirname (__FILE__) ."/../"));
+
+require_once ("../generate_wui_menu.php");
 
 $node_parent = $_POST["node_parent"];
 $node_name = $_POST["node_name"];
@@ -27,20 +37,16 @@ if (! file_exists ($node)) {
 }
 
 $content = <<<EOF
-<html>
-<head>
 <meta name="title" content="$node_title"/>
 <title>$node_title</title>
-</head>
-</html>
 EOF;
 
-file_put_contents ($node ."/index.html", $content);
+file_put_contents ($node ."/content.html", $content);
 
 // reindex
 $wui["contents_dir"] = "..";
 
-run ($wui);
+generate_menu("..");
 
 $r["success"] = true;
 

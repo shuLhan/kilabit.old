@@ -10,7 +10,7 @@
 	if (! isset ($_SESSION["you"])) {
 		$host = $_SERVER["HTTP_HOST"];
 		$uri = rtrim(dirname($_SERVER["PHP_SELF"]), "/\\");
-		$extra	= "index.php";
+		$extra	= "index.html";
 
 		header ("Location: http://$host$uri/$extra");
 		exit;
@@ -22,242 +22,265 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
 	<link rel="stylesheet" href="/css/bootstrap.min.css"/>
 	<link rel="stylesheet" href="/manage/manage.css"/>
-	<link rel="shortcut icon" href="favicon.ico"/>
-	<title>Manage Wui!</title>
+	<title>Manage WUI!</title>
 </head>
 <body>
-	<div class="container-fluid">
-		<div class="row" id="content">
-			<!--{{{ tree -->
-			<div class="col-sm-3">
-				<div class="btn-group-sm">
-					<button
-						type="button"
-						class="btn btn-warning"
-					>
-						<span class="glyphicon glyphicon-minus"></span>
-					</button>
-					<button
-						id="btn_new_node"
-						type="button"
-						class="btn btn-default"
-					>
-						<span class="glyphicon glyphicon-plus"></span>
-						New Node
-					</button>
-					<button
-						id="btn_new_journal"
-						type="button"
-						class="btn btn-default"
-					>
-						<span class="glyphicon glyphicon-plus"></span>
-						New Journal
-					</button>
-				</div>
+	<div class="container tree">
+		<div class="row">
+			<button
+				type="button"
+				class="btn btn-warning col-xs-2"
+			>
+				<span class="glyphicon glyphicon-minus"></span>
+			</button>
+			<button
+				id="btn_new_node"
+				type="button"
+				class="btn btn-default col-xs-5"
+			>
+				<span class="glyphicon glyphicon-plus"></span>
+				New Node
+			</button>
+			<button
+				id="btn_new_journal"
+				type="button"
+				class="btn btn-default col-xs-5"
+			>
+				<span class="glyphicon glyphicon-plus"></span>
+				New Journal
+			</button>
+		</div>
 
-				<!-- tree view -->
-				<div class="tree panel panel-default">
-					<div class="panel-heading">
-					Node Tree
-					</div>
-					<div id="tree" class="panel-body">
-					</div>
+		<!-- tree view -->
+		<div class="row">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					Contents
+				</div>
+				<div id="tree" class="panel-body treeview">
 				</div>
 			</div>
-			<!--}}}-->
-			<!--{{{ form content editor -->
-			<div class="col-sm-9">
-				<form
-					id="editor_form"
-					class=""
-					role="form"
-					action="content.php"
-					method="post"
-				>
-					<div class="form-group">
-						<label for="node_parent" class="col-sm-2 control-label">Parent node</label>
-						<div class="col-sm-4">
-							<select
-								name="e_node_parent"
-								type="text"
-								class="form-control input-sm"
-								id="e_node_parent"
-								placeholder="Node name"
-							></select>
-						</div>
-
-						<label for="e_publish_date" class="col-sm-2 control-label">Publish date</label>
-						<div class="col-sm-4">
-							<input
-								name="e_publish_date"
-								type="date"
-								class="form-control input-sm"
-								id="e_publish_date"
-								placeholder="Year.Month.Day *"
-								required
-							>
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="e_node_name" class="col-sm-2 control-label">Node name</label>
-						<div class="col-sm-4">
-							<input
-								name="e_node_name"
-								type="text"
-								class="form-control input-sm"
-								id="e_node_name"
-								placeholder="Directory name in file system"
-							>
-						</div>
-
-						<label for="e_publish_time" class="col-sm-2 control-label">Publish Time</label>
-						<div class="col-sm-4">
-							<input
-								name="e_publish_time"
-								type="text"
-								class="form-control input-sm"
-								id="e_publish_time"
-								placeholder="Hour:Minute:Second"
-							>
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="e_title" class="col-sm-2 control-label">Title</label>
-						<div class="col-sm-4">
-							<input
-								name="e_title"
-								type="text"
-								class="form-control input-sm"
-								id="e_title"
-								placeholder="* Awesome Title *"
-								required
-							>
-						</div>
-
-						<label for="e_author" class="control-label hidden">Author</label>
-						<div class="">
-							<input
-								name="e_author"
-								type="text"
-								class="form-control input-sm hidden"
-								id="e_author"
-								placeholder="you@domain.com"
-								value="<?=$_SESSION['email'] ?>"
-							>
-						</div>
-
-						<div class="col-sm-offset-2 col-sm-4">
-							<label class="checkbox-inline input-sm">
-								<input
-									name="e_comment"
-									type="checkbox"
-									id="e_comment"
-								/>Allow comment
-							</label>
-						</div>
-					</div>
-
-					<div class="form-group">
-						<div class="col-sm-12 padding-top">
-							<textarea
-								name="e_content"
-								id="e_content"
-								class="input-block-level"
-							>
-							</textarea>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-sm-12 padding-top">
-							<button type="submit" class="btn btn-primary"> Save </button>
-							<button type="button" class="btn btn-primary" id="node_form_preview"> Preview </button>
-						</div>
-					</div>
-				</form>
-				<!--}}} journal editor end -->
-				<!--{{{ form node editor -->
-				<form
-					id="node_form"
-					class="form-horizontal hidden"
-					role="form"
-					action="node.php"
-					method="post"
-				>
-					<div class="form-group">
-						<label
-							for="node_parent"
-							class="col-sm-2 control-label"
-						>Parent Node
-						</label>
-						<div class="col-sm-4">
-							<select
-								name="node_parent"
-								class="form-control"
-								id="node_parent"
-								placeholder="Parent node"
-								required
-								disabled
-							>
-							</select>
-						</div>
-					</div>
-					<div class="form-group">
-						<label
-							for="node_name"
-							class="col-sm-2 control-label"
-						>Node name
-						</label>
-						<div class="col-sm-4">
-							<input
-								name="node_name"
-								type="text"
-								class="form-control"
-								id="node_name"
-								placeholder="Directory name in file system"
-								required
-							>
-						</div>
-					</div>
-					<div class="form-group">
-						<label
-							for="node_title"
-							class="col-sm-2 control-label"
-						>Title
-						</label>
-						<div class="col-sm-4">
-							<input
-								name="node_title"
-								type="text"
-								class="form-control"
-								id="node_title"
-								placeholder="Node title"
-								required
-							>
-						</div>
-					</div>
-					<div class="form-group center-block">
-						<div class="col-sm-12">
-							<div class="btn-group">
-								<button type="submit" class="btn btn-primary" id="node_form_submit"> Save </button>
-							</div>
-						</div>
-					</div>
-				</form>
-			</div>
-			<!--}}} node editor end -->
 		</div>
 	</div>
+
+	<div id="node"
+		class="container box form-vertical hidden"
+	>
+		<form
+			id="node_form"
+			role="form"
+			action="/manage/node.php"
+			method="post"
+		>
+			<div class="form-group">
+				<label
+					for="node_parent"
+				>
+					Parent Node
+				</label>
+				<select
+					name="node_parent"
+					class="form-control"
+					id="node_parent"
+					placeholder="Parent node"
+					required
+					disabled
+				>
+				</select>
+			</div>
+			<div class="form-group">
+				<label
+					for="node_name"
+				>
+					Node name
+				</label>
+				<input
+					name="node_name"
+					type="text"
+					class="form-control"
+					id="node_name"
+					placeholder="Directory name in file system"
+					required
+				>
+			</div>
+			<div class="form-group">
+				<label
+					for="node_title"
+				>
+					Title
+				</label>
+				<input
+					name="node_title"
+					type="text"
+					class="form-control"
+					id="node_title"
+					placeholder="Node title"
+					required
+				>
+			</div>
+			<div class="form-group center-block">
+				<div class="btn-group">
+					<button type="submit" class="btn btn-primary">
+						Save
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<div id="editor"
+		class="box"
+	>
+		<div class="container form-vertical">
+			<form
+				id="editor_form"
+				role="form"
+				action="/manage/content.php"
+				method="post"
+			>
+				<div class="form-group">
+					<label for="e_node_parent">
+						Parent node
+					</label>
+					<select
+						name="e_node_parent"
+						type="text"
+						class="form-control input-sm"
+						id="e_node_parent"
+						placeholder="Node name"
+					></select>
+				</div>
+
+				<div class="form-group">
+					<label for="e_publish_date">
+						Publish date
+					</label>
+					<input
+						name="e_publish_date"
+						type="date"
+						class="form-control input-sm"
+						id="e_publish_date"
+						placeholder="Year.Month.Day *"
+						required
+					>
+				</div>
+
+				<div class="form-group">
+					<label for="e_node_name">
+						Node name
+					</label>
+					<input
+						name="e_node_name"
+						type="text"
+						class="form-control input-sm"
+						id="e_node_name"
+						placeholder="Directory name in file system"
+					>
+				</div>
+
+				<div class="form-group">
+					<label for="e_publish_time">
+						Publish Time
+					</label>
+					<input
+						name="e_publish_time"
+						type="text"
+						class="form-control input-sm"
+						id="e_publish_time"
+						placeholder="Hour:Minute:Second"
+					>
+				</div>
+
+				<div class="form-group">
+					<label for="e_title">
+						Title
+					</label>
+					<input
+						name="e_title"
+						type="text"
+						class="form-control input-sm"
+						id="e_title"
+						placeholder="* Awesome Title *"
+						required
+					>
+				</div>
+
+				<div class="form-group">
+					<label for="e_author">
+						Author
+					</label>
+					<input
+						name="e_author"
+						type="text"
+						class="form-control input-sm"
+						id="e_author"
+						placeholder="you@domain.com"
+						value="<?=$_SESSION['email'] ?>"
+					>
+				</div>
+
+				<div class="form-group">
+					<label class="checkbox-inline input-sm">
+						<input
+							name="e_comment"
+							type="checkbox"
+							id="e_comment"
+						/>Allow comment
+					</label>
+				</div>
+			</form>
+		</div>
+
+		<div class="container editor">
+			<div class="form-group">
+				<textarea
+					name="e_content"
+					id="e_content"
+					class="input-block-level"
+				>
+				</textarea>
+			</div>
+
+			<div class="form-group">
+				<button type="submit" class="btn btn-primary"
+					id="b_content_save"
+				>
+					Save
+				</button>
+				<button type="button" class="btn btn-primary"
+					id="b_preview"
+				>
+					Preview
+				</button>
+			</div>
+		</div>
+	</div>
+
+	<div id="preview"
+		class="container panel panel-default"
+	>
+		<div class="panel-heading">
+			<div class="panel-title">
+				Preview
+			</div>
+		</div>
+		<div class="panel-body">
+		</div>
+	</div>
+
 	<!--{{{ js -->
 	<script src="/js/wui_menu.js"></script>
 	<script src="/js/jquery.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/bootstrap-treeview.min.js"></script>
-	<script src="/js/bootbox.min.js"></script>
 	<script src="/js/ckeditor/ckeditor.js"></script>
 	<!--}}} -->
 	<script>
+		'use strict';
+
 		var author = '<?= $_SESSION["email"] ?>';
 		var new_journal = false;
 		var new_journal_data = {
@@ -270,6 +293,8 @@
 			,	e_comment		:"off"
 			,	e_content		:""
 			};
+
+		var previewer;
 
 		//{{{ replace node key name.
 		function replace_properties (nodes, old_key, new_key, child_key)
@@ -314,8 +339,9 @@
 		//{{{ form edit node -> show
 		function form_edit_node (node)
 		{
-			$("#editor_form").addClass ("hidden");
-			$("#node_form").removeClass ("hidden");
+			$("#editor").addClass("hidden");
+			$("#preview").addClass("hidden");
+			$("#node").removeClass ("hidden");
 
 			var ids = node.id.split ("-");
 
@@ -328,8 +354,9 @@
 		//{{{ form edit node -> reset
 		function form_edit_node_reset ()
 		{
-			$("#editor_form").addClass ("hidden");
-			$("#node_form").removeClass ("hidden");
+			$("#editor").addClass("hidden");
+			$("#preview").addClass("hidden");
+			$("#node").removeClass ("hidden");
 
 			$("#node_form #node_parent").removeAttr ("disabled");
 
@@ -352,7 +379,8 @@
 				,	success	: function (data, status)
 					{
 						$("#node_parent").prop ("disabled", true);
-						bootbox.alert ("Data has been saved");
+						alert ("Data has been saved");
+						window.location.reload();
 					}
 				});
 
@@ -392,8 +420,9 @@
 		//{{{ form edit content -> reset
 		function form_edit_content_reset ()
 		{
-			$("#editor_form").removeClass ("hidden");
-			$("#node_form").addClass ("hidden");
+			$("#editor").removeClass("hidden");
+			$("#preview").removeClass("hidden");
+			$("#node").addClass ("hidden");
 
 			$("#e_node_parent").removeAttr ("disabled");
 
@@ -406,6 +435,7 @@
 			$("#e_author").val (new_journal_data.e_author);
 			$("#e_comment").val (new_journal_data.e_comment);
 			CKEDITOR.instances.e_content.setData (new_journal_data.e_content);
+			$("#b_preview").click();
 
 			new_journal = true;
 		}
@@ -413,8 +443,9 @@
 		//{{{ form edit content -> show
 		function form_edit_content (node)
 		{
-			$("#editor_form").removeClass ("hidden");
-			$("#node_form").addClass ("hidden");
+			$("#editor").removeClass("hidden");
+			$("#preview").removeClass("hidden");
+			$("#node").addClass ("hidden");
 
 			var link = node.link +"?_dc="+ new Date ().getTime ();
 			var editor = $("#e_content");
@@ -426,7 +457,7 @@
 					// fix image source
 					link = link.replace (/^\.\//, "/");
 					link = link.replace (/^\/\//, "/");
-					link = link.replace ("/index.html", "");
+					link = link.replace ("/content.html", "");
 
 					editor.find ("img").each (function (i)
 					{
@@ -444,7 +475,7 @@
 					$("#e_node_parent").val (node.pid);
 
 					// set field based on meta data
-					$(doc).find ("html > head > meta").each (function () {
+					$(doc).find ("meta").each (function () {
 							var m_name = $(this).attr ("name");
 							var m_content = $(this).attr ("content");
 
@@ -463,13 +494,14 @@
 					var body = $(doc).find ("body");
 
 					CKEDITOR.instances.e_content.setData (body.html ());
+					$("#b_preview").click();
 				});
 		}
 		//}}}
 		//{{{ form edit content -> submit
-		function form_edit_content_submit (event)
+		function form_edit_content_submit(event)
 		{
-			var $form	= $(this);
+			var $form	= $("#editor_form");
 			var data	= {};
 
 			data.e_node_parent	= $form.find ("#e_node_parent").val ();
@@ -489,11 +521,12 @@
 				,	success	: function (data, status)
 					{
 						$("#e_node_parent").prop ("disabled", true);
-						bootbox.alert (data.msg);
+						alert (data.msg);
+						$("#b_preview").click();
 					}
 				,	error	: function (xhr, status, errorThrown)
 					{
-						bootbox.alert (xhr);
+						alert (xhr);
 					}
 				});
 
@@ -501,13 +534,22 @@
 		}
 		//}}}
 		//{{{ form edit content -> preview
-		function form_edit_content_preview (event)
+		function do_preview(event)
 		{
-			bootbox.alert (CKEDITOR.instances.e_content.getData ());
+			previewer.empty();
+			previewer.append(CKEDITOR.instances.e_content.getData());
+
+			var h = previewer.height();
+			if (h > 600) {
+				h += 30;
+				CKEDITOR.instances.e_content.resize('100%', h, true);
+			}
 		}
 		//}}}
 		//{{{ document ready (main)
 		$( document ).ready (function() {
+			previewer = $("#preview .panel-body");
+
 			// replace title with text
 			replace_properties (wui_menu, "submenu", "nodes", "submenu");
 			replace_properties (wui_menu, "title", "text", "nodes");
@@ -567,8 +609,8 @@
 			});
 
 			$("#node_form").on ("submit", form_edit_node_submit);
-			$("#editor_form").on ("submit", form_edit_content_submit);
-			$("#node_form_preview").on ("click", form_edit_content_preview);
+			$("#b_content_save").on ("click", form_edit_content_submit);
+			$("#b_preview").on ("click", do_preview);
 		});
 		//}}}
 	</script>
