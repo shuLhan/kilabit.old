@@ -1,15 +1,11 @@
 <?php
 /*
-	Copyright 2016 - Mhd Sulhan
-	Authors:
-		- mhd.sulhan (m.shulhan@gmail.com)
+	Copyright 2016 - Mhd Sulhan (ms@kilabit.info)
 */
 
 if (! defined("APP_PATH")) {
 	define("APP_PATH", realpath(dirname(__FILE__)));
 }
-
-require_once APP_PATH . "/config.php";
 
 if (is_cli()) {
 	generate_sitemap_txt($argv[1]);
@@ -80,7 +76,7 @@ function list_dir($dir)
 			continue;
 		}
 
-		$findex = $p ."/index.html";
+		$findex = $p ."/content.html";
 
 		if (! file_exists($findex)) {
 			continue;

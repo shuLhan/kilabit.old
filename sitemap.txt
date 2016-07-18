@@ -174,6 +174,7 @@ http://kilabit.info/journal/2016/01/Mari_enkripsi_dengan_Letsencrypt/
 http://kilabit.info/journal/2016/01/Visualisasi_Gempa_Bumi_Indonesia/
 http://kilabit.info/journal/2016/03/
 http://kilabit.info/journal/2016/03/Git_Tutorial__slides/
+http://kilabit.info/journal/2016/03/Go_language__Things_That_I_Learned_Writing_dsv/
 http://kilabit.info/journal/2016/03/Go_language__six_line_assert_without_any_library/
 http://kilabit.info/journal/misc/
 http://kilabit.info/journal/misc/git/
