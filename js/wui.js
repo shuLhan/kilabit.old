@@ -1,6 +1,8 @@
 /*
 	Copyright 2014-2016 Mhd Sulhan (ms@kilabit.info)
 */
+'use strict';
+
 var WUI =
 {
 	homepage : "/home"
@@ -240,6 +242,8 @@ var WUI =
 		}
 
 		window.history.pushState("", "", e.data.base);
+
+		return false;
 	}
 
 ,	create_submenu : function (id, menu)
@@ -478,11 +482,7 @@ var WUI =
 
 			WUI.generate_footer ();
 
-			// jquery: disable auto scrolling to top
-			// credit: http://www.techiecorner.com/2768/jquery-disable-autoscrolling-to-top-when-click-on-anchor/
-			$('body').on ('click', '[href^=#]', function (e) {
-				e.preventDefault()
-			});
+			$("#wui_comment_form").on("submit", WUI.wui_comment_on_submit);
 		});
 	}
 };
