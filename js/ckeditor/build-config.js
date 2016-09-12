@@ -13,10 +13,10 @@
  * (1) http://ckeditor.com/builder
  *     Visit online builder to build CKEditor from scratch.
  *
- * (2) http://ckeditor.com/builder/0c452dcdcd6167d7dcd0b1b8364b56ae
+ * (2) http://ckeditor.com/builder/c9e06cc0775753785018c3683f35daad
  *     Visit online builder to build CKEditor, starting with the same setup as before.
  *
- * (3) http://ckeditor.com/builder/download/0c452dcdcd6167d7dcd0b1b8364b56ae
+ * (3) http://ckeditor.com/builder/download/c9e06cc0775753785018c3683f35daad
  *     Straight download link to the latest version of CKEditor (Optimized) with the same setup as before.
  *
  * NOTE:
@@ -26,7 +26,7 @@
 
 var CKBUILDER_CONFIG = {
 	skin: 'moono',
-	preset: 'standard',
+	preset: 'full',
 	ignore: [
 		'.bender',
 		'bender.js',
@@ -50,13 +50,17 @@ var CKBUILDER_CONFIG = {
 		'tests'
 	],
 	plugins : {
+		'base64image' : 1,
 		'basicstyles' : 1,
 		'blockquote' : 1,
 		'clipboard' : 1,
 		'colorbutton' : 1,
+		'colordialog' : 1,
 		'contextmenu' : 1,
+		'dialogadvtab' : 1,
 		'div' : 1,
 		'elementspath' : 1,
+		'embed' : 1,
 		'enterkey' : 1,
 		'entities' : 1,
 		'filebrowser' : 1,
@@ -68,6 +72,7 @@ var CKBUILDER_CONFIG = {
 		'htmlwriter' : 1,
 		'iframe' : 1,
 		'image' : 1,
+		'image2' : 1,
 		'indentblock' : 1,
 		'indentlist' : 1,
 		'justify' : 1,
