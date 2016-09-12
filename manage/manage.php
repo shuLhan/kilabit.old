@@ -25,219 +25,259 @@
 	<link rel="stylesheet" href="/manage/manage.css"/>
 	<title>Manage WUI!</title>
 </head>
-<body>
-	<div class="container tree">
-		<div class="row">
-			<button
-				type="button"
-				class="btn btn-warning col-xs-2"
-			>
-				<span class="glyphicon glyphicon-minus"></span>
-			</button>
-			<button
-				id="btn_new_node"
-				type="button"
-				class="btn btn-default col-xs-5"
-			>
-				<span class="glyphicon glyphicon-plus"></span>
-				New Node
-			</button>
-			<button
-				id="btn_new_journal"
-				type="button"
-				class="btn btn-default col-xs-5"
-			>
-				<span class="glyphicon glyphicon-plus"></span>
-				New Journal
-			</button>
+<body class="container-fluid">
+	<div class="row menu">
+		<!--{{{ MENU -->
+		<div class="col-sm-12">
+			<span class="btn-group" role="group">
+				<button
+					type="button"
+					class="btn btn-warning"
+				>
+					<span class="glyphicon glyphicon-minus"></span>
+				</button>
+				<button
+					id="btn_new_node"
+					type="button"
+					class="btn btn-default"
+				>
+					<span class="glyphicon glyphicon-plus"></span>
+					New Node
+				</button>
+				<button
+					id="btn_new_journal"
+					type="button"
+					class="btn btn-default"
+				>
+					<span class="glyphicon glyphicon-plus"></span>
+					New Journal
+				</button>
+			</span>
+		</div>
+		<!--}}} MENU -->
+	</div>
+
+	<br/>
+
+	<div class="row">
+		<div class="col-sm-6 tree">
+			<!--{{{ TREE -->
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							Contents
+						</div>
+						<div id="tree" class="panel-body treeview">
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--}}} TREE -->
 		</div>
 
-		<!-- tree view -->
-		<div class="row">
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					Contents
-				</div>
-				<div id="tree" class="panel-body treeview">
-				</div>
+		<div class="col-sm-6">
+			<div id="node">
+				<!--{{{ NODE -->
+				<form
+					id="node_form"
+					role="form"
+					action="/manage/node.php"
+					method="post"
+					class="box form-horizontal"
+				>
+					<div class="form-group">
+						<label
+							for="node_parent"
+							class="col-sm-4"
+						>
+							Parent Node
+						</label>
+						<div class="col-sm-8">
+							<select
+								name="node_parent"
+								class="form-control "
+								id="node_parent"
+								placeholder="Parent node"
+								required
+								disabled
+							>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label
+							for="node_name"
+							class="col-sm-4"
+						>
+							Node name
+						</label>
+						<div class="col-sm-8">
+							<input
+								name="node_name"
+								type="text"
+								class="form-control"
+								id="node_name"
+								placeholder="Directory name in file system"
+								required
+							>
+						</div>
+					</div>
+					<div class="form-group">
+						<label
+							for="node_title"
+							class="col-sm-4"
+						>
+							Title
+						</label>
+						<div class="col-sm-8">
+							<input
+								name="node_title"
+								type="text"
+								class="form-control"
+								id="node_title"
+								placeholder="Node title"
+								required
+							>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-12">
+							<button type="submit" class="btn btn-primary">
+								Save
+							</button>
+						</div>
+					</div>
+				</form>
+				<!--}}} NODE -->
+			</div>
+			<br/>
+			<div id="editor">
+				<!--{{{ CONTENT -->
+				<form
+					id="editor_form"
+					role="form"
+					action="/manage/content.php"
+					method="post"
+					class="box col-sm-12 form-horizontal"
+				>
+					<div class="form-group">
+						<label for="e_node_parent" class="col-sm-4">
+							Parent node
+						</label>
+						<div class="col-sm-8">
+							<select
+								name="e_node_parent"
+								type="text"
+								class="form-control input-sm"
+								id="e_node_parent"
+								placeholder="Node name"
+							></select>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="e_publish_date" class="col-sm-4">
+							Publish date
+						</label>
+						<div class="col-sm-8">
+							<input
+								name="e_publish_date"
+								type="date"
+								class="form-control input-sm"
+								id="e_publish_date"
+								placeholder="Year.Month.Day *"
+								required
+							>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="e_publish_time" class="col-sm-4">
+							Publish Time
+						</label>
+						<div class="col-sm-8">
+							<input
+								name="e_publish_time"
+								type="text"
+								class="form-control input-sm"
+								id="e_publish_time"
+								placeholder="Hour:Minute:Second"
+							>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="e_node_name" class="col-sm-4">
+							Node name
+						</label>
+						<div class="col-sm-8">
+							<input
+								name="e_node_name"
+								type="text"
+								class="form-control input-sm"
+								id="e_node_name"
+								placeholder="Directory name in file system"
+							>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="e_title" class="col-sm-4">
+							Title
+						</label>
+						<div class="col-sm-8">
+							<input
+								name="e_title"
+								type="text"
+								class="form-control input-sm"
+								id="e_title"
+								placeholder="* Awesome Title *"
+								required
+							>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="e_author" class="col-sm-4">
+							Author
+						</label>
+						<div class="col-sm-8">
+							<input
+								name="e_author"
+								type="text"
+								class="form-control input-sm"
+								id="e_author"
+								placeholder="you@domain.com"
+								value="<?=$_SESSION['email'] ?>"
+							>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-sm-offset-4 col-sm-8">
+							<label class="checkbox-inline input-sm">
+								<input
+									name="e_comment"
+									type="checkbox"
+									id="e_comment"
+								/>Allow comment
+							</label>
+						</div>
+					</div>
+				</form>
+				<!--}}} CONTENT -->
 			</div>
 		</div>
 	</div>
 
-	<div id="node"
-		class="container box form-vertical hidden"
-	>
-		<form
-			id="node_form"
-			role="form"
-			action="/manage/node.php"
-			method="post"
-		>
-			<div class="form-group">
-				<label
-					for="node_parent"
-				>
-					Parent Node
-				</label>
-				<select
-					name="node_parent"
-					class="form-control"
-					id="node_parent"
-					placeholder="Parent node"
-					required
-					disabled
-				>
-				</select>
-			</div>
-			<div class="form-group">
-				<label
-					for="node_name"
-				>
-					Node name
-				</label>
-				<input
-					name="node_name"
-					type="text"
-					class="form-control"
-					id="node_name"
-					placeholder="Directory name in file system"
-					required
-				>
-			</div>
-			<div class="form-group">
-				<label
-					for="node_title"
-				>
-					Title
-				</label>
-				<input
-					name="node_title"
-					type="text"
-					class="form-control"
-					id="node_title"
-					placeholder="Node title"
-					required
-				>
-			</div>
-			<div class="form-group center-block">
-				<div class="btn-group">
-					<button type="submit" class="btn btn-primary">
-						Save
-					</button>
-				</div>
-			</div>
-		</form>
-	</div>
-
-	<div id="editor"
-		class="box"
-	>
-		<div class="container form-vertical">
-			<form
-				id="editor_form"
-				role="form"
-				action="/manage/content.php"
-				method="post"
-			>
-				<div class="form-group">
-					<label for="e_node_parent">
-						Parent node
-					</label>
-					<select
-						name="e_node_parent"
-						type="text"
-						class="form-control input-sm"
-						id="e_node_parent"
-						placeholder="Node name"
-					></select>
-				</div>
-
-				<div class="form-group">
-					<label for="e_publish_date">
-						Publish date
-					</label>
-					<input
-						name="e_publish_date"
-						type="date"
-						class="form-control input-sm"
-						id="e_publish_date"
-						placeholder="Year.Month.Day *"
-						required
-					>
-				</div>
-
-				<div class="form-group">
-					<label for="e_node_name">
-						Node name
-					</label>
-					<input
-						name="e_node_name"
-						type="text"
-						class="form-control input-sm"
-						id="e_node_name"
-						placeholder="Directory name in file system"
-					>
-				</div>
-
-				<div class="form-group">
-					<label for="e_publish_time">
-						Publish Time
-					</label>
-					<input
-						name="e_publish_time"
-						type="text"
-						class="form-control input-sm"
-						id="e_publish_time"
-						placeholder="Hour:Minute:Second"
-					>
-				</div>
-
-				<div class="form-group">
-					<label for="e_title">
-						Title
-					</label>
-					<input
-						name="e_title"
-						type="text"
-						class="form-control input-sm"
-						id="e_title"
-						placeholder="* Awesome Title *"
-						required
-					>
-				</div>
-
-				<div class="form-group">
-					<label for="e_author">
-						Author
-					</label>
-					<input
-						name="e_author"
-						type="text"
-						class="form-control input-sm"
-						id="e_author"
-						placeholder="you@domain.com"
-						value="<?=$_SESSION['email'] ?>"
-					>
-				</div>
-
-				<div class="form-group">
-					<label class="checkbox-inline input-sm">
-						<input
-							name="e_comment"
-							type="checkbox"
-							id="e_comment"
-						/>Allow comment
-					</label>
-				</div>
-			</form>
-		</div>
-
-		<div class="container editor">
+	<div class="row">
+		<div class="col-sm-6">
 			<div class="form-group">
 				<textarea
 					name="e_content"
 					id="e_content"
-					class="input-block-level"
+					class="form-control input-block-level"
 				>
 				</textarea>
 			</div>
@@ -255,17 +295,17 @@
 				</button>
 			</div>
 		</div>
-	</div>
 
-	<div id="preview"
-		class="container panel panel-default"
-	>
-		<div class="panel-heading">
-			<div class="panel-title">
-				Preview
+		<div class="col-sm-6">
+			<div id="preview" class="panel panel-default">
+				<div class="panel-heading">
+					<div class="panel-title">
+						Preview
+					</div>
+				</div>
+				<div class="panel-body">
+				</div>
 			</div>
-		</div>
-		<div class="panel-body">
 		</div>
 	</div>
 

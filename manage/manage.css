@@ -1,18 +1,11 @@
 body {
-	margin: 10px;
 	font-family: 'Roboto', sans-serif;
 	font-size: 160%;
-	overflow-x: scroll;
-	width: 2150px;
 }
 
-.tree {
-	width: 300px;
-	float: left !important;
-}
-
-.tree div.row {
-	margin-bottom: 10px;
+.menu {
+	background: #444;
+	padding: 10px;
 }
 
 .tree div.row .panel-body {
@@ -23,25 +16,5 @@ body {
 
 .box {
 	border: 1px solid silver;
-	margin: 0px 10px;
-	padding-top: 10px;
-}
-
-.form-vertical {
-	width: 300px;
-	float: left !important;
-}
-
-#editor {
-	float: left !important;
-}
-
-.editor {
-	width: 700px;
-	float: left !important;
-}
-
-#preview {
-	width: 800px;
-	float: left !important;
+	padding: 10px;
 }
