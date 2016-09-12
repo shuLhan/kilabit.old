@@ -1,0 +1,87 @@
+<meta name="title" content="Memperbaiki keluaran coreutils (ls) pada Bahasa Indonesia">
+<meta name="publish_date" content="2016-09-13 00:45:28">
+<meta name="author" content="ms@kilabit.info">
+<h1>Memperbaiki Keluaran coreutils &quot;ls&quot; pada Bahasa Indonesia</h1>
+
+<p>atau <em>menerjemahkan ke Bahasa Indonesia itu tidak mudah</em>.</p>
+
+<p>Saya menggunakan bahasa Indonesia dalam sistem operasi saya (GNU/Linux). Dalam sistem Linux, untuk melihat daftar berkas, menggunakan perintah bernama &quot;ls&quot;. Berikut contoh keluarannya,</p>
+
+<div style="background:#eeeeee;border:1px solid #cccccc;padding:5px 10px;"><span style="font-family:Courier New,Courier,monospace">ms 0 % ls -l /<br />
+total 72<br />
+lrwxrwxrwx&nbsp;&nbsp; 1 root root&nbsp;&nbsp;&nbsp;&nbsp; 7 Okt&nbsp; 1 2015 bin -&gt; usr/bin<br />
+drwxr-xr-x&nbsp;&nbsp; 3 root root 16384 Jan&nbsp; 1 1970 boot<br />
+drwxr-xr-x&nbsp;&nbsp; 2 root root&nbsp; 4096 Agu 30 2015 boot.org<br />
+drwxr-xr-x&nbsp;&nbsp; 6 ms&nbsp;&nbsp; ms&nbsp;&nbsp;&nbsp; 4096 Sep&nbsp; 7 20:44 data<br />
+...</span></div>
+
+<p>&nbsp;</p>
+
+<p>Jika dilihat pada baris ke 5 dan 6 ada ketimpangan identasi. Pada baris ke 5, formatnya adalah tahun, spasi, baru nama berkas. Sedangkan pada baris ke 6 formatnya pukul, spasi, baru nama berkas. Hal ini disebabkan aturan dari perintah &quot;ls&quot;: bila berkas telah lama dari 6 bulan maka yang ditampilkan cukup tahunnya saja.</p>
+
+<p>Lama kelamaan, hal ini cukup mengganggu dan membuat saya mencoba memperbaikinya.</p>
+
+<p>Singkat ceritanya, hal tersebut bisa diperbaiki dengan mudah, cukup dengan menambahkan spasi pada baris tertentu pada berkas terjemahan, dari</p>
+
+<div style="background:#eeeeee;border:1px solid #cccccc;padding:5px 10px;"><span style="font-family:Courier New,Courier,monospace">msgid &quot;%b %e&nbsp; %Y&quot;<br />
+msgstr &quot;%b %e %Y&quot;</span></div>
+
+<p>menjadi,</p>
+
+<div style="background:#eeeeee;border:1px solid #cccccc;padding:5px 10px;"><span style="font-family:Courier New,Courier,monospace">msgid &quot;%b %e&nbsp; %Y&quot;<br />
+msgstr &quot;%b %e %Y &quot;</span></div>
+
+<p>&nbsp;</p>
+
+<p>Gampang kan?</p>
+
+<p>Kemudian sekilas saya lihat beberapa terjemahannya. &quot;Alamak, ini apa !?&quot;</p>
+
+<blockquote>
+<p>msgid &quot;preserving permissions for %s&quot;<br />
+msgstr &quot;menyimpan permission untuk %s&quot;</p>
+
+<p>...</p>
+
+<p>#: src/ls.c:1621<br />
+#, c-format<br />
+msgid &quot;ignoring invalid width in environment variable COLUMNS: %s&quot;<br />
+msgstr &quot;mengabaikan lebar tidak valid dalam variabel lingkungan KOLOM: %s&quot;</p>
+</blockquote>
+
+<p>Ada yang setengah bahasa Indonesia, setengah bahasa Inggris. Ada yang nama variabel juga ikut diterjemahkan, contohnya seperti kata COLUMNS di atas, dan lain-lain.</p>
+
+<p>Berikut beberapa rekomendasi bila mau menerjemahkan dari Bahasa Inggris ke Bahasa Indonesia.</p>
+
+<p>Pertama, kata &quot;a&quot;, &quot;of&quot;, &quot;to&quot; tidak harus diterjemahkan per kata menjadi &quot;sebuah&quot;, &quot;dari&quot;, &quot;untuk&quot;. Terkadang akan lebih mudah dibaca bila kata tersebut dihapus. Contohnya,</p>
+
+<blockquote>
+<p>msgid &quot;%s: option &#39;--%s&#39; doesn&#39;t allow an argument\n&quot;<br />
+msgstr &quot;%s: pilihan &#39;--%s&#39; tidak memperbolehkan sebuah argumen\n&quot;</p>
+</blockquote>
+
+<p>(Keterangan: kalimat setelah kata &quot;msgid&quot; adalah kalimat dalam Bahasa Inggris, dan baris setelah &quot;msgstr&quot; adalah terjemahan dalam Bahasa Indonesianya)</p>
+
+<p>Terjemahan tersebut akan lebih mudah dibaca bila diganti menjadi&nbsp; &quot;opsi &#39;--%s&#39; tidak membolehkan argumen&quot;.</p>
+
+<p>Kedua, &quot;di&quot; dan &quot;ke&quot; itu lebih tepat untuk menunjukan tempat dan bukan selalu terjemahan dari &quot;in&quot; atau &quot;on&quot;. Akan lebih bagus kalau menggunakan &quot;pada&quot;. Contoh yang salah,</p>
+
+<blockquote>
+<p>msgid &quot;missing %% conversion specification in suffix&quot;<br />
+msgstr &quot;hilang %% spesifikasi konversi di akhiran&quot;</p>
+</blockquote>
+
+<p>Tidak hanya salah penggunaan &quot;di&quot; tapi juga terjemahannya membingungkan. Akan lebih baik bila diterjemahkan menjadi &quot;spesifikasi konversi %% tidak ditemukan pada suffix&quot;.</p>
+
+<p>Ketiga, gunakan padanan kata yang sesuai. Misalnya, &quot;option&quot; itu &quot;opsi&quot; bukan &quot;pilihan&quot;, &quot;may&quot; itu &quot;bisa&quot; bukan &quot;mungkin&quot;. Contoh yang salahnya,</p>
+
+<blockquote>
+<p>msgid &quot;an input delimiter may be specified only when operating on fields&quot;<br />
+msgstr &quot;sebuah pembatas masukana mungkin dispesifikan hanya ketika beroperasi di fields&quot;</p>
+</blockquote>
+
+<p>Apa coba maksudnya?</p>
+
+<p>Keempat, susun kalimat sehingga mudah dibaca, bukan terjemahkan kata per kata.</p>
+
+<p><em>Golden rule</em>-nya: usahakan seringkas mungkin dan mudah dipahami dalam sekali baca.</p>
