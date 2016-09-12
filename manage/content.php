@@ -17,6 +17,7 @@ if (! isset ($_SESSION["you"])) {
 define ("APP_PATH", realpath (dirname (__FILE__) ."/../"));
 
 require_once ("../generate_wui_menu.php");
+require_once ("../generate_feed.php");
 
 $wui["journal_dir"] = "journal";
 $wui["journal_name"] = "Journal";
@@ -58,10 +59,10 @@ function make_path ($date)
 
 	$d = explode ("-", $date);
 
-	$p = $wui["journal_dir"];
+	$p = "/". $wui["journal_dir"];
 
 	// create /journal
-	create_node (APP_PATH ."/". $p, $wui["journal_name"]);
+	create_node (APP_PATH . $p, $wui["journal_name"]);
 
 	// create /journal/year
 	$p .= "/". $d[0];
@@ -106,7 +107,7 @@ try {
 		$node_parent = "/";
 	}
 
-	$node = APP_PATH . $node_parent ."/". $node_name;
+	$node = APP_PATH ."/". $node_parent ."/". $node_name;
 
 	// check if directory is not exist
 	if (! file_exists ($node)) {
@@ -146,6 +147,7 @@ EOF;
 	$wui["contents_dir"] = "..";
 
 	generate_menu ("..");
+	generate_feed();
 
 	$r["success"] = true;
 	$r["msg"] = "Data has been saved.";
