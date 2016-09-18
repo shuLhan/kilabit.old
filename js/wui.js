@@ -24,7 +24,7 @@ var WUI =
 		,	"google_plus"		: "https://plus.google.com/+MhdSulhan"
 		,	"linked"			: "https://id.linkedin.com/in/muhamadsulhan/"
 		,	"twitter"			: "https://twitter.com/MhdSulhan"
-		,	"feed"				: "http://kilabit.info/feed.atom"
+		,	"feed"				: "http://feeds.feedburner.com/Kilabit"
 		}
 	}
 ,	footer :
