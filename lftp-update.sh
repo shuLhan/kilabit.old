@@ -5,7 +5,7 @@ url=sftp://kilabit.info/home/kilabiti/public_html/
 
 if [ -d $node ]; then
 	echo "update directory $node"
-	lftp -e "mkdir -pf $node; cd $node; lcd $node; mirror -R --verbose=3 -X '.git/*' --delete; exit;" -d ${url}
+	lftp -e "mkdir -pf $node; cd $node; lcd $node; mirror -R --verbose=1 -X '.git/*' -X 'manage/*' --delete; exit;" -d ${url}
 else
 	dir=`dirname $node`
 	echo "update file $node on $dir"
