@@ -231,12 +231,12 @@ var WUI =
 		if (true === load) {
 			WUI.set_content (e.data);
 
-			if (true === e.data.comment) {
-				$("#wui_comment_panel").removeClass ("hidden");
-				WUI.set_content_comment (e.data);
-			} else {
-				$("#wui_comment_panel").addClass ("hidden");
-			}
+//			if (true === e.data.comment) {
+//				$("#wui_comment_panel").removeClass ("hidden");
+//				WUI.set_content_comment (e.data);
+//			} else {
+//				$("#wui_comment_panel").addClass ("hidden");
+//			}
 		} else {
 			WUI.content_reset();
 		}
