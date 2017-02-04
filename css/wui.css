@@ -1,5 +1,5 @@
 /*
-	Copyright 2014-2016, Mhd Sulhan (ms@kilabit.info)
+	Copyright 2014-2017, Mhd Sulhan (ms@kilabit.info)
 */
 body {
 	font-family: 'Roboto', sans-serif;
@@ -96,6 +96,24 @@ h1 {
 	border-bottom	: thin silver solid;
 	padding-bottom	: 10px;
 }
+h2 {
+	font-size: 160%;
+	background-color: silver;
+}
+h2, h3, h4, h5 {
+	border-bottom: 1px solid grey;
+	padding: 2px;
+	color: black;
+}
+h3::before {
+	content: '> ';
+}
+h4::before {
+	content: '>> ';
+}
+h5::before {
+	content: '>>> ';
+}
 
 hr {
 	margin			: 0px;
@@ -117,4 +135,9 @@ th {
 img {
 	margin			: 0px auto 0px;
 	text-align		: center;
+}
+
+pre {
+	background-color: #002b36;
+	color: #839496;
 }
