@@ -176,6 +176,14 @@ http://kilabit.info/journal/2016/03/
 http://kilabit.info/journal/2016/03/Git_Tutorial__slides/
 http://kilabit.info/journal/2016/03/Go_language__Things_That_I_Learned_Writing_dsv/
 http://kilabit.info/journal/2016/03/Go_language__six_line_assert_without_any_library/
+http://kilabit.info/journal/2016/08/
+http://kilabit.info/journal/2016/08/Two_Passengers/
+http://kilabit.info/journal/2016/09/
+http://kilabit.info/journal/2016/09/Memperbaiki_keluaran_coreutils__ls__pada_Bahasa_Indonesia/
+http://kilabit.info/journal/2017/
+http://kilabit.info/journal/2017/01/
+http://kilabit.info/journal/2017/01/List_and_open_tmux_session_with_rofi/
+http://kilabit.info/journal/2017/01/Understanding_Red_Black_Tree/
 http://kilabit.info/journal/misc/
 http://kilabit.info/journal/misc/git/
 http://kilabit.info/journal/misc/oracle/
