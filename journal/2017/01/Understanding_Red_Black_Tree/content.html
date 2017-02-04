@@ -1,0 +1,756 @@
+<meta name="title" content="Understanding Red-Black Tree">
+<meta name="publish_date" content="2017-01-29 16:41:00">
+<meta name="author" content="ms@kilabit.info">
+
+<blockquote>
+This is a note when I try to implement Red-Black Tree (RBT) by
+reverse-engineering the RBT visualization at
+https://www.cs.usfca.edu/~galles/visualization/RedBlack.html .
+</blockquote>
+
+<p><i>What is RBT?</i></p>
+<p>
+RBT is a binary tree that rebalancing itself. Each node in tree have one
+attribute, its either RED or BLACK.
+</p>
+
+<p><i>Why do we need a balanced tree?</i></p>
+<p>
+To minimize time and/or operation when doing insert, delete, and search in
+tree.
+</p>
+<p>
+For example, if we insert five nodes `a`, `b`, `c`, `d`, and `e` sequentially
+into normal unbalanced tree, we will get,
+<pre>
+    a
+     \
+      b
+       \
+        c
+         \
+          d
+           \
+            e
+</pre>
+
+If we try to search for `e`, we will need five comparisons, start from the top
+`a` until `e`. So, in other words it will take `O(n)`.
+</p>
+
+<p>
+If we use RBT, we will get a tree like these one,
+
+<pre>
+    b
+   / \
+  a   d
+     / \
+    c   e
+</pre>
+
+and when searching for `e` we only do three comparisons, `b`, `d`, and `e`
+itself; in other words it will take `O(log n)`.
+</p>
+
+<h2> Rules </h2>
+
+<p>
+RBT have three general rules,
+</p>
+
+<p>
+1. Root must be BLACK.
+</p>
+<p>
+2. If node is RED, both of its childs must be BLACK.
+</p>
+<p>
+3. The number of black node from root to leaf, in every path, must be equal.
+</p>
+
+<h2> Data Structure </h2>
+
+<p>
+A simple data structure for RBT in C would be like,
+</p>
+
+<pre>
+enum rbt_color {
+    RED = 1
+,   BLACK = 2
+};
+
+struct TreeNode {
+    rbt_color color;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode* parent;
+    void* content;
+};
+
+struct RBT {
+    TreeNode* root;
+};
+</pre>
+
+<h2> Operation </h2>
+
+<p>
+There are three common operation for RBT: insertion, deletion, and search.
+Search was conducted like normal binary tree, while insertion and deletion
+require complex operation to make rule 3 is not violated.
+</p>
+
+<h3> Tree Rotations </h3>
+
+<p>
+Insertion and deletion will require two functions: rotate-left and
+rotate-right.
+
+<h4> Tree Rotate Left </h4>
+
+Given `x` as node to be rotated, rotate-left will,
+
+<ul>
+<li> make the `x`.right become parent of `x`, </li>
+<li> `x` become left child of new parent, and </li>
+<li> left node of right (`x.right.left` or `gleft`) become right node of `x`,
+replacing the `x.right` node itself. </li>
+</ul>
+
+As in illustration,
+
+<pre>
+      ...               ...
+       |                 |
+       x               right
+      / \       ==>     /
+   ...   right         x
+          /           / \
+       gleft        ...  gleft
+</pre>
+</p>
+
+<p>
+The code for this operation would be like,
+
+<pre>
+void tree_rotate_left(TreeNode* root, TreeNode* x)
+{
+    TreeNode* parent = x->parent;
+    TreeNode* right = x->right;
+    TreeNode* gleft = right->left;
+
+    if (gleft) {
+        gleft->parent = x;
+    }
+
+    right->parent = parent;
+
+    if (!parent) {
+        root = right;
+    } else {
+        if (x->is_left_of(parent)) {
+            parent->left = right;
+        } else {
+            parent->right = right;
+        }
+    }
+
+    right->left = x;
+    x->parent = right;
+
+    return root;
+}
+</pre>
+</p>
+
+<h4> Tree Rotate Right </h4>
+
+<p>
+The rotate-right operation is similar with rotate-left, we just swap the
+`left` and `right` attribute with `right` and `left`.
+</p>
+
+<p>
+As an illustration,
+<pre>
+       ...               ...
+        |                 |
+        x                left
+       / \                 \
+    left  ...  ==>          x
+       \                   / \
+        gright         gright  ...
+
+</pre>
+</p>
+
+<p>
+The code for rotate-right operation would be like,
+
+<pre>
+void tree_rotate_right(TreeNode* root, TreeNode* x)
+{
+    TreeNode* parent = x->parent;
+    TreeNode* left = x->left;
+    TreeNode* gright = left->right;
+
+    if (gright) {
+        gright->parent = x;
+    }
+
+    left->parent = parent;
+
+    if (!parent) {
+        root = left;
+    } else {
+        if (x->is_left_of(parent)) {
+            parent->left = left;
+        } else {
+            parent->right = left;
+        }
+    }
+
+    left->right = x;
+    x->parent = left;
+
+    return root;
+}
+</pre>
+
+
+<h3> Insertion </h3>
+
+<p>
+Inserting a new node to RBT is just like normal binary tree, except for three
+things,
+
+<ul>
+	<li>
+	the color of new node always RED.
+	</li>
+	<li>
+	If new node has the same content with node in the tree, there are two
+	condition that we could do (depends on programmer needs): replace them or
+	go to the right node looking for empty leaf.
+	</li>
+	<li>
+	After node has been inserted, the whole tree color need to be fixed up.
+	</li>
+</ul>
+</p>
+
+<p>
+Since new node will be at the bottom of the tree, fixing up the tree will be
+start from bottom until root, so its a loop condition.
+The loop will stop when these two conditions met,
+
+<ul>
+	<li>
+	when parent is black, or
+	</li>
+	<li>
+	node does not have grand-parent.
+	</li>
+</ul>
+</p>
+
+<p>
+Based on these, we can start by creating insert-fixup function with loop,
+
+<pre>
+static TreeNode* INSERT_FIXUP(TreeNode* root, TreeNode* node)
+{
+	TreeNode* parent = NULL;
+	TreeNode* gp = NULL; // grand parent;
+	TreeNode* auth = NULL; // this is the sibling of node's parent.
+
+	parent = node->get_parent();
+
+	while (parent && parent->is_red()) {
+		gp = node->get_grand_parent();
+
+		if (!gp) {
+			break;
+		}
+	}
+}
+</pre>
+
+<p>
+Our first task is to check the color of sibling of our parent, for simplicity
+lets call it as `aunt`.
+Lets assume that aunt is RED, with the following tree looks like,
+</p>
+
+<pre>
+         ...
+          |
+         gp:B
+         /   \
+   parent:R   aunt:R
+       /
+   new:R
+</pre>
+
+<p>
+Since the tree broke the second rule, we fix it by making the grand-parent RED
+and parent and aunt as BLACK, so the tree would be like,
+</p>
+
+<pre>
+         ...
+          |
+         gp:R
+         /   \
+  parent:B   aunt:B
+       /
+   new:R
+</pre>
+
+<p>
+Continuing from our previous loop, the code for this condition would be like
+these,
+</p>
+
+<pre>
+static TreeNode* INSERT_FIXUP(TreeNode* root, TreeNode* node)
+{
+	TreeNode* parent = NULL;
+	TreeNode* gp = NULL; // grand parent;
+	TreeNode* auth = NULL; // this is the sibling of node's parent.
+
+	parent = node->get_parent();
+
+	while (parent && parent->is_red()) {
+		gp = node->get_grand_parent();
+
+		if (!gp) {
+			break;
+		}
+
+		if (parent->is_left_of(gp)) {
+			aunt = gp->right;
+
+			if (aunt && aunt->is_red()) {
+				parent->set_black();
+				auth->set_black();
+				gp->set_red();
+
+				node = gp;
+			}
+		} else {
+			...
+		}
+	}
+}
+</pre>
+
+<p>
+What if aunt have childs? Would that make the three unbalanced?
+The answer is the RED aunt will never have childs. Remember, when we insert
+node to the tree, the node is at the bottom, which means its parent and/or
+aunt is at the bottom too. Even if the aunt is BLACK, the tree would be
+unbalance from the start because parent is RED, unless they have BLACK childs.
+</p>
+
+<p>
+Our next condition is if aunt is BLACK and new node is the right child or
+parent, with the following illustration,
+
+<pre>
+         ...
+          |
+         gp:B
+         /   \
+   parent:R   aunt:B
+         \
+          new:R
+</pre>
+</p>
+
+<p>
+To fix the tree we
+rotate the parent to the left,
+make the parent into BLACK,
+make the grand-parent into RED,
+and then rotate the grand-parent to the right.
+<pre>
+         ...                      ...
+          |          =>            |
+         gp:R                    new:R
+         /   \                   /  \
+     new:R   aunt:B      parent:B    gp:R
+       /                              \
+ parent:B                             aunt:B
+</pre>
+</p>
+
+<p>
+The code for this condition would be like,
+</p>
+
+<pre>
+static TreeNode* INSERT_FIXUP(TreeNode* root, TreeNode* node)
+{
+	TreeNode* parent = NULL;
+	TreeNode* gp = NULL; // grand parent;
+	TreeNode* auth = NULL; // this is the sibling of node's parent.
+
+	parent = node->get_parent();
+
+	while (parent && parent->is_red()) {
+		gp = node->get_grand_parent();
+
+		if (!gp) {
+			break;
+		}
+
+		if (parent->is_left_of(gp)) {
+			aunt = gp->right;
+
+			if (aunt && aunt->is_red()) {
+				parent->set_black();
+				auth->set_black();
+				gp->set_red();
+
+				node = gp;
+			} else {
+				if (node->is_right_of(parent)) {
+					RBT.root = tree_rotate_left(RBT.root, parent);
+					node = parent;
+				}
+
+				parent->set_black();
+				gp->set_red();
+
+				RBT.root = tree_rotate_right(RBT.root, gp);
+			}
+		} else {
+			...
+		}
+	}
+}
+</pre>
+
+<p>
+You may then realized that the tree is breaking the second rule where new node
+is RED and grand-parent (its child now) is also RED.
+Thats why we set node to parent to start fixing again from the bottom.
+</p>
+
+<p>
+That is the gist for insertion. The rest of it (where we mark with `...` in
+the code) is just mirroring the above code by swaping the left and right with
+right and left.
+</p>
+
+
+<h3> Deletion </h3>
+
+<p>
+Node deletion on tree have three conditions: node does not have childs, node
+have one child (either left or right), and node have both childs.
+The idea when removing node from treee was by search their replacement at the
+bottom, swap their content, fixing up, and then delete the node or
+replacement.
+</p>
+
+<h4> Node have both child </h4>
+
+<p>
+In this condition we will search the successor by finding the largest (the
+inner right or the right-edge) node of the left child.
+For example, in this three illustration,
+</p>
+<pre>
+    (1)          (2)          (3)
+
+     X            X            X
+    / \          / \          / \
+   A   ...      S   ...      S   ...
+               / \          / \
+              A   U        A   U
+                 /            / \
+                T           ...  V
+</pre>
+
+<p>
+The successor for X in tree 1 would be A. The successor for X in tree 2 would
+be `U`; and the successor for X in tree 3 is `V`.
+In tree 2, we see that the replacement `U` still have child, so we need a
+recursion when removing node that have both child. The code would be like
+these,
+</p>
+<pre>
+TreeNode* remove_have_both_childs(TreeNode* x)
+{
+	TreeNode* heir = x->left;
+
+	while (heir->right) {
+		heir = heir->right;
+	}
+
+	heir->swap_content(x);
+
+	return remove(heir);
+}
+</pre>
+
+
+<h4> Node have one child </h4>
+
+<p>
+The next condition is when we want to remove a node that have child, either
+its left or right child.
+We just need to swap the left or right with the node itself and do a remove
+operation on the child.
+</p>
+
+<pre>
+TreeNode* remove(TreeNode* x)
+{
+	TreeNode* left = x->left;
+	TreeNode* right = x->right;
+
+	if (left && right) {
+		return remove_have_both_childs(x);
+	}
+	if (left) {
+		left->swap_content(x);
+		remove_with_no_child(left);
+		return left;
+	}
+	if (right) {
+		right->swap_content(x);
+		remove_with_no_child(right);
+		return right;
+	}
+
+	remove_with_no_child(x);
+	return x;
+}
+</pre>
+
+
+<h4> Node have no childs </h4>
+
+<p>
+There are two condition that we will meet when removing node without child.
+One is if child does not have parent, means its the root;
+second is if its color is RED.
+Both of this condition does not to be fixing up, just set the root to be NULL
+or remove the node directly.
+</p>
+
+<pre>
+void remove_with_no_child(TreeNode *x)
+{
+	TreeNode* parent = x->parent;
+
+	if (!parent) {
+		RBT.root = NULL;
+		x->detach();
+		return;
+	}
+
+	if (x->is_black()) {
+		do_rebalance(x);
+	}
+
+	if (x->is_left_of(parent)) {
+		parent->left = NULL;
+	} else {
+		parent->right = NULL;
+	}
+	x->detach();
+}
+</pre>
+
+<p>
+Finally, we came to the last algorithm on rebalancing tree for deletion.
+</p>
+
+
+<h4> Rebalancing Tree for Deletion </h4>
+
+<p>
+Rebalancing tree for deletion is like insertion, we do it with loop, from
+bottom to the the top but only with one stop condition: until node is
+root.
+But, we have also several conditions inside the loop that will break the loop
+immediately.
+</p>
+
+<p>
+The idea for removing node is by looking into their sibling color or if
+sibling have childs, the color of its childs.
+</p>
+
+<p>
+In this explanation we will assume that node that we will remove is always at
+the left of its parent.
+The operation for condition if node to be removed is from right of its parent
+is identical, just by mirroring the left-side operation.
+</p>
+
+<p>
+Case 1: sibling is red.
+In this case we rotate the parent to the left, which make the sibling become
+our grand-parent; and set sibling color to BLACK.
+If parent, after rotation, have right child then set its color to RED.
+After this operation we can break the loop immediately.
+</p>
+<pre>
+     ...           =>   ...
+      |                  |
+     p:B                s:B
+     / \                / \
+  x:B   s:R           p:B  sr:B
+        / \           / \
+    sl:B   sr:B    x:B  sl:R
+</pre>
+
+<p>
+Case 2: sibling right child is RED.
+In this case we rotate the parent to the left, which make the sibling become
+our grand-parent.
+If both sibling childs is RED, the sibling color become RED.
+Both of sibling childs' color will become BLACK.
+After this operation we can break the loop immediately.
+</p>
+
+<p>
+Illustration one, when sibling right child are RED and parent is BLACK,
+</p>
+<pre>
+     ...        =>        ...
+      |                    |
+     p:B                  s:B
+     / \                 /   \
+  x:B   s:B           p:B     sr:B
+        / \           / \      /  \
+    sl:R   sr:R    x:B  sl:R ...   ...
+           / \
+        ...   ...
+</pre>
+
+<p>
+Illustration two, when sibling right child are RED and parent is also RED,
+</p>
+<pre>
+     ...        =>      ...
+      |                  |
+     p:B                s:R
+     / \                / \
+  x:B   s:B           p:B  sr:B
+        / \           / \
+    sl:B   sr:R    x:B  sl:B
+</pre>
+
+<p>
+Case 3: sibling left child is RED.
+In this case we rotate the sibling to the right and then swap the attribute of
+left child with sibling itself.
+After this, we continue the operation from the `x` again, which make the loop
+back to Case 2.
+</p>
+<pre>
+     ...         =>       ...
+      |                    |
+     p:B                  p:B
+     / \                  / \
+  x:B   s:B             x:B  sl:B
+        / \                  /  \
+    sl:R   sr:B             Y   s:R
+    / \                         / \
+   Y   Z                       Z   sr:B
+</pre>
+
+<p>
+Case 4: sibling have no childs or both are BLACK.
+In this case we set sibling color to RED.
+If parent is RED, set parent color to BLACK and break the loop immediately.
+If parent is root, break the loop immediately.
+</p>
+
+<p>
+Now that we know all the cases for deletion, we can implement it to the code,
+</p>
+<pre>
+void RBT:do_rebalance(TreeNode* x)
+{
+	TreeNode* parent = NULL;
+	TreeNode* sibling = NULL;
+	TreeNode* siblingl = NULL;
+	TreeNode* siblingr = NULL;
+
+	while (x != RBT.root) {
+		parent = x->get_parent();
+
+		if (x->is_left_of(parent)) {
+			sibling = parent->get_right();
+
+			if (sibling->is_red()) {
+				RBT.root = tree_rotate_left(RBT.root, parent));
+
+				sibling->set_attr_to_black();
+
+				if (parent->_right) {
+					parent->_right->set_attr_to_red();
+				}
+
+				return;
+			}
+
+			if (sibling->is_right_red()) {
+				RBT.root = tree_rotate_left(RBT.root, parent));
+
+				if (sibling->have_red_childs()) {
+					sibling->set_attr_to_red();
+				} else {
+					sibling->set_attr_to_black();
+				}
+				sibling->set_childs_attr_to_black();
+
+				return;
+			}
+
+			siblingl = sibling->get_left();
+			if (siblingl && siblingl->is_red()) {
+				RBT.root = tree_rotate_right(RBT.root, sibling));
+				sibling->swap_attr(siblingl);
+				parent = x;
+				continue;
+			}
+
+			if (sibling->have_no_childs()
+			||  sibling->have_black_childs()) {
+				sibling->set_attr_to_red();
+
+				if (parent->is_red()) {
+					parent->set_attr_to_black();
+					return;
+				}
+
+				if (parent == RBT.root) {
+					return;
+				}
+			}
+		} else {
+			...
+		}
+
+		x = parent;
+	}
+
+	RBT.root->set_childs_attr_to_black();
+}
+</pre>
+
+<p>
+Remember that binary tree is only have two nodes, left and right. So, any
+operation on the left node will identical with the right node.
+</p>
