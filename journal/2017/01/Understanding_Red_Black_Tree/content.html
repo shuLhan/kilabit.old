@@ -374,17 +374,18 @@ parent, with the following illustration,
 <p>
 To fix the tree we
 rotate the parent to the left,
-make the parent into BLACK,
+set node to start again from bottom (node = parent),
+make the node's parent into BLACK,
 make the grand-parent into RED,
 and then rotate the grand-parent to the right.
 <pre>
          ...                      ...
           |          =>            |
-         gp:R                    new:R
+         gp:R                    new:B
          /   \                   /  \
-     new:R   aunt:B      parent:B    gp:R
+     new:B   aunt:B      parent:R    gp:R
        /                              \
- parent:B                             aunt:B
+ parent:R                             aunt:B
 </pre>
 </p>
 
@@ -423,7 +424,7 @@ static TreeNode* INSERT_FIXUP(TreeNode* root, TreeNode* node)
 					node = parent;
 				}
 
-				parent->set_black();
+				node->parent->set_black();
 				gp->set_red();
 
 				RBT.root = tree_rotate_right(RBT.root, gp);
@@ -434,12 +435,6 @@ static TreeNode* INSERT_FIXUP(TreeNode* root, TreeNode* node)
 	}
 }
 </pre>
-
-<p>
-You may then realized that the tree is breaking the second rule where new node
-is RED and grand-parent (its child now) is also RED.
-Thats why we set node to parent to start fixing again from the bottom.
-</p>
 
 <p>
 That is the gist for insertion. The rest of it (where we mark with `...` in
@@ -546,14 +541,14 @@ or remove the node directly.
 </p>
 
 <pre>
-void remove_with_no_child(TreeNode *x)
+TreeNode* remove_with_no_child(TreeNode *x)
 {
 	TreeNode* parent = x->parent;
 
 	if (!parent) {
 		RBT.root = NULL;
 		x->detach();
-		return;
+		return x;
 	}
 
 	if (x->is_black()) {
@@ -565,7 +560,9 @@ void remove_with_no_child(TreeNode *x)
 	} else {
 		parent->right = NULL;
 	}
+
 	x->detach();
+	return x;
 }
 </pre>
 
@@ -578,9 +575,11 @@ Finally, we came to the last algorithm on rebalancing tree for deletion.
 
 <p>
 Rebalancing tree for deletion is like insertion, we do it with loop, from
-bottom to the the top but only with one stop condition: until node is
-root.
-But, we have also several conditions inside the loop that will break the loop
+bottom to the the top but different stop conditions. One, stop only if node is
+root; second, stop when node does not have sibling.
+</p>
+<p>
+We also have several conditions inside the loop that will break the loop
 immediately.
 </p>
 
@@ -693,6 +692,10 @@ void RBT:do_rebalance(TreeNode* x)
 		if (x->is_left_of(parent)) {
 			sibling = parent->get_right();
 
+			if (!sibling) {
+				break;
+			}
+
 			if (sibling->is_red()) {
 				RBT.root = tree_rotate_left(RBT.root, parent));
 
@@ -705,7 +708,7 @@ void RBT:do_rebalance(TreeNode* x)
 				return;
 			}
 
-			if (sibling->is_right_red()) {
+			if (sibling->right && sibling->is_right_red()) {
 				RBT.root = tree_rotate_left(RBT.root, parent));
 
 				if (sibling->have_red_childs()) {
@@ -753,4 +756,23 @@ void RBT:do_rebalance(TreeNode* x)
 <p>
 Remember that binary tree is only have two nodes, left and right. So, any
 operation on the left node will identical with the right node.
+</p>
+
+<p>
+If you want to see or use the full working implementation, see the libvos
+package in Github [1], its a open source library with BSD license.
+</p>
+
+<br/>
+<p>
+<tt>Happy coding,</tt>
+</p>
+<p>
+<tt>shuLhan</tt>
+</p>
+<br/>
+<br/>
+<hr/>
+<p>
+[1] https://github.com/shuLhan/libvos
 </p>
