@@ -1,0 +1,522 @@
+<meta name="title" content="Protractor: Tips and Trick">
+<meta name="publish_date" content="2017-02-18 13:40:00">
+<meta name="author" content="ms@kilabit.info">
+
+<h1>Protractor: Tips and Trick</h1>
+
+<h2> Disable animations </h2>
+
+<p>
+<i>Why?</i>
+</p>
+
+<p>
+In our application, we have a confirmation modal that displayed from right of
+the screen with animation using ui-bootstrap modal.
+</p>
+
+<p>
+Let say that user want to delete an item. They will,
+<ul>
+	<li> Click the delete button,
+	</li>
+	<li> Confirmation modal will open, transitioned from right of screen;
+	</li>
+	<li> User click continue button in confirmation modal to confirm that they
+	really want to delete an item
+	</li>
+	<li> Confirmation dialog automatically close,
+	</li>
+	<li> User continue to other task.
+	</li>
+</ul>
+</p>
+
+<p>
+It seem simple, you write the test spec as is,
+
+<pre>
+	...
+	PageObject.clickDelete();
+	browser.sleep(2000);
+	PageObject.clickContinue();
+	...
+</pre>
+
+And then you realize that sometimes the test passed only if you focus on
+browser window; and mostly the test fail if you run it in your test server or
+in background with error "Element is not visible".
+</p>
+
+<p>
+<i>What could go wrong?</i>
+Well, here is a thing that you should remember: Protractor running faster than
+your user.
+</p>
+
+<p>
+Here is what I assume (because I did not know how protractor and selenium code
+work actually) happened in the background:
+
+<ul>
+<li> When delete button clicked, ui-bootstrap modal create and attach a modal
+to body element, along with continue button, but the modal is not displayed
+yet because its animated/transitioned from right.
+</li>
+<li> Protractor see that the continue button exist and get their element
+position in browser.
+</li>
+<li>
+Since the modal is not displayed yet, the button position would be undefined
+or at (0,0).
+</li>
+<li>
+Protractor trigger a click
+</li>
+<li>
+Browser respond with element is not visible.
+</il>
+</ul>
+</p>
+
+<p>
+You may think that this issue can be fixed by adding `browser.sleep(x)`
+before clicking continue button. But when you run your test in background you
+still get a chance that the test fail.
+</p>
+
+<p>
+<i> How to fix it ?</i>
+</p>
+
+<p>
+One of the trick is by disabling ng-animate and adding a custom stylesheet
+that remove any CSS animation before Protractor running.
+Here is the code that I found on stackoverflow [2], to disable it:
+
+<pre>
+function onPrepare()
+{
+...
+	var disableNgAnimate = function()
+	{
+		angular.module('disableNgAnimate', [])
+			.run(['$animate', function($animate)
+			{
+				$animate.enabled(false);
+			}]);
+	};
+
+	var disableCssAnimate = function()
+	{
+		angular.module('disableCssAnimate', [])
+			.run(function()
+			{
+				var style = document.createElement('style');
+				style.type = 'text/css';
+				style.innerHTML
+					= '* {'
+					+ '-webkit-transition: none !important;'
+					+ '-moz-transition: none !important'
+					+ '-o-transition: none !important'
+					+ '-ms-transition: none !important'
+					+ 'transition: none !important'
+					+ '}';
+				document.getElementsByTagName('head')[0].appendChild(style);
+			});
+	};
+
+	browser.addMockModule('disableNgAnimate', disableNgAnimate);
+	browser.addMockModule('disableCssAnimate', disableCssAnimate);
+...
+}
+...
+// This is your Protractor configuration
+export.config = {
+		...
+	,	onPrepare: onPrepare
+		...
+	};
+...
+</pre>
+</p>
+
+<p>
+</p>
+
+<h2> Pay attention to browser native popup </h2>
+
+<p>
+	<i>
+	Why?
+	</i>
+</p>
+
+<p>
+Browser native popup is a popup that usually displayed when your application,
+	<ul>
+		<li>
+		Want to display notification to user,
+		</li>
+		<li>
+		Want to access user location,
+		</li>
+		<li>
+		Want to access your camera or microphone.
+		</li>
+	</ul>
+</p>
+
+<p>
+When you test your application manually, you unconsciously click "Always" when
+browser show this popup (or its already "Always enabled").
+But when you write a test, you forgot about it, your test will run in test
+server, unsupervised, and you realize that some form input always fail, with
+an error like "Element is not visible".
+The browser displaying popup, when Protractor select an element it will lookup
+on browser popup instead of your application page.
+</p>
+
+<p>
+	<i>
+	How to fix it?
+	</i>
+</p>
+
+<p>
+Add browser options to always accept notification [2]. For example, here is
+the config to always accept location sharing and notification on chrome,
+
+<pre>
+var chromeOptions = {
+		prefs: {
+			// Always allow location shared and notification popup.
+			'profile.managed_default_content_settings.geolocation': 1
+		,	'profile.managed_default_content_settings.notifications': 1
+		}
+	};
+</pre>
+</p>
+
+
+<h2> Never access element inside your spec file </h2>
+
+<p>
+	<em>
+	What does that mean?
+	</em>
+</p>
+
+<p>
+When you write your spec file, you will need an access to element on page.
+Then you write,
+
+<pre>
+...
+	it('should do...', function()
+	{
+		...
+		$('div.list item').click();
+		...
+		$('button.delete').click();
+		...
+	});
+	...
+	it('should...', function()
+	{
+		...
+		$('div.list item').click();
+		...
+		$('button.delete').click();
+		...
+	});
+...
+</pre>
+</p>
+
+<p>
+	<em>
+	Why is it bad?
+	</em>
+</p>
+
+<p>
+	<ul>
+	<li>
+	Duplicate code.
+	</li>
+	<li>
+	Changes on element style or structure on your application will require
+	changes on many places in your spec file.
+	</li>
+	<li>
+	Sometimes element selector is not readable, it make your spec file also
+	unreadable.
+	</li>
+	</ul>
+</p>
+
+<p>
+	<em>
+	How to fix it?
+	</em>
+</p>
+
+<p>
+Use page object (PO) [4].
+Imagine each PO as a single class that your test spec will want to use.
+In your PO, only export the function, not the element or variables.
+So, when your CSS or model changes, it will only affect the PO not the spec
+file.
+</p>
+
+<p>
+If you came from object-oriented land, you will know what I mean.
+</p>
+
+<p>
+For example, in your page that manage todo list, you create one PO only for
+this page,
+
+<pre>
+function TodoList()
+{
+	var self = this;
+	var list = $('div.list');
+	var btnDelete = $('button.delete');
+
+	self.clickItem = function(n)
+	{
+		return list.get(n).click();
+	};
+
+	self.clickDelete = function()
+	{
+		return btnDelete.click();
+	};
+};
+
+module.exports = TodoList;
+</pre>
+</p>
+
+<p>
+Then, in your spec file, you only call PO functions,
+<pre>
+TodoPage = require('path/to/po.spec.js');
+
+...
+	it('...', function(done)
+	{
+		TodoPage.clickItem(0)
+		...
+		TodoPage.clickDelete();
+	});
+...
+</pre>
+</p>
+
+<p>
+Its more readable and easy to maintain in the future.
+</p>
+
+
+<h2> Synchronous calls is more stable </h2>
+
+<p>
+This is purely my opinion.
+Protractor is written in javascript.
+Jasmine is written in javascript.
+So, any call to element selector, click or any trigger is asynchronous.
+</p>
+
+<p>
+This is how Protractor suggest in their tutorial,
+
+<pre>
+...
+	it('...', function()
+	{
+		TodoPage.click();
+		...
+		expect(...).toBe(...);
+	});
+...
+</pre>
+</p>
+
+<p>
+This is how I write the test,
+
+<pre>
+...
+	it('...', function(done)
+	{
+		return TodoPage.click()
+			.then(function()
+			{
+				return ...;
+			})
+			.then(function()
+			{
+				expect(...).toBe(...);
+				done()
+			});
+	});
+...
+
+</pre>
+</p>
+
+<p>
+Unfortunately, I don't have any data/code to support my claim, but, it
+definitely eleminate all "Element not visible" or other "sometimes test fail"
+on my spec files.
+</p>
+
+
+<h2> Your test run in parallel </h2>
+
+<p>
+This part is not tips or trick, it just a reminder, in case you are new to
+Protractor.
+When you write test spec, one may insert item and the other edit or delete an
+item.
+Both run in different spec files but on the same page.
+When spec for delete running, the other spec may try to edit the first item.
+Once delete finished, the edit spec may fail because the first item is
+missing.
+</p>
+
+<p>
+The solution for this problem is either you merge all test of the same page
+into one spec file, or you search for specific element before you doing a
+delete, which require more steps and take more time.
+</p>
+
+
+<h2> Looping </h2>
+
+<p>
+Use case: you want to clear all items before running the test.
+</p>
+
+<p>
+One of the old technique is using `for` loop.
+The other tecnique is using recursive call to function.
+Which one is better? Depends on your application, but I prefer using recursive
+call because its more stable.
+</p>
+
+<p>
+For example, this is how I do before with for loop,
+
+<pre>
+	List.getCount()
+		.then(function(n)
+		{
+			for (var x = 0; x < n; x++) {
+				TodoPage.clickFirstItem();
+				browser.sleep(2000);
+
+				// Yes, zero, because we want to delete the first item,
+				// repeatedly.
+				TodoPage.doDelete(0);
+
+				browser.sleep(2000);
+			}
+		});
+	}
+</pre>
+</p>
+
+<p>
+If I lucky, the above loop will work, but sometimes it will fail because
+`List.delete(0)` will be run asynchronous.
+</p>
+
+<p>
+This is how I do it with recursive call,
+
+<pre>
+function doDelete(done)
+{
+	return browser.waitForAngular()
+		.then(function()
+		{
+			return TodoPage.clickFirstItem();
+		})
+		.then(function()
+		{
+			return browser.sleep(2000);
+		})
+		.then(function()
+		{
+			expect(...);
+		})
+		.then(function()
+		{
+			return TodoPage.doDelete(0);
+		})
+		.then(function()
+		{
+			return browser.sleep(2000);
+		})
+		.then(function()
+		{
+			return TodoPage.getCount();
+		})
+		.then(function(v)
+		{
+			if (v > 0) {
+				console.log('>>> # todo:', v);
+				return doDelete(done);
+			} else {
+				done();
+			}
+		});
+}
+	...
+
+	it('should delete all items', function(done)
+	{
+		return TodoPage.getCount()
+			.then(function(v)
+			{
+				if (v > 0) {
+					console.log('>>> # items:', v);
+					return doDelete(done);
+				} else {
+					done();
+				}
+			});
+	});
+
+	...
+</pre>
+</p>
+
+<p>
+Sure, its longer, but it get the job done.
+</p>
+
+<br/>
+<br/>
+<h2> References </h2>
+
+<p>
+[1] http://protractortest.org/
+</p>
+<p>
+[2] http://stackoverflow.com/questions/26584451/how-to-disable-animations-in-protractor-for-angular-js-application
+</p>
+<p>
+[3] https://github.com/angular/protractor/issues/2626
+</p>
+<p>
+[4] http://www.protractortest.org/#/page-objects
+</p>
+
+<h2> Discussion </h2>
+
+On Reddit: https://www.reddit.com/r/angularjs/comments/5urymo/protractor_tips_and_trick/
