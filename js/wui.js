@@ -50,7 +50,6 @@ var WUI =
 ,	el: {
 		content: null
 	,	meta: null
-	,	comment: null
 	}
 
 ,	set_title : function ()
@@ -62,33 +61,6 @@ var WUI =
 ,	set_subtitle : function ()
 	{
 		$("#wui_subtitle").append (WUI.config["subtitle"]);
-	}
-
-,	wui_comment_on_submit : function (event)
-	{
-		var $form	= $(this);
-		var data	= {};
-
-		data.c_link			= $form.find ("#c_link").val ();
-		data.c_content		= $form.find ("#c_content").val ();
-
-		$.ajax ({
-				type	: $form.attr ("method")
-			,	url		: $form.attr ("action")
-			,	data	: data
-			,	dataType: "json"
-			,	success	: function (resp, status)
-				{
-					var l = data.c_link.replace ("comment.json", "");
-					window.open (l, "_self");
-				}
-			,	error	: function (xhr, status, errorThrown)
-				{
-					alert (xhr);
-				}
-			});
-
-		event.preventDefault();
 	}
 
 ,	path2id : function (str)
@@ -167,36 +139,6 @@ var WUI =
 		WUI.el.content.load (link + ts, null, WUI.content_on_load (link));
 	}
 
-,	set_content_comment : function (node)
-	{
-		var wc		= $("#comments");
-		var ts		= "?_ts="+ new Date ().getTime ();
-		var link	= node.link.replace ("index.html", "comment.json");
-
-		$("#c_link").val (link);
-
-		wc.empty ();
-
-		$.getJSON (link + ts, function (data) {
-				$.each (data, function (idx, d) {
-					wc.append (
-					"<div class='panel'>"
-						+"<div class='panel-body'>"
-							+"<span id='comment_time'>"
-							+ WUIFeed.date2string (new Date(d.time * 1000))
-							+" -- </span>"
-							+"<strong>"
-								+ (d.author === "" ? "Anonymous" : d.author)
-							+"</strong>"
-							+"<br/>"
-							+ d.v
-						+"</div>"
-					+"</div>"
-					);
-				});
-			});
-	}
-
 ,	on_menu_click : function (e)
 	{
 		var id		= e.data.id;
@@ -261,7 +203,6 @@ var WUI =
 			,	link	: m.link
 			,	load	: m.load
 			,	title	: m.title
-			,	comment	: m.comment
 			}, WUI.on_menu_click);
 
 			mi.append (a);
@@ -473,8 +414,6 @@ var WUI =
 			WUI.set_location();
 
 			WUI.generate_footer ();
-
-			$("#wui_comment_form").on("submit", WUI.wui_comment_on_submit);
 		});
 	}
 };

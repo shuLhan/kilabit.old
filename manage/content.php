@@ -82,7 +82,6 @@ try {
 	$e_pub_date		= $_POST["e_publish_date"];
 	$e_pub_time		= $_POST["e_publish_time"];
 	$e_author		= $_POST["e_author"];
-	$e_comment		= $_POST["e_comment"];
 	$e_content		= $_POST["e_content"];
 
 	$path = make_path ($e_pub_date);
@@ -122,26 +121,6 @@ $e_content
 EOF;
 
 	file_put_contents ($node ."/content.html", $contents);
-
-	// check for comments
-	$fcomment = $node ."/comment.json";
-	$fcomment_bak = $node ."/comment.json.bak";
-
-	if ($e_comment === "true") {
-		// if comment allow and bak file exist, rename bak to comment back.
-		if (file_exists ($fcomment_bak)) {
-			rename ($fcomment_bak, $fcomment);
-		// or create new comment file.
-		} else if (! file_exists ($fcomment)) {
-			file_put_contents ($fcomment, "[]");
-		}
-	} else {
-		// if comment is not allowed check for existing comment file
-		// and rename it to .bak.
-		if (file_exists ($fcomment)) {
-			rename ($fcomment, $fcomment_bak);
-		}
-	}
 
 	// reindex
 	$wui["contents_dir"] = "..";

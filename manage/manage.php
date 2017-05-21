@@ -253,18 +253,6 @@
 							>
 						</div>
 					</div>
-
-					<div class="form-group">
-						<div class="col-sm-offset-4 col-sm-8">
-							<label class="checkbox-inline input-sm">
-								<input
-									name="e_comment"
-									type="checkbox"
-									id="e_comment"
-								/>Allow comment
-							</label>
-						</div>
-					</div>
 				</form>
 				<!--}}} CONTENT -->
 			</div>
@@ -328,7 +316,6 @@
 			,	e_publish_date	:get_current_date ()
 			,	e_publish_time	:get_current_time ()
 			,	e_author		:author
-			,	e_comment		:"off"
 			,	e_content		:""
 			};
 
@@ -471,7 +458,6 @@
 			$("#e_publish_date").val (new_journal_data.e_publish_date);
 			$("#e_publish_time").val (new_journal_data.e_publish_time);
 			$("#e_author").val (new_journal_data.e_author);
-			$("#e_comment").val (new_journal_data.e_comment);
 			CKEDITOR.instances.e_content.setData (new_journal_data.e_content);
 			$("#b_preview").click();
 
@@ -527,8 +513,6 @@
 							}
 						});
 
-					$("#e_comment").prop ("checked", node.comment);
-
 					var body = $(doc).find ("body");
 
 					CKEDITOR.instances.e_content.setData (body.html ());
@@ -548,7 +532,6 @@
 			data.e_publish_date = $form.find ("#e_publish_date").val ();
 			data.e_publish_time = $form.find ("#e_publish_time").val ();
 			data.e_author		= $form.find ("#e_author").val ();
-			data.e_comment		= $form.find ("#e_comment").prop ("checked");
 			data.e_content		= CKEDITOR.instances.e_content.getData ();
 
 			$.ajax ({
@@ -625,7 +608,6 @@
 						new_journal_data.e_publish_date = $form.find ("#e_publish_date").val ();
 						new_journal_data.e_publish_time = $form.find ("#e_publish_time").val ();
 						new_journal_data.e_author		= $form.find ("#e_author").val ();
-						new_journal_data.e_comment		= $form.find ("#e_comment").prop ("checked");
 						new_journal_data.e_content		= CKEDITOR.instances.e_content.getData ();
 
 						new_journal = false;
