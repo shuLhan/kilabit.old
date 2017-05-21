@@ -1,6 +1,6 @@
-/*
-	Copyright 2014-2016 Mhd Sulhan (ms@kilabit.info)
-*/
+/**
+ * Copyright 2014-2017 Mhd Sulhan (ms@kilabit.info)
+ */
 'use strict';
 
 var WUI =
@@ -19,11 +19,10 @@ var WUI =
 	,	"social_icon"		:
 		{
 			"facebook"			: ""
-		,	"glider"			: "/"
 		,	"github"			: "https://github.com/shuLhan"
 		,	"google_plus"		: "https://plus.google.com/+MhdSulhan"
 		,	"linked"			: "https://id.linkedin.com/in/muhamadsulhan/"
-		,	"twitter"			: "https://twitter.com/MhdSulhan"
+		,	"twitter"			: "https://twitter.com/_shuLhan"
 		,	"feed"				: "http://feeds.feedburner.com/Kilabit"
 		}
 	}
@@ -230,13 +229,6 @@ var WUI =
 
 		if (true === load) {
 			WUI.set_content (e.data);
-
-//			if (true === e.data.comment) {
-//				$("#wui_comment_panel").removeClass ("hidden");
-//				WUI.set_content_comment (e.data);
-//			} else {
-//				$("#wui_comment_panel").addClass ("hidden");
-//			}
 		} else {
 			WUI.content_reset();
 		}
