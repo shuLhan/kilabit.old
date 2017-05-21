@@ -1,0 +1,247 @@
+<meta name="title" content="Go (Informal) Coding Style">
+<meta name="publish_date" content="2017-05-21 15:23:00">
+<meta name="author" content="ms@kilabit.info">
+<h1>Go (Informal) Coding Style</h1>
+
+<p>
+In general Go already have <tt>gofmt</tt> that will format the code according to Go standard. Developers should already used this tool in their editor/IDE.
+This section describe informal coding style, that is not covered by Go format tool.
+</p>
+
+<p>
+The following recommendation is subjective. If you work in large code base, with more than three developers, you should already have a common "language" between them, to make it consistent and readable.
+</p>
+
+
+<h2>Group imports</h2>
+
+<p>
+Imported packages should be grouped and ordered by system, third party, and then our packages. Each group separated by empty line. For example,
+</p>
+
+<pre>
+import (
+    // This is system packages
+    &quot;os&quot;
+    &quot;net/http&quot;
+    ...
+
+    // Empty line followed by third party packages
+    &quot;third/party/library&quot;
+    ...
+
+    // Empty line followed by our packages
+    &quot;github.com/yourcompany/yourlib&quot;
+    ...
+)
+</pre>
+
+<h2>Structure code as in Godoc layout</h2>
+
+<p>If you looks at the Go doc layout, each sections is ordered by the following format,</p>
+
+<ul>
+	<li>package description</li>
+	<li>package constanta</li>
+	<li>package global variables</li>
+	<li>package global functions</li>
+	<li>type</li>
+	<li>type&#39;s methods</li>
+</ul>
+
+<p>
+Builtin functions, like <tt>init()</tt>, <tt>main()</tt>, and <tt>TestMain()</tt> must be at the bottom of the source code. As an example see net package [1].
+</p>
+
+<p>
+<b>Rationale:</b> Following go doc format will make code easy to read, because we know where each of section is located.
+
+<p>
+[1] https://golang.org/pkg/net/
+</p>
+
+<h2> Package must have a file with the same name </h2>
+
+<p>
+Package named <tt>mypkg</tt> must have source file with the name <tt>mypkg.go</tt>.
+This file will be used to declare global variables, constanta, and <tt>init()</tt> function.
+</p>
+
+<p>
+<b>Rationale:</b> easy to search where global variables, constanta, and <tt>init()</tt> defined.
+
+
+<h2> One type (struct/interface) per file </h2>
+
+<p>
+The filename must follow the name of the type. For example, package <tt>X</tt> have two exported structs: Y and Z. So, in the directory X there would be two files: <tt>Y.go</tt> and <tt>Z.go</tt>.
+</p>
+
+<p>
+<b>Rationale:</b>
+<ul>
+<li> Easy to search where type is defined </li>
+<li> Modularization by files </li>
+</ul>
+</p>
+
+
+<h2> Define field name when creating struct instance </h2>
+
+<p>
+Bad practice:
+</p>
+
+<pre>
+x := ADT{
+    "a",
+    "b",
+    "c",
+}
+</pre>
+
+<p>
+Good practice:
+</p>
+
+<pre>
+x := ADT{
+    name: "a",
+    phone: "b",
+    address: "c",
+}
+</pre>
+
+<p>
+<b> Rationale: </b>
+<ul>
+<li> Prevent miss-assigned field value when refactoring struct. For example, new field "firstname" and "lastname" added the top of declaration, the "Bad" example still work but may not what developer wants.
+</li>
+<li> Easy to read. </li>
+</ul>
+</p>
+
+
+<h2> Define variable name in function return </h2>
+
+<p>
+This will minimize the chance of duplicate variables (especially error), one time declaration , and allow calling return without parameter.
+</p>
+
+<p>
+For example, the following code is ok,
+</p>
+
+<pre>
+func DoSomething(x, y int) (int, error) {
+    ...
+    e := callOtherFunc(x,y)
+    ...
+    v, e = doOther()
+    ...
+
+    return v,e
+}
+</pre>
+
+<p>
+But recommended way is,
+</p>
+
+<pre>
+func DoSomething(x, y int) (v int, e error) {
+    ...
+    e = callOtherFunc(x,y)
+    ...
+    v, e = doOther()
+    ...
+
+    return
+}
+</pre>
+
+<p>
+<b> Rationale: </b>
+<ul>
+<li> Programmer can know the type of variable (allow quick reading of code without guessing/searching the type through API)
+</li>
+<li> Minimize variable creation. Technically, each := statement will create new variable and the previous one will be garbage collected.
+</li>
+</ul>
+
+
+<h2> Use short variable names if possible </h2>
+
+<p>
+Common short variable names,
+
+<ul>
+<li> <tt>x</tt>, <tt>y</tt>, and <tt>z</tt> for looping. Not <tt>i</tt>, <tt>j</tt>, etc. because its prone to error, let more than three deeps looping (which is a signal for bad programming) and not easy for quick reading. </li>
+<li> <tt>err</tt> for error variable </li>
+<li> <tt>ctx</tt> for context </li>
+<li> <tt>req</tt> for client request </li>
+<li> <tt>res</tt> for server response </li>
+<li> <tt>msg</tt> for general message input/output </li>
+</ul>
+</p>
+
+<p>
+Common prefix for variable or function,
+
+<ul>
+<li> <tt>jXXX</tt> for message in JSON struct </li>
+<li> <tt>bXXX</tt> for message in slice of bytes ([]byte) </li>
+<li> <tt>DefXXX</tt> or <tt>defXXX</tt> for default variable/constanta </li>
+</ul>
+</p>
+
+
+<h2> Comment grammar </h2>
+
+<p>
+In Go, exported field or function denoted by capital letter on the first letter, and it must have comment.
+</p>
+
+<p>
+For field (on struct, var, or const) the recommended comment format is by using <i>define</i> verb after variable name.
+</p>
+
+<p>
+For example,
+
+<pre>
+// DefPort define the default port to listen on ...
+var DefPort = 9002
+</pre>
+</p>
+
+<p>
+For function the recommended format is by using <i>will</i> verb after function name and explain what the function does and what the function will return on success and on failure.
+</p>
+
+<p>
+For example,
+
+<pre>
+//
+// GetEnv will read system environment name `envName` and ...
+//
+// On success, it will return ...
+// On fail, it will return ...
+//
+func GetEnv(envName string) (v string, err error) {
+    ...
+}
+</pre>
+</p>
+
+
+<h2> Package that create binary should be in "./cmd" directory </h2>
+
+<p>
+One of the things that I learned later in software development was when writing code, pretend that your code will be used by other developers, which means, write library first, program later. This is a mistake that we have been taught since college, because we learn to write program not library.
+</p>
+
+<p>
+Go, in their subtle way, embrace this kind of thinking when developing software.
+</p>
