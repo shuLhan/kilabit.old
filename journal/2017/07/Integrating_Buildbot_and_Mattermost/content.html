@@ -1,0 +1,207 @@
+<meta name="title" content="Integrating Buildbot and Mattermost">
+<meta name="publish_date" content="2017-07-12 14:16:27">
+<meta name="author" content="ms@kilabit.info">
+<p>
+In this journal, I would like to explain how to integrate Mattermost [1] slash command to build project on specific repository and branch on Buildbot [2] worker and report the project build status back to Mattermost.
+</p>
+
+<p>
+The integration can be illustrated with the following graph,
+</p>
+
+<pre>
++------+   /build repo branch    +------------+
+| User | ----------------------> | Mattermost |
++------+                         +------------+
+   ^                                   |
+   |                                   | /change_hook/mattermost
+   |                                   |
+   |                                   v
+   |                             +----------------------+
+   |                             | Build master         |
+   |                             | /hooks/mattermost.py |
+   |                             +----------------------+
+   |                                   |
+   |                                   | change-dictionary
+   |                                   |
+   |                                   v
+   |   build-status              +-----------------------+
+   +---------------------------- | Build master          |
+                                 | SingleBranchScheduler |
+                                 +-----------------------+
+</pre>
+
+<h2>Environment</h2>
+
+<p>The following application must have already installed,</p>
+
+<ul>
+	<li>Mattermost version 3.10.x</li>
+	<li>Buildbot version 0.9.x</li>
+</ul>
+
+<h2> Customize Mattermost Integrations </h2>
+
+<h3>Create Slash Command on Mattermost</h3>
+
+<p>The first thing that we will do is creating the Mattermost slash command. In Mattermost menu, click `Integrations` and after that click `Slash Command`, and `Add Slash Command`. A form for creating new slash command will opened. Here is the field that you need to fill,</p>
+
+<ul>
+	<li>`Command Trigger Word`: build
+	<ul>
+		<li>When typing `/` on channel, it will list `build` as one of the option</li>
+	</ul>
+	</li>
+	<li>`Request URL`: http://{{ http_auth }}:{{ http_password }}@{{ buildbot_master_ip }}:{{ buildbot_master_port }}/change_hook/mattermost
+	<ul>
+		<li>`http_auth` and `http_password` is for authenication</li>
+		<li>`buildbot_master_ip` is the IP address where Buildbot master running</li>
+		<li>`buildbot_master_port` is the port where Buildbot master running, default to 8010</li>
+		<li>`/change_hook/mattermost` is the custom hook for Buildbot. We will talk about it later.</li>
+	</ul>
+	</li>
+	<li>`Request Method`: POST</li>
+	<li>`Autocomplete Hint`: [repo] [branch] [revision]</li>
+</ul>
+
+<p>Request URL is the URL where mattermost will send POST request contains the parameter. In this scenario we want the first parameter to be the repository name, second parameter to be branch name, and third (optional) parameter to be revision number. For example, sending the following text on Mattermost,</p>
+
+<pre>
+   /build project-example master
+</pre>
+
+<p>will checkout the latest `project-example` source code on branch `master` and run the test, build, and deploy the project.</p>
+
+<p>Save, and Mattermost will generate a token for authentication that we will use the later.</p>
+
+
+<h3> Create Incoming Webhooks </h3>
+
+<p>
+Incoming webhooks is used to send status of build back to Mattermost. The only field that is required for incoming webhooks is the channel name. After creating incoming hooks, Mattermost will generate a URL for you, for example,
+</p>
+<pre>
+http://{{ mattermost_ip }}:{{ mattermost_port }}/hooks/randomstring
+</pre>
+
+<h2>Customize Buildbot</h2>
+
+<h3> Add Changehook Authentication </h3>hook
+
+<p>
+In the buildmaster directory create a file called <tt>changehook.passwd</tt> with content as in
+</p>
+
+<pre>
+{{ http_auth }}:{{ http_password }}
+</pre>
+
+<p>
+Remember, it must be the same `http_auth` and `http_password` values as in `Request URL` above.
+</p>
+
+
+<h3> Add Reporter and Change Hook Script </h3>
+
+In order for Buildbot to process the `/change_hook/mattermost` and report the status to mattermost, you must copy my change hook [3] into Buildbot hooks (In CentOS 7, it was located in </tt>`/usr/lib/python2.7/site-packages/buildbot/www/hooks/`</tt>) and reporter script [4] to build master directory.
+
+
+<h3> Update Master Config </h3>
+
+<p>
+In the <tt>master.cfg</tt>, set the <tt>services</tt> options to the following values,
+</p>
+
+<pre>
+from buildbot.plugins import reporters
+import mattermost_reporter
+
+mmpush = reporters.HttpStatusPush(
+		serverUrl="http://{{ mattermost_ip }}:{{ mattermost_port }}{{ chat_hook }}"
+	,	format_fn=mattermost_reporter.formatter
+	,	wantProperties=True
+	)
+
+c['services'].append(mmpush)
+</pre>
+
+<p>
+The `serverUrl` is the incoming webhooks for Mattermost.
+</p>
+
+<p>
+In the <tt>master.cfg</tt>, set the <tt>www</tt> options to the following values,
+</p>
+
+<pre>
+c['www'] = {
+		"port": {{ buildmaster_http_port }}
+	,	"plugins": {
+			"console_view": True
+		}
+	,	"change_hook_dialects":{
+			"github": {
+				"secret": "{{ buildmaster_github_secret }}"
+			,	"strict": True
+			}
+		,	"mattermost": {
+				"token": "{{ mattermost_slash_build_token }}"
+			,	"channel": "ci"
+			,	"repo_base_url": "git@github.com:{{ github_username }}/"
+			}
+		}
+	}
+</pre>
+
+<p>
+The important part is the `mattermost` option inside `change_hook_dialects` option.
+</p>
+
+<ul>
+<li> `token` value is the token that generated by Mattermost after creating slash command.</li>
+<li> `channel` value is the name of channel in Mattermost. We would like to limit where the user can execute the slash command `/build` from here.</li>
+<li> `repo_base_url` is base url where the buildbot will checkout the repository. Its value will be concatenated with parameter `repo` (the first parameter) from slash command.
+</ul>
+
+
+<h3> Integrate Your Build </h3>
+
+<p>
+If you already have configured scheduler, factory, and builder for your repository; you need to add the new scheduler,
+</p>
+
+<pre>
+c["schedulers"].append(
+	schedulers.SingleBranchScheduler(
+		name="mattermost_%s" % repo_name
+	,	change_filter=util.ChangeFilter(
+			project_re="mattermost_build_project-example_master"
+		,	category="mattermost"
+		)
+	,	treeStableTimer=None
+	,	builderNames=[repo_name]
+	)
+)
+</pre>
+
+<p>
+The key was in `project_re` (aka project regular expression). The change-hook script will generate project name using "mattermost_build_[repo]_[branch]" and send it to build master to be processed.
+</p>
+
+<h2> That's it </h2>
+
+<p>
+If you still confused, see the full `master.cfg` as an example that can be found on my repository [5].
+</p>
+
+<hr />
+
+<p>[1] https://about.mattermost.com/</p>
+
+<p>[2] http://buildbot.net/</p>
+
+<p>[3] https://github.com/shuLhan/mattermost-integration/blob/master/buildbot/mattermost.py </p>
+
+<p>[4] https://github.com/shuLhan/mattermost-integration/blob/master/buildbot/mattermost_reporter.py </p>
+
+<p>[5] https://github.com/shuLhan/mattermost-integration/blob/master/buildbot/master.cfg </p>
