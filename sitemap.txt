@@ -188,6 +188,8 @@ http://kilabit.info/journal/2017/02/
 http://kilabit.info/journal/2017/02/Protractor_tips_and_trick/
 http://kilabit.info/journal/2017/05/
 http://kilabit.info/journal/2017/05/Go_Informal_Coding_Style/
+http://kilabit.info/journal/2017/07/
+http://kilabit.info/journal/2017/07/Integrating_Buildbot_and_Mattermost/
 http://kilabit.info/journal/misc/
 http://kilabit.info/journal/misc/git/
 http://kilabit.info/journal/misc/oracle/

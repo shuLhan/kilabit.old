@@ -2,7 +2,7 @@
 <meta name="publish_date" content="2017-07-12 14:16:27">
 <meta name="author" content="ms@kilabit.info">
 <p>
-In this journal, I would like to explain how to integrate Mattermost [1] slash command to build project on specific repository and branch on Buildbot [2] worker and report the project build status back to Mattermost.
+In this journal, I would like to explain how to integrate Mattermost [1] slash command to build (test and deploy) project on specific repository and branch on Buildbot [2] worker and report the project build status back to Mattermost.
 </p>
 
 <p>
@@ -86,7 +86,7 @@ http://{{ mattermost_ip }}:{{ mattermost_port }}/hooks/randomstring
 
 <h2>Customize Buildbot</h2>
 
-<h3> Add Changehook Authentication </h3>hook
+<h3> Add Changehook Authentication </h3>
 
 <p>
 In the buildmaster directory create a file called <tt>changehook.passwd</tt> with content as in
@@ -194,7 +194,9 @@ The key was in `project_re` (aka project regular expression). The change-hook sc
 If you still confused, see the full `master.cfg` as an example that can be found on my repository [5].
 </p>
 
+<br/>
 <hr />
+<br/>
 
 <p>[1] https://about.mattermost.com/</p>
 
