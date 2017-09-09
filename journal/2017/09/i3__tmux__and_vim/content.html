@@ -1,0 +1,108 @@
+<meta name="title" content="i3, tmux, and vim">
+<meta name="publish_date" content="2017-09-09 18:44:15">
+<meta name="author" content="ms@kilabit.info">
+<p>Someone ask on /r/vim &quot;<a href="https://www.reddit.com/r/vim/comments/6xeo0d/what_are_a_sane_set_of_key_bindings_between_i3wm/" target="_blank"> What are a sane set of key bindings between i3wm, tmux, and vim? </a>&quot; . It&#39;s good question, because all of the programs is keyboard friendly, less-mouse, navigation.</p>
+
+<p>Before we look into my keybindings, you must understand why or how I use those three programs.</p>
+
+<p>The key here is trying,</p>
+
+<ul>
+	<li><em>not to </em> customize as many as keybindings, so your brain can work in other non customized environment seamlessly.</li>
+	<li><em>not to </em> use split pane on tmux, or split edit on vim. Use new window or new tab instead.</li>
+</ul>
+
+<h2>i3</h2>
+
+<p>The meaning of workspaces in i3 is a group of application/projects/windows. For example, my i3 workspaces name are,</p>
+
+<ul>
+	<li>Net: for email and browser</li>
+	<li>Devops: for devops related tasks</li>
+	<li>Remote: for list of terminal that open SSH connection</li>
+	<li>Backend: for list of terminal that open backend project</li>
+	<li>Media: for watching movie, Spotify window</li>
+	<li>and so on.</li>
+</ul>
+
+<p>So the only keybindings I need are switching between workspaces and moving windows between workspaces,</p>
+
+<ul>
+	<li><code>Ctrl+alt+left </code> to move the the left workspace,</li>
+	<li><code>Ctrl+alt+right </code> to move to the right workspaces,</li>
+	<li><code>Win+x </code>, where x is number between 1-0, to quickly jump into workspaces;</li>
+	<li>Win+Shift+x, to move window into workspace `x`</li>
+</ul>
+
+<div>A sample of keybindings config in i3,</div>
+
+<pre>
+bindsym $mod+1 workspace $WS1
+bindsym $mod+2 workspace $WS2
+...
+
+bindsym Mod1+Control+Left workspace prev
+bindsym Mod1+Control+Right workspace next
+
+## move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace $WS1
+bindsym $mod+Shift+2 move container to workspace $WS2
+...
+</pre>
+
+<p>Here is my i3 config: <a href="https://github.com/shuLhan/home/blob/master/.config/i3/config" target="_blank">https://github.com/shuLhan/home/blob/master/.config/i3/config</a></p>
+
+<h2>tmux</h2>
+
+<p>A single i3 workspace contains many programs (terminal, browser, etc). Each terminal must run with tmux.</p>
+
+<p>For example, in the backend workspaces I have tmux session. The session name is equal with project name or remote name [1]. Let say repo-x. Inside this session I usually open three or four tmux&#39;s shell (or window): one shell to edit, one shell to compile and running test, and other shell for everything else.</p>
+
+<p>To create a new shell, I use standard tmux keybindings: <code> Ctrl+b+c </code>.</p>
+
+<p>To move between shell, I use</p>
+
+<ul>
+	<li><code>Ctrl+pgup </code> to switch to the right shell, and</li>
+	<li><code>Ctrl+pgdown </code> to switch to the right shell.</li>
+</ul>
+
+<p>A sample of keybindings in tmux config would be,</p>
+
+<pre>
+bind -n C-PPage        prev
+bind -n C-NPage        next
+bind -n S-PPage swap-window -t -1
+bind -n S-NPage swap-window -t +1
+</pre>
+
+<p>Here is my tmux config: <a href="https://github.com/shuLhan/home/blob/master/.tmux.conf" target="_blank"> https://github.com/shuLhan/home/blob/master/.tmux.conf </a></p>
+
+<p>[1] I have list of predefined session name that I can open using rofi. If session is not exist it will create one, otherwise it will attach into it (similar with <code>tmux new -As name</code> )</p>
+
+<h2>neovim/vim</h2>
+
+<p>I use vim with many tabs open. Each contains one buffer. To move to previous or next tab my keybindings are <code> alt+[ </code> and <code> alt+] </code>. Others keybindings are default.</p>
+
+<p>A sample of keybindings in nvim config,</p>
+
+<pre>
+&quot;&quot; Shortcut to move tab to left / right.
+map   :tabprevious
+map!  :tabprevious
+
+map   :tabnext
+map!  :tabnext
+
+&quot;&quot; ALT + {: move tab to the left
+map   :tabmove -1
+map!  :tabmove -1
+
+&quot;&quot; ALT + page-down: move tab to the right
+map   :tabmove +1
+map!  :tabmove +1
+</pre>
+
+<p>Before someone complain that I use tabs wrong, I will said that you are using buffer wrong. Buffer is internal vim objects, user should not interact with it directly - listing buffer, displaying as tab, etc.</p>
+
+<p>Here is my nvim config: <a href="https://github.com/shuLhan/home/blob/master/.config/nvim/init.vim" target="_blank">https://github.com/shuLhan/home/blob/master/.config/nvim/init.vim.</a></p>

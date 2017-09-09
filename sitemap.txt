@@ -190,6 +190,8 @@ http://kilabit.info/journal/2017/05/
 http://kilabit.info/journal/2017/05/Go_Informal_Coding_Style/
 http://kilabit.info/journal/2017/07/
 http://kilabit.info/journal/2017/07/Integrating_Buildbot_and_Mattermost/
+http://kilabit.info/journal/2017/09/
+http://kilabit.info/journal/2017/09/i3__tmux__and_vim/
 http://kilabit.info/journal/misc/
 http://kilabit.info/journal/misc/git/
 http://kilabit.info/journal/misc/oracle/
