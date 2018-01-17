@@ -1,0 +1,55 @@
+==================================================================
+https://keybase.io/shulhan
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://kilabit.info
+  * I am shulhan (https://keybase.io/shulhan) on keybase.
+  * I have a public key ASAL1iV7yVa9XFWB8juB67AbBPprAuOAhKN0ZtYeyWqeRAo
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "01200bd6257bc956bd5c5581f23b81ebb01b04fa6b02e38084a37466d61ec96a9e440a",
+      "host": "keybase.io",
+      "kid": "01200bd6257bc956bd5c5581f23b81ebb01b04fa6b02e38084a37466d61ec96a9e440a",
+      "uid": "f750fef67e54211079be89c6803ed219",
+      "username": "shulhan"
+    },
+    "merkle_root": {
+      "ctime": 1516190327,
+      "hash": "88e2317b49b388eedb49ea46e2d734066d29ebe331504b4f63d046c8771adb642bfd00487477d89a83726edfd0a164dc921d9727571eea3e6c71b7c18148da98",
+      "hash_meta": "9e1732cee78afc046aceb273bf8a3fcc21e13f7514e9f2857e6e1c401c7b636a",
+      "seqno": 1936452
+    },
+    "service": {
+      "hostname": "kilabit.info",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 1
+  },
+  "client": {
+    "name": "keybase.io go client",
+    "version": "1.0.39"
+  },
+  "ctime": 1516190411,
+  "expire_in": 504576000,
+  "prev": "7d21601e4a4ae18cdeefd42b9d12626a76f76d03e8ff4e7a3d637abd3d8973bb",
+  "seqno": 6,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+hKRib2R5hqhkZXRhY2hlZMOpaGFzaF90eXBlCqNrZXnEIwEgC9Yle8lWvVxVgfI7geuwGwT6awLjgISjdGbWHslqnkQKp3BheWxvYWTFA0N7ImJvZHkiOnsia2V5Ijp7ImVsZGVzdF9raWQiOiIwMTIwMGJkNjI1N2JjOTU2YmQ1YzU1ODFmMjNiODFlYmIwMWIwNGZhNmIwMmUzODA4NGEzNzQ2NmQ2MWVjOTZhOWU0NDBhIiwiaG9zdCI6ImtleWJhc2UuaW8iLCJraWQiOiIwMTIwMGJkNjI1N2JjOTU2YmQ1YzU1ODFmMjNiODFlYmIwMWIwNGZhNmIwMmUzODA4NGEzNzQ2NmQ2MWVjOTZhOWU0NDBhIiwidWlkIjoiZjc1MGZlZjY3ZTU0MjExMDc5YmU4OWM2ODAzZWQyMTkiLCJ1c2VybmFtZSI6InNodWxoYW4ifSwibWVya2xlX3Jvb3QiOnsiY3RpbWUiOjE1MTYxOTAzMjcsImhhc2giOiI4OGUyMzE3YjQ5YjM4OGVlZGI0OWVhNDZlMmQ3MzQwNjZkMjllYmUzMzE1MDRiNGY2M2QwNDZjODc3MWFkYjY0MmJmZDAwNDg3NDc3ZDg5YTgzNzI2ZWRmZDBhMTY0ZGM5MjFkOTcyNzU3MWVlYTNlNmM3MWI3YzE4MTQ4ZGE5OCIsImhhc2hfbWV0YSI6IjllMTczMmNlZTc4YWZjMDQ2YWNlYjI3M2JmOGEzZmNjMjFlMTNmNzUxNGU5ZjI4NTdlNmUxYzQwMWM3YjYzNmEiLCJzZXFubyI6MTkzNjQ1Mn0sInNlcnZpY2UiOnsiaG9zdG5hbWUiOiJraWxhYml0LmluZm8iLCJwcm90b2NvbCI6Imh0dHBzOiJ9LCJ0eXBlIjoid2ViX3NlcnZpY2VfYmluZGluZyIsInZlcnNpb24iOjF9LCJjbGllbnQiOnsibmFtZSI6ImtleWJhc2UuaW8gZ28gY2xpZW50IiwidmVyc2lvbiI6IjEuMC4zOSJ9LCJjdGltZSI6MTUxNjE5MDQxMSwiZXhwaXJlX2luIjo1MDQ1NzYwMDAsInByZXYiOiI3ZDIxNjAxZTRhNGFlMThjZGVlZmQ0MmI5ZDEyNjI2YTc2Zjc2ZDAzZThmZjRlN2EzZDYzN2FiZDNkODk3M2JiIiwic2Vxbm8iOjYsInRhZyI6InNpZ25hdHVyZSJ9o3NpZ8RALEdu51+jO1/4J2HotYX+0Il2Fi4UqXRTzYA98G6GEutUdjXeiTyU7jgSL3VbwV6LnuOaPCXWGi9nnojYZYZOBahzaWdfdHlwZSCkaGFzaIKkdHlwZQildmFsdWXEICdYgxtgccGJL+dRTWA+bW4aD9OIb+P8JB6pcs9201cbo3RhZ80CAqd2ZXJzaW9uAQ==
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/shulhan
+
+==================================================================
