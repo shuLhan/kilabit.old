@@ -1,0 +1,171 @@
+<meta name="title" content="Beku: dependencies management should be simple">
+<meta name="publish_date" content="2018-05-27 18:01:48">
+<meta name="author" content="ms@kilabit.info">
+<p>In the heat of current discussion between dep vs vgo, it would be foolish to create another tool to manage packages in Go. We would not called our tool, beku [1], as package manager, we see it as extension for &quot;go get&quot; and &quot;go clean&quot;.</p>
+
+<p>In our unique case, which will we explain more later, we use GOPATH to manage dependencies per project. There are several reasons why we prefer one central repositories to manage dependencies and why we should update frequently,</p>
+
+<ol>
+	<li>Dependencies are updated just like why we update our application: they have bugs and improvement. New version may fix bugs and add new improvement.</li>
+	<li>Minimize &quot;it&#39;s works on my machine&quot; problem.</li>
+	<li>After updating dependencies, we can review and test the changes (new fixes, new features, etc.) on new version, to prevent build and running problems.</li>
+	<li>Let developers focus on code, not dependencies.</li>
+</ol>
+
+<p>Before we got &quot;official&quot; package management, there are many tool that provide the same functionality [1], due to our unique case, non of the package management quite satisfactory.&nbsp;To handle above case, we manage our dependencies using shell script, is not perfect but it&#39;s provide enough functions to update repository based on tag and commit hash. Using and managing shell script is not an easy jobs, especially if we still have edit the dependency file manually.&nbsp; At the end, we create our own tool. We would like this tool not to be seen as another Go package management, but as critique to dep and vgo, &quot;This is how package management should work in Go&quot;.</p>
+
+<p>In the future we may manage them either with <tt>dep</tt> or <tt>vgo</tt>, but until one of them is conform to our needs, we will use what is available and worked right now.</p>
+
+<h2>Definitions</h2>
+
+<p>Package reference to dependency that a Go program or library imported. There are two type of package: internal (standard packages that come from Go program), and external package, i.e. package that downloaded by user. When we talk about package on this article, mostly we reference to the second meaning, which is &quot;external package&quot;.</p>
+
+<p>Semver reference to semantic versioning. [2]</p>
+
+<h2>Problems</h2>
+
+<p>This section list several problems with current Go (v1.10) tooling on package management.</p>
+
+<p>Go tool to download a package, `go get`, does not handle versioning. When user run `go get`, it will download the package and all of their dependencies; and set the package to the latest version (commit in VCS context).&nbsp; There are several problems with this model. First, user may not want the latest commit; second, the downloaded dependencies may break other packages. For small project, this may be working. In case of error when building or testing after downloading new package, they can be fixed by following the latest changes on package depedencies. On large project, this will cause changes on several files on several repositories.</p>
+
+<p>Second, there is no Go tool to remove installed package and their dependencies. Let&#39;s say that you want to experiment with package A on your project. After running &quot;go get A&quot;, Go downloaded their dependencies: B, C, D. Later, you see that package A does not conform to your needs and want to experiment with package X. If you want to clean package A from your system, you can just remove their installed binaries using &quot;go clean -i ./...&quot; and then remove their source. What about their dependencies? Well, you can run &quot;go list&quot; before removing source, to get all imported package, and clean it one by one, or you just ignore it. But how do you know that B or C or D required by another package that you previously depends on? That is another problem that can not be handled with simple shell `find` and `grep`.</p>
+
+<p>Third, how do we can list all packages installed in GOPATH?</p>
+
+<p>Fourth, another use case if you have several repositories that depends on the same package. Managing them in each repository using vendored tool (e.g. glide, gb, dep) may be work. What would happened when one repository updated their dependencies but another repository is not updated yet, does your micro services still works? Maybe yes, maybe no. Let me illustrate this unique case using two different model: GOPATH and vendor.</p>
+
+<p>Assume that we have three repositories: A, B, C. All of them depends on package M. A and B depends on C.</p>
+
+<p>First, using vendored model.</p>
+
+<p>Use case 1: C is updated, the next workflow would be, update dependencies of A, commit, test, build, and deploy; update dependencies of B, commit, test, build, and deploy.</p>
+
+<p>Use case 2: package A update M, the next workflow either we ignore update on B or do an update. The worst case is B may or may not be able to &quot;talk&quot; to A after deployed.</p>
+
+<p>When using GOPATH model, package C and M would be on the same $GOPATH of packages A and B, so when C or M updated, the next workflow is to rebuild all of project. This one is more simple that using vendor, but have underlying problem: how do you update M? How do you review the current M with the next M (after update) before accepting it as &quot;OK, no breaking changes, let&#39;s update this dependencies&quot;? We believe that this use case is not unique to ours, it also happened in other project out there.</p>
+
+<p>Fifth, most of package managements blindly update dependencies, since semver strictly said that minor changes does not or will not contains breaking changes. The problem in this situation is not all dependencies is still using semver and user does not have an option to review the update.</p>
+
+<h2>Previous Workflow</h2>
+
+<p>Before we wrote beku, and before we have many choices of package management, we manage dependencies with shell script. Since the package is just a mapping between remote URL, version and destination directory; we can write the dependencies down into the following format [4],</p>
+
+<p>&nbsp; REMOTE_URL&lt;space&gt;IMPORT_PATH&lt;space&gt;VERSION</p>
+
+<p>The shell script would read each line, do a git clone, and set the HEAD to specific version. The simple version of those shell script can be seen at one of our github repository [5]. If we don&#39;t need another package, we create another file with the above format, and create another script that consume the file to cleaned. There is also script to check for update using combination of git-fetch-all, git-get-current-tag-or-commit, git-get-next-tag-or-commit, and write the new version to file.</p>
+
+<h2>Workflow With Beku</h2>
+
+<p>Maintaining shell script for our unique case is not simple, one of the problem is editing the dependendencies manually. That is one of reasons, beside all the problems that we mentioned above, why we wrote beku [5].</p>
+
+<p>The first thing that we need to know is what package is installed in our GOPATH? This question can be answered by scanning all package in GOPATH using,</p>
+
+<p>&nbsp;&nbsp;&nbsp; $ beku -S</p>
+
+<p>Beku will save that information in their own database, currently in &quot;$GOPATH/var/beku/beku.db&quot;. The following command ,</p>
+
+<p>&nbsp;&nbsp;&nbsp; $ beku -Q</p>
+
+<p>will display all package and their version to standard output. For example,</p>
+
+<pre>
+master ms 0 % beku -Q
+github.com/json-iterator/go        1.1.3
+github.com/shuLhan/beku            7869002
+github.com/shuLhan/dsv             bbe8681
+github.com/shuLhan/go-bindata      v3.4.0
+github.com/shuLhan/gontacts        d4786e8
+github.com/shuLhan/haminer         42be4cb
+github.com/shuLhan/kait            6672efe
+github.com/shuLhan/numerus         104dd6b
+github.com/shuLhan/share           9337967
+github.com/shuLhan/tabula          14d5c16
+github.com/shuLhan/tekstus         651065d
+golang.org/x/net                   dfa909b
+golang.org/x/text                  v0.3.0
+golang.org/x/tools                 a5b4c53f
+golang.org/x/tour                  ced884f
+github.com/golangci/golangci-lint  v1.2.1
+github.com/modern-go/concurrent    1.0.3
+github.com/modern-go/reflect2      1.0.0
+golang.org/x/crypto                ab81327
+golang.org/x/sys                   c11f84a</pre>
+
+<p>Installing new package with specific version and directory can be instructed with following command,</p>
+
+<p>&nbsp;&nbsp;&nbsp; $ beku -S github.com/golang/text@5c1cf69 --into golang.org/x/text</p>
+
+<p>Removing package be instructed with following command,</p>
+
+<p>&nbsp;&nbsp;&nbsp; $ beku -R github.com/golang/text</p>
+
+<p>or,</p>
+
+<p>&nbsp;&nbsp;&nbsp; $ beku -R golang.org/x/text</p>
+
+<p>And to remove with their dependencies (-s), can be instructed with following command</p>
+
+<p>&nbsp;&nbsp;&nbsp; $ beku -Rs github.com/golang/text</p>
+
+<p>Updating all dependencies can be instructed with the following command,</p>
+
+<p>&nbsp;&nbsp;&nbsp; $ beku -Su</p>
+
+<p>The above command will fetch the next commits, get the latest version (tag or commit), and display the URL for comparing the update manually. For example,</p>
+
+<pre>
+&gt;&gt;&gt; The following packages will be updated,
+
+ImportPath                                      Old Version   New Version  Compare URL
+
+cloud.google.com/go                             v0.21.0       v0.23.0      https://github.com/GoogleCloudPlatform/google-cloud-go/compare/v0.21.0...v0.23.0
+github.com/Jeffail/gabs                         1.0           1.1          https://github.com/Jeffail/gabs/compare/1.0...1.1
+github.com/aws/aws-sdk-go                       v1.13.39      v1.13.56     https://github.com/aws/aws-sdk-go/compare/v1.13.39...v1.13.56
+github.com/codegangsta/cli                      v1.19.1       v1.20.0      https://github.com/urfave/cli/compare/v1.19.1...v1.20.0
+github.com/favadi/protoc-go-inject-tag          456a7f4       283fda0      https://github.com/favadi/protoc-go-inject-tag/compare/456a7f4...283fda0
+...
+
+Continue? [y/N]:</pre>
+
+<p>(Some of text in above example is redacted, for readibility).</p>
+
+<p>After running update, we encourage user to review the commit logs manually (agains, this depends on scale of project that user work on), before accepting all update. Updating specific package with specific version can be instructed using &quot;beku -S&quot; manually later.</p>
+
+<p>Reinstalling, in beku term &quot;freezing&quot;, all packages in GOPATH using specific version listed on beku database can be instructed using the following command,</p>
+
+<p>&nbsp;&nbsp;&nbsp; $ beku -D</p>
+
+<p>The above command not only set the package to specific version, but also remove all unused package in GOPATH.</p>
+
+<h2>Known Limitations</h2>
+
+<p>Due to proofn of concept, beku have the following limitations,</p>
+
+<ul>
+	<li>Only work with package hosted with Git on HTTPS or SSH.</li>
+	<li>Tested only on package hosted on Github.</li>
+	<li>Tested only on Git v2.17 or greater</li>
+	<li>Beku does not handle transitive dependencies by itself.</li>
+</ul>
+
+<h2>Discussion</h2>
+
+<p>The problem of package management is not new. Linux distro already have it decades ago and works flawlessly. We believe that package management should be simple. We believe that transitive dependencies is user problems, not a problem that should be handled by tool because user must review each update on dependencies, user must review and install transitive dependencies manually; and that is the job of tool, to simplify user to review the update, installing, updating, and/or removing package.</p>
+
+<h2>Acknowledgment</h2>
+
+<p>Beku command syntax is inspired by pacman [6].</p>
+
+<h2>References</h2>
+
+<p>[1] https://github.com/shuLhan/beku</p>
+
+<p>[2] https://github.com/golang/go/wiki/PackageManagementTools</p>
+
+<p>[3] https://semver.org/</p>
+
+<p>[4] https://github.com/shuLhan/go-bindata/blob/7080193fbcce91b4f8bdf21bb546696e80225bf3/vendor.deps</p>
+
+<p>[5] https://github.com/shuLhan/go-bindata/blob/7080193fbcce91b4f8bdf21bb546696e80225bf3/scripts/deps.sh</p>
+
+<p>[6] https://www.archlinux.org/pacman</p>
